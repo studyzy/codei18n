@@ -7,7 +7,7 @@ description: "功能实现任务列表模板"
 **输入**: 来自 `/specs/[###-feature-name]/` 的设计文档
 **前置条件**: plan.md(必需)、spec.md(用户故事必需)、research.md、data-model.md、contracts/
 
-**测试**: 以下示例包含测试任务. 测试是可选的 - 仅在功能规范中明确要求时才包含.
+**测试**: CodeI18n 项目要求单元测试覆盖率 ≥ 60%（核心模块 ≥ 80%）。以下任务模板包含测试任务，所有核心功能**必须**编写测试。
 
 **组织结构**: 任务按用户故事分组, 以便每个故事能够独立实施和测试.
 
@@ -46,8 +46,9 @@ description: "功能实现任务列表模板"
 **目的**: 项目初始化和基本结构
 
 - [ ] T001 根据实施计划创建项目结构
-- [ ] T002 使用 [framework] 依赖项初始化 [language] 项目
-- [ ] T003 [P] 配置代码检查和格式化工具
+- [ ] T002 使用 Go Modules 初始化 Go 项目
+- [ ] T003 [P] 配置 gofmt、golint/staticcheck 代码检查工具
+- [ ] T004 [P] 设置测试框架和覆盖率报告
 
 ---
 
@@ -76,21 +77,24 @@ description: "功能实现任务列表模板"
 
 **独立测试**: [如何验证此故事独立运行]
 
-### 用户故事 1 的测试(可选 - 仅在要求测试时)⚠️
+### 用户故事 1 的测试（必需 - CodeI18n 项目要求）⚠️
 
-**注意: 先编写这些测试, 确保在实施前它们失败**
+**注意: 先编写这些测试, 确保在实施前它们失败。核心模块测试覆盖率必须 ≥ 80%**
 
-- [ ] T010 [P] [US1] 在 tests/contract/test_[name].py 中为 [endpoint] 编写合约测试
-- [ ] T011 [P] [US1] 在 tests/integration/test_[name].py 中为 [user journey] 编写集成测试
+- [ ] T010 [P] [US1] 在 tests/unit/test_[name]_test.go 中为 [功能] 编写单元测试
+- [ ] T011 [P] [US1] 在 tests/integration/test_[name]_test.go 中为 [用户旅程] 编写集成测试
+- [ ] T012 [P] [US1] 验证测试覆盖率达到要求（go test -coverprofile）
 
 ### 用户故事 1 的实施
 
-- [ ] T012 [P] [US1] 在 src/models/[entity1].py 中创建 [Entity1] 模型
-- [ ] T013 [P] [US1] 在 src/models/[entity2].py 中创建 [Entity2] 模型
-- [ ] T014 [US1] 在 src/services/[service].py 中实施 [Service](依赖于 T012、T013)
-- [ ] T015 [US1] 在 src/[location]/[file].py 中实施 [endpoint/feature]
-- [ ] T016 [US1] 添加验证和错误处理
-- [ ] T017 [US1] 为用户故事 1 操作添加日志记录
+- [ ] T013 [P] [US1] 在 src/models/[entity1].go 中创建 [Entity1] 模型（含中文注释）
+- [ ] T014 [P] [US1] 在 src/models/[entity2].go 中创建 [Entity2] 模型（含中文注释）
+- [ ] T015 [US1] 在 src/services/[service].go 中实施 [Service]（依赖于 T013、T014）
+- [ ] T016 [US1] 在 src/[location]/[file].go 中实施 [功能/端点]
+- [ ] T017 [US1] 添加验证和错误处理（含中文错误信息）
+- [ ] T018 [US1] 为用户故事 1 操作添加日志记录
+- [ ] T019 [US1] 使用 gofmt 格式化所有代码
+- [ ] T020 [US1] 运行 golint/staticcheck 并修复所有问题
 
 **检查点**: 此时, 用户故事 1 应该完全功能化且可独立测试
 
@@ -102,17 +106,19 @@ description: "功能实现任务列表模板"
 
 **独立测试**: [如何验证此故事独立运行]
 
-### 用户故事 2 的测试(可选 - 仅在要求测试时)⚠️
+### 用户故事 2 的测试（必需 - CodeI18n 项目要求）⚠️
 
-- [ ] T018 [P] [US2] 在 tests/contract/test_[name].py 中为 [endpoint] 编写合约测试
-- [ ] T019 [P] [US2] 在 tests/integration/test_[name].py 中为 [user journey] 编写集成测试
+- [ ] T021 [P] [US2] 在 tests/unit/test_[name]_test.go 中为 [功能] 编写单元测试
+- [ ] T022 [P] [US2] 在 tests/integration/test_[name]_test.go 中为 [用户旅程] 编写集成测试
+- [ ] T023 [P] [US2] 验证测试覆盖率达到要求
 
 ### 用户故事 2 的实施
 
-- [ ] T020 [P] [US2] 在 src/models/[entity].py 中创建 [Entity] 模型
-- [ ] T021 [US2] 在 src/services/[service].py 中实施 [Service]
-- [ ] T022 [US2] 在 src/[location]/[file].py 中实施 [endpoint/feature]
-- [ ] T023 [US2] 与用户故事 1 组件集成(如需要)
+- [ ] T024 [P] [US2] 在 src/models/[entity].go 中创建 [Entity] 模型（含中文注释）
+- [ ] T025 [US2] 在 src/services/[service].go 中实施 [Service]
+- [ ] T026 [US2] 在 src/[location]/[file].go 中实施 [功能/端点]
+- [ ] T027 [US2] 与用户故事 1 组件集成(如需要)
+- [ ] T028 [US2] 代码格式化和静态检查
 
 **检查点**: 此时, 用户故事 1 和 2 都应该独立运行
 
@@ -124,16 +130,18 @@ description: "功能实现任务列表模板"
 
 **独立测试**: [如何验证此故事独立运行]
 
-### 用户故事 3 的测试(可选 - 仅在要求测试时)⚠️
+### 用户故事 3 的测试（必需 - CodeI18n 项目要求）⚠️
 
-- [ ] T024 [P] [US3] 在 tests/contract/test_[name].py 中为 [endpoint] 编写合约测试
-- [ ] T025 [P] [US3] 在 tests/integration/test_[name].py 中为 [user journey] 编写集成测试
+- [ ] T029 [P] [US3] 在 tests/unit/test_[name]_test.go 中为 [功能] 编写单元测试
+- [ ] T030 [P] [US3] 在 tests/integration/test_[name]_test.go 中为 [用户旅程] 编写集成测试
+- [ ] T031 [P] [US3] 验证测试覆盖率达到要求
 
 ### 用户故事 3 的实施
 
-- [ ] T026 [P] [US3] 在 src/models/[entity].py 中创建 [Entity] 模型
-- [ ] T027 [US3] 在 src/services/[service].py 中实施 [Service]
-- [ ] T028 [US3] 在 src/[location]/[file].py 中实施 [endpoint/feature]
+- [ ] T032 [P] [US3] 在 src/models/[entity].go 中创建 [Entity] 模型（含中文注释）
+- [ ] T033 [US3] 在 src/services/[service].go 中实施 [Service]
+- [ ] T034 [US3] 在 src/[location]/[file].go 中实施 [功能/端点]
+- [ ] T035 [US3] 代码格式化和静态检查
 
 **检查点**: 所有用户故事现在应该独立功能化
 
@@ -147,10 +155,12 @@ description: "功能实现任务列表模板"
 
 **目的**: 影响多个用户故事的改进
 
-- [ ] TXXX [P] 在 docs/ 中更新文档
+- [ ] TXXX [P] 在 docs/ 中更新中文文档
 - [ ] TXXX 代码清理和重构
 - [ ] TXXX 跨所有故事的性能优化
-- [ ] TXXX [P] 在 tests/unit/ 中添加额外的单元测试(如要求)
+- [ ] TXXX [P] 在 tests/unit/ 中补充额外的单元测试以达到覆盖率要求
+- [ ] TXXX 验证整体测试覆盖率 ≥ 60%（核心模块 ≥ 80%）
+- [ ] TXXX [P] 为所有公共 API 添加 GoDoc 中文注释
 - [ ] TXXX 安全加固
 - [ ] TXXX 运行 quickstart.md 验证
 
