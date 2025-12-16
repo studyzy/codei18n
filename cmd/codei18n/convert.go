@@ -93,6 +93,12 @@ func runConvert() {
 	for _, file := range files {
 		processFile(file, adapter, store, cfg)
 	}
+
+	if err := store.Save(); err != nil {
+		log.Error("保存映射文件失败: %v", err)
+	} else {
+		log.Info("Mapping store updated.")
+	}
 }
 
 func processFile(file string, adapter *golang.Adapter, store *mapping.Store, cfg *config.Config) {
@@ -161,6 +167,25 @@ func processFile(file string, adapter *golang.Adapter, store *mapping.Store, cfg
 						targetText = enText
 						found = true
 						log.Info("Found by reverse lookup: ID=%s, ZH='%s' -> EN='%s'", id, zhText, enText)
+
+						// Key fix: When reverting to English, automatically generate IDs for new English comments and migrate existing translations to them.
+						// This way, subsequent scan/map updates can directly recognize this English comment and will not treat it as an untranslated new comment.
+						
+						// 1. Construct the English version of the Comment object (simulating the converted state)
+						tempC := *c
+						tempC.SourceText = enText // Assuming mapping stores plain text or marked text, Normalize will process it
+						
+						// 2. Calculate new ID
+						newID := utils.GenerateCommentID(&tempC)
+						
+						// 3. If the new ID differs from the old ID (it definitely will, because the text has changed), then migrate the data
+						if newID != id {
+							log.Info("Migrating mapping for restored English comment: %s -> %s", id, newID)
+							// Ensure the new ID has bilingual data
+							store.Set(newID, cfg.SourceLanguage, enText)
+							store.Set(newID, cfg.LocalLanguage, zhText)
+						}
+
 						break
 					}
 				}
