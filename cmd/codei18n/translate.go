@@ -57,7 +57,7 @@ func runTranslate() {
 
 	// 2. Init Translator
 	var trans core.Translator
-	
+
 	switch cfg.TranslationProvider {
 	case "mock":
 		trans = translator.NewMockTranslator()
@@ -66,12 +66,12 @@ func runTranslate() {
 		if apiKey == "" {
 			log.Fatal("未设置 OPENAI_API_KEY 环境变量")
 		}
-		
+
 		// Debug config loading
 		log.Info("Translation Config Loaded: %v", cfg.TranslationConfig)
 
 		baseURL := os.Getenv("OPENAI_BASE_URL")
-		
+
 		// Case-insensitive check for baseUrl
 		if val, ok := cfg.TranslationConfig["baseUrl"]; ok && val != "" {
 			baseURL = val
@@ -82,20 +82,20 @@ func runTranslate() {
 		} else if val, ok := cfg.TranslationConfig["base_url"]; ok && val != "" {
 			baseURL = val
 		}
-		
+
 		model := "gpt-3.5-turbo"
 		if translateModel != "" {
 			model = translateModel
 		} else if m, ok := cfg.TranslationConfig["model"]; ok {
 			model = m
 		}
-		
+
 		// Auto-detect DeepSeek URL if not set
 		if baseURL == "" && (model == "deepseek-chat" || model == "deepseek-coder") {
 			baseURL = "https://api.deepseek.com"
 			log.Info("自动检测到 DeepSeek 模型，设置 BaseURL 为 %s", baseURL)
 		}
-		
+
 		log.Info("Using LLM: BaseURL=%s, Model=%s", baseURL, model)
 		trans = translator.NewLLMTranslator(apiKey, baseURL, model)
 	default:
@@ -146,7 +146,7 @@ func runTranslate() {
 	sem := make(chan struct{}, translateConcurrency)
 	successCount := 0
 	failCount := 0
-	
+
 	// Mutex for counting
 	var countMu sync.Mutex
 
@@ -159,10 +159,10 @@ func runTranslate() {
 			defer func() { <-sem }() // Release token
 
 			res, err := trans.Translate(context.Background(), t.text, cfg.SourceLanguage, targetLang)
-			
+
 			countMu.Lock()
 			defer countMu.Unlock()
-			
+
 			if err != nil {
 				log.Warn("翻译失败 [%s]: %v", t.id, err)
 				failCount++
@@ -170,7 +170,7 @@ func runTranslate() {
 				store.Set(t.id, targetLang, res)
 				successCount++
 			}
-			
+
 			// Update spinner
 			s.Suffix = fmt.Sprintf(" 正在翻译... (%d/%d 成功, %d 失败)", successCount, len(tasks), failCount)
 		}(t)

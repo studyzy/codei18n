@@ -2,6 +2,12 @@
 
 **Code Comment Internationalization Infrastructure**
 
+[![CI](https://github.com/studyzy/codei18n/actions/workflows/ci.yml/badge.svg)](https://github.com/studyzy/codei18n/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/studyzy/codei18n)](https://goreportcard.com/report/github.com/studyzy/codei18n)
+[![License](https://img.shields.io/github/license/studyzy/codei18n)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/studyzy/codei18n)](https://github.com/studyzy/codei18n/releases)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/studyzy/codei18n)](go.mod)
+
 ---
 
 ## 1. 项目定位与问题定义
@@ -423,7 +429,145 @@ CodeI18n/
 
 ---
 
-## 16. Roadmap（明确可执行）
+## 16. 开发工作流与 Makefile
+
+本项目提供了完整的 Makefile 来简化日常开发操作。
+
+### 16.1 常用命令
+
+```bash
+# 查看所有可用命令
+make help
+
+# 构建可执行文件
+make build
+
+# 运行所有测试
+make test
+
+# 生成测试覆盖率报告
+make coverage
+
+# 查看 HTML 格式的覆盖率报告
+make coverage-html
+
+# 格式化代码
+make fmt
+
+# 运行代码检查
+make lint
+
+# 运行所有质量检查（fmt + vet + lint）
+make check
+
+# 开发模式：快速检查
+make dev
+
+# 完整 CI 流程
+make all
+
+# CI/CD 模式（包含覆盖率验证）
+make ci
+
+# Pre-commit 检查
+make pre-commit
+```
+
+### 16.2 代码质量要求
+
+根据项目章程要求：
+
+- **总体测试覆盖率**: ≥ 60%
+- **核心模块覆盖率**: ≥ 80%（`core/comment`, `core/mapping`, `core/translate`）
+- **代码规范**: 必须通过 `gofmt` 和 `golint`/`staticcheck` 检查
+
+使用以下命令验证：
+
+```bash
+# 检查覆盖率是否达标
+make coverage-check
+
+# 运行完整的 CI 检查
+make ci
+```
+
+### 16.3 开发工作流示例
+
+#### 日常开发
+
+```bash
+# 1. 编写代码
+# 2. 快速验证
+make dev
+
+# 3. 提交前检查
+make pre-commit
+
+# 4. 构建
+make build
+```
+
+#### 提交前完整检查
+
+```bash
+# 运行完整 CI 流程
+make ci
+```
+
+### 16.4 Docker 支持
+
+项目支持 Docker 容器化部署：
+
+```bash
+# 构建 Docker 镜像
+make docker-build
+
+# 运行 Docker 容器
+make docker-run
+
+# 在 Docker 中运行测试
+make docker-test
+
+# 清理 Docker 镜像
+make docker-clean
+```
+
+### 16.5 CI/CD 集成
+
+项目配置了完整的 GitHub Actions CI/CD 流程：
+
+#### 自动化检查
+
+每次 push 或 pull request 时自动运行：
+
+- ✅ 代码质量检查（gofmt、go vet、staticcheck）
+- ✅ 多平台构建测试（Linux、macOS、Windows）
+- ✅ 单元测试和覆盖率报告
+- ✅ 集成测试
+- ✅ 安全扫描（gosec、govulncheck）
+- ✅ 依赖审计
+
+#### 自动发布
+
+推送版本 tag 时自动构建和发布：
+
+```bash
+# 创建版本 tag
+git tag -a v0.1.0 -m "Release v0.1.0"
+git push origin v0.1.0
+
+# GitHub Actions 将自动：
+# - 构建多平台二进制文件
+# - 生成 Release Notes
+# - 创建 GitHub Release
+# - 构建并推送 Docker 镜像（如果配置）
+```
+
+更多详情请查看 [CI/CD 工作流说明](.github/README.md)。
+
+---
+
+## 17. Roadmap（明确可执行）
 
 ### v0.1
 
@@ -444,7 +588,7 @@ CodeI18n/
 
 ---
 
-## 17. 结论
+## 18. 结论
 
 **CodeI18n 本质是一个“代码注释 i18n 基础设施”**：
 

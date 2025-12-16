@@ -23,7 +23,7 @@ func NewLLMTranslator(apiKey, baseURL, model string) *LLMTranslator {
 	if baseURL != "" {
 		config.BaseURL = baseURL
 	}
-	
+
 	client := openai.NewClientWithConfig(config)
 	return &LLMTranslator{
 		client: client,
@@ -71,16 +71,16 @@ func (t *LLMTranslator) Translate(ctx context.Context, text, from, to string) (s
 
 // TranslateBatch translates a batch of texts
 // Implementation strategy:
-// 1. Send all texts in one prompt (if length permits) or multiple concurrent requests.
-// 2. For simplicity and robustness against context limits, we'll use concurrent single requests for now,
-//    or a simple JSON list approach in prompt.
-//    JSON list approach saves tokens and network RTT.
+//  1. Send all texts in one prompt (if length permits) or multiple concurrent requests.
+//  2. For simplicity and robustness against context limits, we'll use concurrent single requests for now,
+//     or a simple JSON list approach in prompt.
+//     JSON list approach saves tokens and network RTT.
 func (t *LLMTranslator) TranslateBatch(ctx context.Context, texts []string, from, to string) ([]string, error) {
-	// Fallback to sequential for now to ensure reliability, 
+	// Fallback to sequential for now to ensure reliability,
 	// unless we implement a robust JSON array parser for the response.
 	// Since the Interface allows it, the caller can implement concurrency.
 	// But let's try a simple loop here. Ideally, `translate` command handles concurrency.
-	
+
 	results := make([]string, len(texts))
 	for i, text := range texts {
 		res, err := t.Translate(ctx, text, from, to)

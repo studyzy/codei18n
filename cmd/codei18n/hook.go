@@ -43,7 +43,7 @@ func runHookInstall() {
 	}
 
 	hookPath := filepath.Join(gitDir, "hooks", "pre-commit")
-	
+
 	// Create hook content
 	// We convert to English ('en') for all staged go files
 	hookContent := `#!/bin/sh

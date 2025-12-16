@@ -1,0 +1,53 @@
+name: 依赖更新
+
+on:
+  schedule:
+    # 每周一 UTC 时间 00:00 运行
+    - cron: '0 0 * * 1'
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  update-dependencies:
+    name: 更新 Go 依赖
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Go 环境
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.5'
+
+      - name: 更新依赖
+        run: |
+          go get -u ./...
+          go mod tidy
+
+      - name: 运行测试
+        run: go test ./...
+        continue-on-error: true
+
+      - name: 创建 Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: '⬆️ 更新 Go 依赖'
+          title: '⬆️ 自动更新 Go 依赖'
+          body: |
+            此 PR 由自动化工作流创建，用于更新项目的 Go 依赖。
+            
+            ## 更改内容
+            - 更新所有 Go 依赖到最新版本
+            - 运行 `go mod tidy` 清理 go.mod 和 go.sum
+            
+            ## 检查清单
+            - [ ] 检查更新的依赖是否有破坏性变更
+            - [ ] 确认所有测试通过
+            - [ ] 验证构建成功
+            
+            请仔细审查此 PR，确保依赖更新不会引入问题。
+          branch: auto/dependency-updates
+          delete-branch: true
+          labels: |
+            dependencies
+            automated

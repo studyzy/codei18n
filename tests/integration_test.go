@@ -19,11 +19,11 @@ func buildBinary(t *testing.T) string {
 	// assuming we are in project root/tests
 	root := filepath.Dir(cwd)
 	binPath := filepath.Join(cwd, "codei18n_test_bin")
-	
+
 	cmd := exec.Command("go", "build", "-o", binPath, filepath.Join(root, "cmd/codei18n"))
 	out, err := cmd.CombinedOutput()
 	require.NoError(t, err, "Build failed: %s", string(out))
-	
+
 	return binPath
 }
 
@@ -32,7 +32,7 @@ func TestIntegrationFlow(t *testing.T) {
 	defer os.Remove(bin)
 
 	tempDir := t.TempDir()
-	
+
 	// Copy a sample file
 	sampleContent := `package main
 // Hello says hello
@@ -71,7 +71,7 @@ func Hello() {
 	// 4. Verify Mapping Content
 	mapFile, _ := os.ReadFile(filepath.Join(tempDir, ".codei18n", "mappings.json"))
 	// JSON escapes > as \u003e
-	// assert.Contains(t, string(mapFile), "MOCK en->zh-CN") 
+	// assert.Contains(t, string(mapFile), "MOCK en->zh-CN")
 	assert.Contains(t, string(mapFile), "MOCK en")
 
 	// 5. Convert to Local (ZH)
@@ -98,23 +98,23 @@ func Hello() {
 func TestPureJSONOutput(t *testing.T) {
 	bin := buildBinary(t)
 	defer os.Remove(bin)
-	
+
 	tempDir := t.TempDir()
-	
+
 	// 1. Scan with JSON format
 	cmd := exec.Command(bin, "scan", "--format", "json", "--stdin", "--file", "test.go")
 	cmd.Dir = tempDir
 	cmd.Stdin = strings.NewReader("package main\n// Test\nfunc Foo(){}")
-	
+
 	out, err := cmd.Output() // Stdout only
 	require.NoError(t, err)
-	
+
 	// Check if output is valid JSON
 	// And DOES NOT contain "INFO" or "WARN"
 	jsonStr := string(out)
 	assert.Contains(t, jsonStr, "{")
 	assert.NotContains(t, jsonStr, "[INFO]")
-	
+
 	// We can try to unmarshal it
 	// (Using a simple map interface for verification)
 	// var result map[string]interface{}

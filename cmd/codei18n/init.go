@@ -37,6 +37,6 @@ func runInit() {
 	if err := config.SaveConfig(cfg); err != nil {
 		log.Fatal("保存配置失败: %v", err)
 	}
-	
+
 	log.Success("项目初始化成功")
 }

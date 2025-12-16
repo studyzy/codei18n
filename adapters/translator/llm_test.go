@@ -24,7 +24,7 @@ func TestDeepSeekIntegration(t *testing.T) {
 	if baseURL == "" {
 		baseURL = "https://api.deepseek.com" // Default DeepSeek base
 	}
-	
+
 	model := os.Getenv("OPENAI_MODEL")
 	if model == "" {
 		model = "deepseek-chat"
@@ -41,13 +41,13 @@ func TestDeepSeekIntegration(t *testing.T) {
 	fmt.Printf("Translating: '%s' (%s -> %s)...\n", text, from, to)
 
 	result, err := trans.Translate(context.Background(), text, from, to)
-	
+
 	if err != nil {
 		t.Fatalf("Translation failed: %v", err)
 	}
 
 	fmt.Printf("Success! Result: %s\n", result)
-	
+
 	require.NoError(t, err)
 	assert.NotEmpty(t, result)
 	// Basic check to see if it looks like Chinese (or at least changed)

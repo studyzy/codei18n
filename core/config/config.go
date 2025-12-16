@@ -21,8 +21,8 @@ type Config struct {
 func DefaultConfig() *Config {
 	return &Config{
 		SourceLanguage:      "en",
-		LocalLanguage:      "zh-CN",
-		ExcludePatterns:    []string{".git/**", "vendor/**", ".codei18n/**"},
+		LocalLanguage:       "zh-CN",
+		ExcludePatterns:     []string{".git/**", "vendor/**", ".codei18n/**"},
 		TranslationProvider: "google",
 		TranslationConfig:   make(map[string]string),
 	}

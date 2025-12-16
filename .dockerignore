@@ -1,0 +1,51 @@
+# Git
+.git
+.gitignore
+.github
+
+# 构建产物
+bin/
+dist/
+*.exe
+codei18n
+*.test
+*.out
+
+# 测试和覆盖率
+coverage.out
+coverage.html
+*.coverprofile
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 文档和规范
+docs/
+specs/
+*.md
+!README.md
+
+# 配置和示例
+.codei18n/
+examples/
+
+# 依赖
+vendor/
+
+# 临时文件
+*.tmp
+*.log
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# 环境变量
+.env
+.env.*

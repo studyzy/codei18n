@@ -18,11 +18,11 @@ import (
 )
 
 var (
-	scanFile            string
-	scanDir             string
-	scanFormat          string
-	scanOutput          string
-	scanStdin           bool
+	scanFile             string
+	scanDir              string
+	scanFormat           string
+	scanOutput           string
+	scanStdin            bool
 	scanWithTranslations bool
 )
 
@@ -137,7 +137,7 @@ func scanSingleFile(filename string) ([]*domain.Comment, error) {
 
 func scanDirectory(dir string) ([]*domain.Comment, error) {
 	var comments []*domain.Comment
-	
+
 	// Create adapter once
 	adapter := golang.NewAdapter()
 
@@ -159,14 +159,14 @@ func scanDirectory(dir string) ([]*domain.Comment, error) {
 			if err != nil {
 				relPath = path
 			}
-			
+
 			// Read file content manually to ensure we access the correct file
 			content, err := os.ReadFile(path)
 			if err != nil {
 				log.Warn("读取文件 %s 失败: %v", path, err)
 				return nil
 			}
-			
+
 			fileComments, err := adapter.Parse(relPath, content)
 			if err != nil {
 				log.Warn("解析文件 %s 失败: %v", path, err)
@@ -186,7 +186,7 @@ func outputResults(comments []*domain.Comment) error {
 		File     string            `json:"file,omitempty"` // populated if single file? Or just list?
 		Comments []*domain.Comment `json:"comments"`
 	}
-	
+
 	// If formatting as JSON, the spec says:
 	// { "file": "...", "comments": [...] } for single file context?
 	// But CLI can scan directory.
@@ -202,9 +202,9 @@ func outputResults(comments []*domain.Comment) error {
 	// For IDE integration (scan single file), the structure makes sense.
 	// For CLI bulk scan, maybe an array of that structure?
 	// Let's stick to simple list for now if JSON, unless it's single file mode.
-	
+
 	// Actually for IDE integration, we mostly care about single file scan via Stdin.
-	
+
 	var data interface{}
 	if scanFile != "" || scanStdin {
 		// Single file context
@@ -222,11 +222,11 @@ func outputResults(comments []*domain.Comment) error {
 		if err != nil {
 			return err
 		}
-		
+
 		if scanOutput != "" {
 			return os.WriteFile(scanOutput, jsonData, 0644)
 		}
-		
+
 		log.PrintJSON(jsonData)
 		return nil
 	}

@@ -33,3 +33,25 @@ go.work.sum
 
 .idea/
 bin/
+
+# Build artifacts
+codei18n
+codei18n.exe
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~
+
+# VSCode
+.vscode/
+
+# CodeI18n specific
+.codei18n/

@@ -48,7 +48,7 @@ func (s *Store) Load() error {
 	if err := decoder.Decode(s.mapping); err != nil {
 		return err
 	}
-	
+
 	// Ensure map is initialized if file had null
 	if s.mapping.Comments == nil {
 		s.mapping.Comments = make(map[string]map[string]string)

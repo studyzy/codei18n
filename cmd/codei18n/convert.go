@@ -109,7 +109,7 @@ func processFile(file string, adapter *golang.Adapter, store *mapping.Store, cfg
 		log.Error("解析文件 %s 失败: %v", file, err)
 		return
 	}
-	
+
 	log.Info("Convert: To='%s', Source='%s', Local='%s'", convertTo, cfg.SourceLanguage, cfg.LocalLanguage)
 
 	// Filter comments that need update
@@ -135,15 +135,15 @@ func processFile(file string, adapter *golang.Adapter, store *mapping.Store, cfg
 		if c.ID == "" {
 			c.ID = utils.GenerateCommentID(c)
 		}
-		
+
 		log.Info("Checking ID: %s", c.ID)
 
 		// Find target text
 		var targetText string
 		var found bool
-		
+
 		log.Info("Current Text: '%s'", c.SourceText)
-		
+
 		// If converting to SourceLanguage (e.g. en), we try to restore original
 		if convertTo == cfg.SourceLanguage {
 			// Restore Mode
@@ -171,7 +171,7 @@ func processFile(file string, adapter *golang.Adapter, store *mapping.Store, cfg
 				log.Info("Store Get %s %s returned empty/false", c.ID, convertTo)
 			}
 		}
-			
+
 		if found {
 			log.Info("Comparing ID %s: Src='%s' Tgt='%s'", c.ID, c.SourceText, targetText)
 		}
@@ -181,10 +181,10 @@ func processFile(file string, adapter *golang.Adapter, store *mapping.Store, cfg
 			// Calculate offsets
 			startLineIdx := c.Range.StartLine - 1
 			endLineIdx := c.Range.EndLine - 1
-			
+
 			startOffset := lineOffsets[startLineIdx] + c.Range.StartCol - 1
 			endOffset := lineOffsets[endLineIdx] + c.Range.EndCol - 1
-			
+
 			finalText := targetText
 			// If targetText doesn't have markers, add them based on original type
 			if c.Type == domain.CommentTypeLine && !strings.HasPrefix(targetText, "//") {
@@ -192,7 +192,7 @@ func processFile(file string, adapter *golang.Adapter, store *mapping.Store, cfg
 			} else if c.Type == domain.CommentTypeBlock && !strings.HasPrefix(targetText, "/*") {
 				finalText = "/* " + targetText + " */"
 			}
-			
+
 			replacements = append(replacements, replacement{
 				startOffset: startOffset,
 				endOffset:   endOffset,
