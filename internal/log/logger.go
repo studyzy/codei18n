@@ -25,7 +25,7 @@ func Success(format string, a ...interface{}) {
 	color.New(color.FgGreen).Fprintf(os.Stderr, "[SUCCESS] "+format+"\n", a...)
 }
 
-// Warn prints a warning message to Stderr
+// Warn prints a warning log
 func Warn(format string, a ...interface{}) {
 	color.New(color.FgYellow).Fprintf(os.Stderr, "[WARN] "+format+"\n", a...)
 }

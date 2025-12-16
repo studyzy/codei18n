@@ -55,6 +55,10 @@
       "en": "// If file doesn't exist, we start with empty mapping (initialized in NewStore)",
       "zh-CN": "// 如果文件不存在，我们从空映射开始（在 NewStore 中初始化）"
     },
+    "0d310452f089217ff04aab2a0affdc3fcfc073fb": {
+      "en": "// [MOCK zh-CN-\u003een] // ExtractChineseChars extracts all Chinese characters from the text",
+      "zh-CN": "// [MOCK zh-CN-\u003een] // ExtractChineseChars 从文本中提取所有中文字符"
+    },
     "1100deea685325780dd3995ea189d29d9fa1a810": {
       "en": "// [MOCK zh-CN-\u003een] // The comment is in the local language (Chinese), stored as LocalLanguage",
       "zh-CN": "// [MOCK zh-CN-\u003een] // 注释是本地语言（中文），存储为 LocalLanguage"
@@ -131,6 +135,10 @@
       "en": "// Save writes the mapping to disk",
       "zh-CN": "// 将映射保存到磁盘"
     },
+    "1f7d412e6c84e4fc7e37307df2fc5fa5aebc5b2a": {
+      "en": "// [MOCK zh-CN-\u003een] // The comment is in the source language (English), stored as SourceLanguage",
+      "zh-CN": "// [MOCK zh-CN-\u003een] // 注释为源语言（英语），存储为 SourceLanguage"
+    },
     "20297a48f11349b078e64a813b01bd1106c81e2d": {
       "en": "// c.SourceText is likely TargetLang (ZH)",
       "zh-CN": "// c.SourceText 很可能是目标语言（ZH）"
@@ -175,6 +183,10 @@
       "en": "// Supports fully lowercase baseurl",
       "zh-CN": "// 支持全小写的 baseurl"
     },
+    "26fdb22915b02dbd4d963ec993b7d294fdb83233": {
+      "en": "// - If zh-CN exists but en is missing: zh-CN -\u003e en",
+      "zh-CN": "// - 如果存在 zh-CN 但缺少 en：zh-CN -\u003e en"
+    },
     "2706578c0b650981533d8d2cbdcfeecb8e5893d3": {
       "en": "// TextRange represents the range of text in the source code (1-based)",
       "zh-CN": "// TextRange 表示源代码中的文本范围（基于1的索引）"
@@ -186,6 +198,10 @@
     "2aa5b10fd959f6d7a34647fca6b0bb705129c105": {
       "en": "// - If zh-CN exists but en is missing: zh-CN -\u003e en",
       "zh-CN": "// - 如果 zh-CN 存在而 en 缺失：zh-CN -\u003e en"
+    },
+    "2b44e782c6f38d9e0a9e72f98a0068300b34e173": {
+      "en": "// [MOCK zh-CN-\u003een] // IsChinese determines if the text is primarily in Chinese",
+      "zh-CN": "// [MOCK zh-CN-\u003een] // IsChinese 判断文本是否主要为中文"
     },
     "2b5d30d04a8c0d6887a4374e1782d0d23b233eea": {
       "en": "// Get returns the translation for a specific comment ID and language",
@@ -347,6 +363,10 @@
       "en": "// Parse to get comments",
       "zh-CN": "// 解析以获取注释"
     },
+    "4f20c6854aef4996b01df6e5b96bd9d9b4330eee": {
+      "en": "// [MOCK zh-CN-\u003een] // Intelligently detect comment language",
+      "zh-CN": "// [MOCK zh-CN-\u003een] // 智能检测评论语言"
+    },
     "51c9f8ab622099ded572c6f04dd0c7a18a888645": {
       "en": "// We search in store for value == c.SourceText",
       "zh-CN": "// 我们在 store 中搜索 value == c.SourceText 的记录"
@@ -415,6 +435,10 @@
       "en": "// We ignore error here, if file doesn't exist, we just don't show translations",
       "zh-CN": "// 此处忽略错误，如果文件不存在，我们就不显示翻译内容"
     },
+    "612f7b79752069b07da19c7d8a36b1cbeb6b9966": {
+      "en": "// Supports fully lowercase baseurl",
+      "zh-CN": "// 支持完全小写的 baseurl"
+    },
     "61c91ebabd6370f44743f2e75966a0302a23c7a2": {
       "en": "// Start column number",
       "zh-CN": "// 起始列号"
@@ -479,6 +503,10 @@
       "en": "// Print to stdout",
       "zh-CN": "// 打印到标准输出"
     },
+    "70acf24b12ac086208418df19bf95bb643bcd505": {
+      "en": "// - If en exists but zh-CN is missing: en -\u003e zh-CN",
+      "zh-CN": "// - 如果存在英文版本但缺少中文简体版本：英文 -\u003e 中文简体"
+    },
     "725c0ca4655e8edf6ff0d91fc134e2ab89da386f": {
       "en": "// var result map[string]interface{}",
       "zh-CN": "// var result map[string]interface{}"
@@ -510,6 +538,10 @@
     "74b6de852fd26a0a7e4c42882d35bf3560b1af62": {
       "en": "// src: the source code content (if nil, read from file)",
       "zh-CN": "// src: 源代码内容（如果为 nil，则从文件中读取）"
+    },
+    "765adcce53a0282100e787b441689a495d180eed": {
+      "en": "// [MOCK zh-CN-\u003een] // Returns \"zh-CN\" if the string contains Chinese characters, otherwise returns \"en\"",
+      "zh-CN": "// [模拟 zh-CN-\u003een] // 如果字符串包含中文字符则返回\"zh-CN\"，否则返回\"en\""
     },
     "76de4444e19f93b0098234174ac7a8894985ff0c": {
       "en": "// Directory context - just return the list",
@@ -562,6 +594,10 @@
     "8338ad893b090357661d74fab4fbd3464c3551c5": {
       "en": "// SaveConfig writes the configuration to the .codei18n/config.json file",
       "zh-CN": "// SaveConfig 将配置写入 .codei18n/config.json 文件"
+    },
+    "83d7251424739fac63f573e85fffe6a989228fb8": {
+      "en": "// [MOCK zh-CN-\u003een] // ContainsChinese Checks if the text contains Chinese characters",
+      "zh-CN": "// [MOCK zh-CN-\u003een] // ContainsChinese 检查文本是否包含中文字符"
     },
     "83eba6f346a21ef23beb33f21cdbe28d54e95098": {
       "en": "// [MOCK zh-CN-\u003een] // ExtractChineseChars extracts all Chinese characters from the text",
@@ -711,6 +747,10 @@
       "en": "// Spinner to stderr!",
       "zh-CN": "// 将 Spinner 输出到 stderr！"
     },
+    "a4fa569f875c7e28f8646753fc830b5cf4bab9a7": {
+      "en": "// [MOCK zh-CN-\u003een] // Check if it contains Chinese characters (CJK Unified Ideographs)",
+      "zh-CN": "// [MOCK zh-CN-\u003een] // 检查是否包含中文字符（CJK统一表意文字）"
+    },
     "a4ff604faceec8a921bd99030d83ebcd77269d5b": {
       "en": "// Global flags",
       "zh-CN": "// 全局标志"
@@ -759,6 +799,10 @@
       "en": "// Table format (for humans)",
       "zh-CN": "// 表格格式（供人类阅读）"
     },
+    "aeea89d13df576e9e4beedbe4eca76808d7243d2": {
+      "en": "// [MOCK zh-CN-\u003een] // IsEnglish determines if the text is primarily in English",
+      "zh-CN": "// [MOCK zh-CN-\u003een] // IsEnglish 判断文本是否主要为英文"
+    },
     "af01abfe6c2bf6518f04851b28e88368e8b45da9": {
       "en": "// This implies file-centric output. But if I scan a dir, I have multiple files.",
       "zh-CN": "// 这意味着输出是以文件为中心的。但如果我扫描一个目录，就会涉及多个文件。"
@@ -774,6 +818,10 @@
     "affe7c0ef9e92effa2ca2d0df208b13e7f15df3b": {
       "en": "// But CLI can scan directory.",
       "zh-CN": "// 但命令行界面可以扫描目录。"
+    },
+    "b0e8c7ede9066d54d8d0eac233cf1190b0a6e936": {
+      "en": "// [MOCK zh-CN-\u003een] // Remove comment markers",
+      "zh-CN": "// [MOCK zh-CN-\u003een] // 移除注释标记"
     },
     "b1b9d221a84b2d3fd01ab05069df07883e8735f5": {
       "en": "// Actually for IDE integration, we mostly care about single file scan via Stdin.",
@@ -806,6 +854,10 @@
     "b8f874fe57cf9e189a000a0d741d907a6682b33e": {
       "en": "// Parse parses the Go source code and extracts comments",
       "zh-CN": "// Parse 解析 Go 源代码并提取注释"
+    },
+    "b9abce440a92cd2243f279d7957372323dd43f14": {
+      "en": "// Strategy: Bidirectional Translation",
+      "zh-CN": "// 策略：双向翻译"
     },
     "ba07d3fa4457d40cc45966767892c6bb360698b3": {
       "en": "// Translate translates a list of texts from source language to target language",
@@ -1023,6 +1075,10 @@
       "en": "// Read optional config from env or default to DeepSeek",
       "zh-CN": "// 从环境变量读取可选配置，或默认使用 DeepSeek"
     },
+    "e1d2a07c8f6ccf96d7297534f8e88a1c2e47ff78": {
+      "en": "// [MOCK zh-CN-\u003een] // The comment is in the local language (Chinese), stored as LocalLanguage",
+      "zh-CN": "// [MOCK zh-CN-\u003een] // 注释为本地语言（中文），存储为 LocalLanguage"
+    },
     "e20ae154784ede6f08632501a366d7152f970158": {
       "en": "// 3. Convert comments to English",
       "zh-CN": "// 3. 将注释转换为英文"
@@ -1178,6 +1234,10 @@
     "fd1e99819275e88e8ce018da885b5f036a8dc5f6": {
       "en": "// Case-insensitive check for baseUrl/baseURL/base_url",
       "zh-CN": "// 对 baseUrl/baseURL/base_url 进行不区分大小写的检查"
+    },
+    "ff4f28e672c28221f2d733821d5b0a30821a1011": {
+      "en": "// [MOCK zh-CN-\u003een] // DetectLanguage detects the language of the text",
+      "zh-CN": "// [MOCK zh-CN-\u003een] // DetectLanguage 检测文本的语言"
     },
     "ffe3594d913416ff3f3770ae1ae2a968a1e724ed": {
       "en": "// Mutex for counting",
