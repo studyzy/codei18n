@@ -72,7 +72,8 @@ func runTranslate() {
 
 		baseURL := os.Getenv("OPENAI_BASE_URL")
 
-		// Case-insensitive check for baseUrl
+		// Case-insensitive check for baseUrl/baseURL/base_url
+		// Priority: config file > environment variable
 		if val, ok := cfg.TranslationConfig["baseUrl"]; ok && val != "" {
 			baseURL = val
 		} else if val, ok := cfg.TranslationConfig["BaseUrl"]; ok && val != "" {
@@ -80,6 +81,9 @@ func runTranslate() {
 		} else if val, ok := cfg.TranslationConfig["baseURL"]; ok && val != "" {
 			baseURL = val
 		} else if val, ok := cfg.TranslationConfig["base_url"]; ok && val != "" {
+			baseURL = val
+		} else if val, ok := cfg.TranslationConfig["baseurl"]; ok && val != "" {
+			// Supports fully lowercase baseurl
 			baseURL = val
 		}
 
@@ -110,21 +114,41 @@ func runTranslate() {
 	}
 
 	m := store.GetMapping()
-	targetLang := cfg.LocalLanguage
 
 	// 4. Identify missing translations
+	// Strategy: Bidirectional Translation
+	// - If en exists but zh-CN is missing: en -> zh-CN
+	// - If zh-CN exists but en is missing: zh-CN -> en
 	type task struct {
-		id   string
-		text string
+		id       string
+		text     string
+		fromLang string
+		toLang   string
 	}
 	var tasks []task
 
 	for id, translations := range m.Comments {
-		// Check if target lang exists and is not empty
-		if val, ok := translations[targetLang]; !ok || val == "" {
-			// Find source text (from source lang)
-			if src, ok := translations[cfg.SourceLanguage]; ok && src != "" {
-				tasks = append(tasks, task{id: id, text: src})
+		// Case 1: EN exists, ZH missing -> Translate EN to ZH
+		if enText, hasEn := translations[cfg.SourceLanguage]; hasEn && enText != "" {
+			if zhText, hasZh := translations[cfg.LocalLanguage]; !hasZh || zhText == "" {
+				tasks = append(tasks, task{
+					id:       id,
+					text:     enText,
+					fromLang: cfg.SourceLanguage,
+					toLang:   cfg.LocalLanguage,
+				})
+			}
+		}
+
+		// Case 2: ZH exists, EN missing -> Translate ZH to EN (reverse translation)
+		if zhText, hasZh := translations[cfg.LocalLanguage]; hasZh && zhText != "" {
+			if enText, hasEn := translations[cfg.SourceLanguage]; !hasEn || enText == "" {
+				tasks = append(tasks, task{
+					id:       id,
+					text:     zhText,
+					fromLang: cfg.LocalLanguage,
+					toLang:   cfg.SourceLanguage,
+				})
 			}
 		}
 	}
@@ -158,16 +182,16 @@ func runTranslate() {
 			defer wg.Done()
 			defer func() { <-sem }() // Release token
 
-			res, err := trans.Translate(context.Background(), t.text, cfg.SourceLanguage, targetLang)
+			res, err := trans.Translate(context.Background(), t.text, t.fromLang, t.toLang)
 
 			countMu.Lock()
 			defer countMu.Unlock()
 
 			if err != nil {
-				log.Warn("翻译失败 [%s]: %v", t.id, err)
+				// log.Warn("翻译失败 [%s]: %v", t.id, err) // Avoid spamming log during spinner
 				failCount++
 			} else {
-				store.Set(t.id, targetLang, res)
+				store.Set(t.id, t.toLang, res)
 				successCount++
 			}
 

@@ -45,7 +45,11 @@ func runHookInstall() {
 	hookPath := filepath.Join(gitDir, "hooks", "pre-commit")
 
 	// Create hook content
-	// We convert to English ('en') for all staged go files
+	// Pre-commit workflow:
+	// 1. Update mappings for staged files (adds new Chinese comments)
+	// 2. Translate missing English translations
+	// 3. Convert comments to English
+	// 4. Re-stage modified files
 	hookContent := `#!/bin/sh
 # CodeI18n Pre-commit Hook
 # Converts comments to English before committing
@@ -66,9 +70,17 @@ if ! command -v $CODEI18N_CMD &> /dev/null; then
     exit 0
 fi
 
+# Step 1: Update mappings for new comments
+echo "CodeI18n: Updating mappings..."
+$CODEI18N_CMD map update --scan-dir .
+
+# Step 2: Translate any missing English translations
+echo "CodeI18n: Translating missing entries..."
+$CODEI18N_CMD translate --provider openai 2>/dev/null || echo "CodeI18n: Translation skipped (check API config)"
+
+# Step 3: Convert staged files to English
 for file in $FILES; do
     echo "CodeI18n: Processing $file..."
-    # Convert to English
     $CODEI18N_CMD convert --to en --file "$file"
     
     # Add back to staging

@@ -94,11 +94,17 @@ func runMapUpdate() {
 	for _, c := range comments {
 		// Check if ID exists
 		if _, exists := m.Comments[c.ID]; !exists {
-			store.Set(c.ID, cfg.SourceLanguage, c.SourceText)
-			// Initialize target lang as empty string (or maybe not?)
-			// Ideally we just set the source.
-			// The Set method does: m.Comments[id][lang] = text
-			// We want to ensure the entry exists.
+			// [MOCK zh-CN->en] // Intelligently detect comment language
+			detectedLang := utils.DetectLanguage(c.SourceText)
+			
+			if detectedLang == cfg.LocalLanguage {
+				// [MOCK zh-CN->en] // The comment is in the local language (Chinese), stored as LocalLanguage
+				store.Set(c.ID, cfg.LocalLanguage, c.SourceText)
+				log.Info("检测到中文注释: ID=%s, Text=%s", c.ID, c.SourceText)
+			} else {
+				// [MOCK zh-CN->en] // The comment is in the source language (English), stored as SourceLanguage
+				store.Set(c.ID, cfg.SourceLanguage, c.SourceText)
+			}
 			addedCount++
 		}
 	}

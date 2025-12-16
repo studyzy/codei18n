@@ -142,22 +142,32 @@ func processFile(file string, adapter *golang.Adapter, store *mapping.Store, cfg
 		var targetText string
 		var found bool
 
-		log.Info("Current Text: '%s'", c.SourceText)
+		// Normalize current comment text for comparison
+		normalizedCurrent := utils.NormalizeCommentText(c.SourceText)
+		log.Info("Current Text: '%s' (normalized: '%s')", c.SourceText, normalizedCurrent)
 
 		// If converting to SourceLanguage (e.g. en), we try to restore original
 		if convertTo == cfg.SourceLanguage {
-			// Restore Mode
-			// c.SourceText is likely TargetLang (ZH)
-			// We search in store for value == c.SourceText
-			for _, transMap := range store.GetMapping().Comments {
-				if transMap[cfg.LocalLanguage] == c.SourceText {
-					// Found match
-					if enText, ok := transMap[cfg.SourceLanguage]; ok {
+			// Restore Mode: ZH -> EN
+			// Current text is likely in LocalLanguage (ZH)
+			// Search in store by comparing normalized values
+			for id, transMap := range store.GetMapping().Comments {
+				zhText, hasZh := transMap[cfg.LocalLanguage]
+				enText, hasEn := transMap[cfg.SourceLanguage]
+				
+				if hasZh && hasEn {
+					normalizedZh := utils.NormalizeCommentText(zhText)
+					if normalizedZh == normalizedCurrent {
 						targetText = enText
 						found = true
+						log.Info("Found by reverse lookup: ID=%s, ZH='%s' -> EN='%s'", id, zhText, enText)
 						break
 					}
 				}
+			}
+			
+			if !found {
+				log.Warn("未找到注释的英文翻译: '%s'", normalizedCurrent)
 			}
 		} else {
 			// Apply Mode (EN -> ZH)
@@ -173,31 +183,37 @@ func processFile(file string, adapter *golang.Adapter, store *mapping.Store, cfg
 		}
 
 		if found {
-			log.Info("Comparing ID %s: Src='%s' Tgt='%s'", c.ID, c.SourceText, targetText)
+			log.Info("Comparing: Src='%s' Tgt='%s'", normalizedCurrent, utils.NormalizeCommentText(targetText))
 		}
 
-		if found && targetText != c.SourceText {
-			log.Info("Applying change for %s", c.ID)
-			// Calculate offsets
-			startLineIdx := c.Range.StartLine - 1
-			endLineIdx := c.Range.EndLine - 1
+		if found {
+			// Compare normalized texts to avoid unnecessary replacements
+			normalizedTarget := utils.NormalizeCommentText(targetText)
+			if normalizedTarget != normalizedCurrent {
+				log.Info("Applying change: '%s' -> '%s'", normalizedCurrent, normalizedTarget)
+				// Calculate offsets
+				startLineIdx := c.Range.StartLine - 1
+				endLineIdx := c.Range.EndLine - 1
 
-			startOffset := lineOffsets[startLineIdx] + c.Range.StartCol - 1
-			endOffset := lineOffsets[endLineIdx] + c.Range.EndCol - 1
+				startOffset := lineOffsets[startLineIdx] + c.Range.StartCol - 1
+				endOffset := lineOffsets[endLineIdx] + c.Range.EndCol - 1
 
-			finalText := targetText
-			// If targetText doesn't have markers, add them based on original type
-			if c.Type == domain.CommentTypeLine && !strings.HasPrefix(targetText, "//") {
-				finalText = "// " + targetText
-			} else if c.Type == domain.CommentTypeBlock && !strings.HasPrefix(targetText, "/*") {
-				finalText = "/* " + targetText + " */"
+				finalText := targetText
+				// If targetText doesn't have markers, add them based on original type
+				if c.Type == domain.CommentTypeLine && !strings.HasPrefix(targetText, "//") {
+					finalText = "// " + targetText
+				} else if c.Type == domain.CommentTypeBlock && !strings.HasPrefix(targetText, "/*") {
+					finalText = "/* " + targetText + " */"
+				}
+
+				replacements = append(replacements, replacement{
+					startOffset: startOffset,
+					endOffset:   endOffset,
+					newText:     finalText,
+				})
+			} else {
+				log.Info("Skipping: text unchanged")
 			}
-
-			replacements = append(replacements, replacement{
-				startOffset: startOffset,
-				endOffset:   endOffset,
-				newText:     finalText,
-			})
 		}
 	}
 
