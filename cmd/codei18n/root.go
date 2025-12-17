@@ -11,6 +11,7 @@ import (
 var (
 	cfgFile string
 	verbose bool
+	version = "dev" // Override at build time via -ldflags "-X main.version=<version>"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -31,6 +32,9 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+
+	rootCmd.Version = version
+	rootCmd.SetVersionTemplate("CodeI18n CLI 版本: {{.Version}}\n")
 
 	// Global flags
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "配置文件路径 (默认是 $HOME/.codei18n.json 或项目根目录 .codei18n/config.json)")
