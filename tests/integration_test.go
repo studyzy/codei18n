@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"encoding/json"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -11,35 +12,19 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// NOTE: This test requires 'go build' to run first to produce the binary.
-// We assume 'codei18n' binary is available or we build it.
-
-func buildBinary(t *testing.T) string {
-	cwd, _ := os.Getwd()
-	// assuming we are in project root/tests
-	root := filepath.Dir(cwd)
-	binPath := filepath.Join(cwd, "codei18n_test_bin")
-
-	cmd := exec.Command("go", "build", "-o", binPath, filepath.Join(root, "cmd/codei18n"))
-	out, err := cmd.CombinedOutput()
-	require.NoError(t, err, "Build failed: %s", string(out))
-
-	return binPath
-}
+// NOTE: buildBinary is removed and replaced by TestMain in test_helpers.go
 
 func TestIntegrationFlow(t *testing.T) {
-	bin := buildBinary(t)
-	defer os.Remove(bin)
+	if testing.Short() {
+		t.Skip("Skipping integration test in short mode")
+	}
+	bin := GetBinaryPath(t)
+	// defer os.Remove(bin) // Managed by TestMain
 
 	tempDir := t.TempDir()
 
 	// Copy a sample file
-	sampleContent := `package main
-// Hello says hello
-func Hello() {
-	/* Block comment */
-}
-`
+	sampleContent := LoadFixture(t, "simple.go")
 	sampleFile := filepath.Join(tempDir, "main.go")
 	err := os.WriteFile(sampleFile, []byte(sampleContent), 0644)
 	require.NoError(t, err)
@@ -60,8 +45,6 @@ func Hello() {
 	require.FileExists(t, filepath.Join(tempDir, ".codei18n", "mappings.json"))
 
 	// 3. Translate (Mock)
-	// Modify config to use mock
-	// Or use flag if we supported it in translate command... Yes we did --provider
 	cmd = exec.Command(bin, "translate", "--provider", "mock")
 	cmd.Dir = tempDir
 	out, err = cmd.CombinedOutput()
@@ -70,8 +53,6 @@ func Hello() {
 
 	// 4. Verify Mapping Content
 	mapFile, _ := os.ReadFile(filepath.Join(tempDir, ".codei18n", "mappings.json"))
-	// JSON escapes > as \u003e
-	// assert.Contains(t, string(mapFile), "MOCK en->zh-CN")
 	assert.Contains(t, string(mapFile), "MOCK en")
 
 	// 5. Convert to Local (ZH)
@@ -83,12 +64,8 @@ func Hello() {
 
 	content, _ := os.ReadFile(sampleFile)
 	assert.Contains(t, string(content), "MOCK en->zh-CN")
-	// Mock translator preserves original text, so we can't assert NotContains
-	// assert.NotContains(t, string(content), "Hello says hello")
 
 	// 6. Restore to Source (EN)
-	// Restore is best-effort and relies on exact string match which is hard with Mock wrapping
-	// Skipping strict assertion for MVP
 	cmd = exec.Command(bin, "convert", "--to", "en", "--file", "main.go")
 	cmd.Dir = tempDir
 	out, err = cmd.CombinedOutput()
@@ -96,8 +73,10 @@ func Hello() {
 }
 
 func TestPureJSONOutput(t *testing.T) {
-	bin := buildBinary(t)
-	defer os.Remove(bin)
+	if testing.Short() {
+		t.Skip("Skipping integration test in short mode")
+	}
+	bin := GetBinaryPath(t)
 
 	tempDir := t.TempDir()
 
@@ -116,7 +95,68 @@ func TestPureJSONOutput(t *testing.T) {
 	assert.NotContains(t, jsonStr, "[INFO]")
 
 	// We can try to unmarshal it
-	// (Using a simple map interface for verification)
-	// var result map[string]interface{}
-	// json.Unmarshal might fail if there is garbage
+	var result map[string]interface{}
+	err = json.Unmarshal(out, &result)
+	require.NoError(t, err, "Output should be valid JSON")
+}
+
+func TestIncrementalScan(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping integration test in short mode")
+	}
+	bin := GetBinaryPath(t)
+	tempDir := t.TempDir()
+
+	// 1. Create initial file
+	filePath := CreateFile(t, tempDir, "simple.go", LoadFixture(t, "simple.go"))
+
+	// Init project
+	cmdInit := exec.Command(bin, "init")
+	cmdInit.Dir = tempDir
+	require.NoError(t, cmdInit.Run())
+
+	// 2. Initial Scan
+	cmd1 := exec.Command(bin, "map", "update")
+	cmd1.Dir = tempDir
+	out1, err := cmd1.CombinedOutput()
+	require.NoError(t, err)
+	assert.Contains(t, string(out1), "新增") // Expect additions
+
+	mappingPath := filepath.Join(tempDir, ".codei18n", "mappings.json")
+	require.FileExists(t, mappingPath)
+
+	initialStat, err := os.Stat(mappingPath)
+	require.NoError(t, err)
+
+	// 3. Idempotency Check (Run again with no changes)
+	cmd2 := exec.Command(bin, "map", "update")
+	cmd2.Dir = tempDir
+	out2, err := cmd2.CombinedOutput()
+	require.NoError(t, err)
+	t.Logf("Idempotency run output: %s", string(out2))
+	// Note: The CLI might say "Done" or similar, but shouldn't say "Added"
+	// Or we can check if file mod time changed if the tool is smart,
+	// or just check content size matches (since hashing might not be deterministic if ordering changes)
+
+	secondStat, err := os.Stat(mappingPath)
+	require.NoError(t, err)
+	assert.Equal(t, initialStat.Size(), secondStat.Size(), "Mapping file size should be unchanged for idempotent run")
+
+	// 4. Incremental Update (Modify file)
+	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY, 0644)
+	require.NoError(t, err)
+	_, err = f.WriteString("\n// New Comment\n")
+	f.Close()
+
+	// 5. Scan again
+	cmd3 := exec.Command(bin, "map", "update")
+	cmd3.Dir = tempDir
+	out3, err := cmd3.CombinedOutput()
+	require.NoError(t, err)
+	assert.Contains(t, string(out3), "新增 1 条映射") // Expect 1 addition
+
+	// Verify mapping has increased
+	finalStat, err := os.Stat(mappingPath)
+	require.NoError(t, err)
+	assert.Greater(t, finalStat.Size(), secondStat.Size(), "Mapping file should grow after adding comments")
 }

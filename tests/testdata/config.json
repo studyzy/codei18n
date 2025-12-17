@@ -1,0 +1,5 @@
+{
+  "sourceLanguage": "en",
+  "localLanguage": "ja",
+  "excludePatterns": ["vendor/**"]
+}

@@ -19,12 +19,12 @@ func TestParseBatchResponse(t *testing.T) {
 			want:  []string{"Hello", "World"},
 		},
 		{
-			name: "Markdown JSON",
+			name:  "Markdown JSON",
 			input: "```json\n[\"Hello\", \"World\"]\n```",
 			want:  []string{"Hello", "World"},
 		},
 		{
-			name: "Markdown without language",
+			name:  "Markdown without language",
 			input: "```\n[\"Hello\", \"World\"]\n```",
 			want:  []string{"Hello", "World"},
 		},
@@ -39,7 +39,7 @@ func TestParseBatchResponse(t *testing.T) {
 			// If LLM says "Here is the JSON: [...]", it might fail.
 			// We can improve this in T006 Edge Cases if needed.
 			input:   "Here is the JSON: [\"Hello\"]",
-			wantErr: true, 
+			wantErr: true,
 		},
 	}
 

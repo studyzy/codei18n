@@ -6,9 +6,9 @@ import (
 	"os"
 	"testing"
 
+	openai "github.com/sashabaranov/go-openai"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	openai "github.com/sashabaranov/go-openai"
 )
 
 // TestBatchTranslationMock tests batch translation using a mock server
@@ -20,17 +20,17 @@ func TestBatchTranslationMock(t *testing.T) {
 		if !contains(content, `["Hello","World"]`) {
 			return nil, fmt.Errorf("unexpected prompt: %s", content)
 		}
-		
+
 		// Return valid JSON array
 		return createMockResponse(`["你好", "世界"]`), nil
 	}
-	
+
 	server1 := NewMockLLMServer(successHandler)
 	defer server1.Close()
 
 	trans1 := NewLLMTranslator("key", server1.URL, "model")
 	results, err := trans1.TranslateBatch(context.Background(), []string{"Hello", "World"}, "en", "zh-CN")
-	
+
 	require.NoError(t, err)
 	assert.Equal(t, []string{"你好", "世界"}, results)
 
@@ -72,7 +72,7 @@ func TestDeepSeekIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping integration test in short mode")
 	}
-	
+
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
 		t.Skip("Skipping integration test: OPENAI_API_KEY not set")
@@ -119,7 +119,7 @@ func TestEdgeCases(t *testing.T) {
 		return createMockResponse(`[]`), nil
 	})
 	defer server.Close()
-	
+
 	trans := NewLLMTranslator("key", server.URL, "model")
 	res, err := trans.TranslateBatch(context.Background(), []string{}, "en", "zh")
 	assert.NoError(t, err)
@@ -132,7 +132,7 @@ func TestEdgeCases(t *testing.T) {
 		return createMockResponse(`["Quote \"", "Newline \\n"]`), nil
 	})
 	defer server2.Close()
-	
+
 	trans2 := NewLLMTranslator("key", server2.URL, "model")
 	res2, err := trans2.TranslateBatch(context.Background(), specials, "en", "zh")
 	assert.NoError(t, err)

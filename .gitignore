@@ -66,3 +66,4 @@ release/
 # C/C++ artifacts (for CGO)
 *.o
 *.a
+coverage-data

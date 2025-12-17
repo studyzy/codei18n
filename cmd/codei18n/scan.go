@@ -21,6 +21,7 @@ var (
 	scanDir              string
 	scanFormat           string
 	scanOutput           string
+	scanLang             string
 	scanStdin            bool
 	scanWithTranslations bool
 )
@@ -43,6 +44,7 @@ func init() {
 	scanCmd.Flags().StringVarP(&scanDir, "dir", "d", ".", "指定扫描的目录路径")
 	scanCmd.Flags().StringVar(&scanFormat, "format", "table", "输出格式 (json, table)")
 	scanCmd.Flags().StringVarP(&scanOutput, "output", "o", "", "将输出写入指定文件 (默认 stdout)")
+	scanCmd.Flags().StringVar(&scanLang, "lang", "", "指定目标语言 (覆盖配置)")
 	scanCmd.Flags().BoolVar(&scanStdin, "stdin", false, "从 stdin 读取文件内容 (必须同时指定 --file)")
 	scanCmd.Flags().BoolVar(&scanWithTranslations, "with-translations", false, "在 JSON 输出中包含翻译文本")
 }
@@ -95,6 +97,9 @@ func runScan() {
 		} else {
 			// Populate LocalizedText
 			targetLang := cfg.LocalLanguage // Default target
+			if scanLang != "" {
+				targetLang = scanLang
+			}
 			for _, c := range comments {
 				if text, ok := store.Get(c.ID, targetLang); ok {
 					c.LocalizedText = text
@@ -128,8 +133,15 @@ func scanSingleFile(filename string) ([]*domain.Comment, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Pass nil src to read from file
-	return adapter.Parse(filename, nil)
+
+	// Read file content manually to ensure consistency with directory scan
+	// and to debug potential read issues
+	content, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, fmt.Errorf("read file failed: %w", err)
+	}
+
+	return adapter.Parse(filename, content)
 }
 
 func scanDirectory(dir string) ([]*domain.Comment, error) {

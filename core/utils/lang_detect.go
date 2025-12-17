@@ -11,14 +11,14 @@ import (
 func DetectLanguage(text string) string {
 	// [MOCK zh-CN->en] // Remove comment markers
 	normalized := NormalizeCommentText(text)
-	
+
 	// [MOCK zh-CN->en] // Check if it contains Chinese characters (CJK Unified Ideographs)
 	for _, r := range normalized {
 		if unicode.Is(unicode.Han, r) {
 			return "zh-CN"
 		}
 	}
-	
+
 	return "en"
 }
 

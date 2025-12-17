@@ -96,7 +96,7 @@ func runMapUpdate() {
 		if _, exists := m.Comments[c.ID]; !exists {
 			// [MOCK zh-CN->en] // Intelligently detect comment language
 			detectedLang := utils.DetectLanguage(c.SourceText)
-			
+
 			if detectedLang == cfg.LocalLanguage {
 				// [MOCK zh-CN->en] // The comment is in the local language (Chinese), stored as LocalLanguage
 				store.Set(c.ID, cfg.LocalLanguage, c.SourceText)

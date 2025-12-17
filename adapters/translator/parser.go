@@ -25,7 +25,7 @@ func parseBatchResponse(resp string) ([]string, error) {
 			cleanResp = cleanResp[:idx]
 		}
 	}
-	
+
 	cleanResp = strings.TrimSpace(cleanResp)
 
 	var results []string

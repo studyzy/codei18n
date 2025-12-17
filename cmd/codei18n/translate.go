@@ -202,19 +202,19 @@ func runTranslate() {
 			// Current simple implementation:
 			// If direction changes in batch, we can't batch efficiently.
 			// Let's refine batching strategy.
-			
+
 			// Group by direction
 			// Actually, just calling TranslateBatch with mixed tasks is wrong because TranslateBatch takes `from, to` args.
 			// So we MUST ensure batch has same direction.
 			// Given loop order is random, we should probably separate tasks by direction first.
 			// But for now let's assume we can just check.
-			
-			// Refined logic: TranslateBatch takes single from/to. 
+
+			// Refined logic: TranslateBatch takes single from/to.
 			// So we must verify batch consistency.
-			
+
 			// Since we can't easily change the batching structure inside this goroutine loop without complicating it,
 			// let's do grouping before creating batches.
-			
+
 			// Just use the first task's direction. If mixed, we might fail or need to split.
 			// Actually, let's fix the task collection to be grouped.
 			// But wait, I already split into batches.
@@ -222,12 +222,12 @@ func runTranslate() {
 			// Let's just group by direction in the loop below.
 			// BUT: simpler is just to ensure TranslateBatch is called with correct params.
 			// If a batch has mixed directions, we can't use TranslateBatch easily.
-			
+
 			// Let's assume for typical usage (filling missing), it's usually En->Zh.
 			// But mixed is possible.
 			// I will add a check: if batch has mixed directions, fallback to sequential logic or split it?
 			// Or better: Sort tasks by direction before batching.
-			
+
 			// Let's perform translation
 			from := currentBatch[0].fromLang
 			to := currentBatch[0].toLang
