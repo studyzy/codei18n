@@ -15,6 +15,7 @@ type Config struct {
 	ExcludePatterns     []string          `json:"excludePatterns" mapstructure:"excludePatterns"`
 	TranslationProvider string            `json:"translationProvider" mapstructure:"translationProvider"`
 	TranslationConfig   map[string]string `json:"translationConfig" mapstructure:"translationConfig"`
+	BatchSize           int               `json:"batchSize" mapstructure:"batchSize"`
 }
 
 // DefaultConfig returns the default configuration
@@ -25,6 +26,7 @@ func DefaultConfig() *Config {
 		ExcludePatterns:     []string{".git/**", "vendor/**", ".codei18n/**"},
 		TranslationProvider: "google",
 		TranslationConfig:   make(map[string]string),
+		BatchSize:           10,
 	}
 }
 
@@ -37,9 +39,14 @@ func LoadConfig() (*Config, error) {
 	viper.SetDefault("localLanguage", defaults.LocalLanguage)
 	viper.SetDefault("excludePatterns", defaults.ExcludePatterns)
 	viper.SetDefault("translationProvider", defaults.TranslationProvider)
+	viper.SetDefault("batchSize", defaults.BatchSize)
 
 	if err := viper.Unmarshal(&cfg); err != nil {
 		return nil, err
+	}
+	// Ensure BatchSize is positive
+	if cfg.BatchSize <= 0 {
+		cfg.BatchSize = 10
 	}
 	return &cfg, nil
 }

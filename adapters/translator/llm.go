@@ -2,10 +2,12 @@ package translator
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 
 	openai "github.com/sashabaranov/go-openai"
+	"github.com/studyzy/codei18n/internal/log"
 )
 
 // LLMTranslator implements Translator using OpenAI compatible API
@@ -69,18 +71,81 @@ func (t *LLMTranslator) Translate(ctx context.Context, text, from, to string) (s
 	return strings.TrimSpace(resp.Choices[0].Message.Content), nil
 }
 
-// TranslateBatch translates a batch of texts
-// Implementation strategy:
-//  1. Send all texts in one prompt (if length permits) or multiple concurrent requests.
-//  2. For simplicity and robustness against context limits, we'll use concurrent single requests for now,
-//     or a simple JSON list approach in prompt.
-//     JSON list approach saves tokens and network RTT.
+// TranslateBatch translates a batch of texts using a single LLM request with JSON array format.
+// It falls back to sequential translation if batch processing fails.
 func (t *LLMTranslator) TranslateBatch(ctx context.Context, texts []string, from, to string) ([]string, error) {
-	// Fallback to sequential for now to ensure reliability,
-	// unless we implement a robust JSON array parser for the response.
-	// Since the Interface allows it, the caller can implement concurrency.
-	// But let's try a simple loop here. Ideally, `translate` command handles concurrency.
+	if len(texts) == 0 {
+		return []string{}, nil
+	}
+	if len(texts) == 1 {
+		res, err := t.Translate(ctx, texts[0], from, to)
+		if err != nil {
+			return nil, err
+		}
+		return []string{res}, nil
+	}
 
+	// 1. Build Batch Prompt
+	prompt := t.buildBatchPrompt(texts, from, to)
+
+	// 2. Call LLM
+	resp, err := t.client.CreateChatCompletion(
+		ctx,
+		openai.ChatCompletionRequest{
+			Model: t.model,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: prompt,
+				},
+			},
+		},
+	)
+
+	if err != nil {
+		log.Warn("Batch translation API failed: %v. Falling back to sequential.", err)
+		return t.translateSequential(ctx, texts, from, to)
+	}
+
+	if len(resp.Choices) == 0 {
+		log.Warn("Batch translation returned empty choices. Falling back to sequential.")
+		return t.translateSequential(ctx, texts, from, to)
+	}
+
+	content := resp.Choices[0].Message.Content
+
+	// 3. Parse JSON
+	results, err := parseBatchResponse(content)
+	if err != nil {
+		log.Warn("Batch translation JSON parse failed: %v. Content: %s... Falling back to sequential.", err, truncate(content, 50))
+		return t.translateSequential(ctx, texts, from, to)
+	}
+
+	// 4. Verify Length
+	if len(results) != len(texts) {
+		log.Warn("Batch translation length mismatch (in=%d, out=%d). Falling back to sequential.", len(texts), len(results))
+		return t.translateSequential(ctx, texts, from, to)
+	}
+
+	return results, nil
+}
+
+func (t *LLMTranslator) buildBatchPrompt(texts []string, from, to string) string {
+	inputJSON, _ := json.Marshal(texts)
+	return fmt.Sprintf(
+		"You are a code comment translator. Translate the following JSON array of comments from %s to %s.\n\n"+
+			"Rules:\n"+
+			"1. Maintain the JSON array format.\n"+
+			"2. The output must be a valid JSON string array [\"...\",\"...\"].\n"+
+			"3. The number of elements MUST match the input.\n"+
+			"4. Keep technical terms, variable names, and code snippets unchanged.\n"+
+			"5. If a comment is already in the target language, return it as is.\n\n"+
+			"Input:\n%s",
+		from, to, string(inputJSON),
+	)
+}
+
+func (t *LLMTranslator) translateSequential(ctx context.Context, texts []string, from, to string) ([]string, error) {
 	results := make([]string, len(texts))
 	for i, text := range texts {
 		res, err := t.Translate(ctx, text, from, to)
@@ -90,4 +155,11 @@ func (t *LLMTranslator) TranslateBatch(ctx context.Context, texts []string, from
 		results[i] = res
 	}
 	return results, nil
+}
+
+func truncate(s string, n int) string {
+	if len(s) > n {
+		return s[:n] + "..."
+	}
+	return s
 }

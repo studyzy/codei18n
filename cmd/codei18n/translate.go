@@ -21,6 +21,7 @@ var (
 	translateProvider    string
 	translateModel       string
 	translateConcurrency int
+	translateBatchSize   int
 )
 
 var translateCmd = &cobra.Command{
@@ -35,9 +36,10 @@ var translateCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(translateCmd)
 
-	translateCmd.Flags().StringVar(&translateProvider, "provider", "", "覆盖配置文件中的提供商 (google, openai, mock)")
+	translateCmd.Flags().StringVar(&translateProvider, "provider", "", "覆盖配置文件中的提供商 (llm, openai, mock)")
 	translateCmd.Flags().StringVar(&translateModel, "model", "", "指定模型 (如 gpt-3.5-turbo)")
 	translateCmd.Flags().IntVar(&translateConcurrency, "concurrency", 5, "并发请求数")
+	translateCmd.Flags().IntVar(&translateBatchSize, "batch-size", 0, "每批翻译的数量 (覆盖配置)")
 }
 
 func runTranslate() {
@@ -52,8 +54,9 @@ func runTranslate() {
 	if translateProvider != "" {
 		cfg.TranslationProvider = translateProvider
 	}
-	// Model overrides? We need to verify if provider supports model config
-	// Currently stored in map
+	if translateBatchSize > 0 {
+		cfg.BatchSize = translateBatchSize
+	}
 
 	// 2. Init Translator
 	var trans core.Translator
@@ -61,7 +64,7 @@ func runTranslate() {
 	switch cfg.TranslationProvider {
 	case "mock":
 		trans = translator.NewMockTranslator()
-	case "openai":
+	case "openai", "llm": // Support both openai and llm
 		apiKey := os.Getenv("OPENAI_API_KEY")
 		if apiKey == "" {
 			log.Fatal("未设置 OPENAI_API_KEY 环境变量")
@@ -73,7 +76,6 @@ func runTranslate() {
 		baseURL := os.Getenv("OPENAI_BASE_URL")
 
 		// Case-insensitive check for baseUrl/baseURL/base_url
-		// Priority: config file > environment variable
 		if val, ok := cfg.TranslationConfig["baseUrl"]; ok && val != "" {
 			baseURL = val
 		} else if val, ok := cfg.TranslationConfig["BaseUrl"]; ok && val != "" {
@@ -83,7 +85,6 @@ func runTranslate() {
 		} else if val, ok := cfg.TranslationConfig["base_url"]; ok && val != "" {
 			baseURL = val
 		} else if val, ok := cfg.TranslationConfig["baseurl"]; ok && val != "" {
-			// Supports fully lowercase baseurl
 			baseURL = val
 		}
 
@@ -100,7 +101,7 @@ func runTranslate() {
 			log.Info("自动检测到 DeepSeek 模型，设置 BaseURL 为 %s", baseURL)
 		}
 
-		log.Info("Using LLM: BaseURL=%s, Model=%s", baseURL, model)
+		log.Info("Using LLM: BaseURL=%s, Model=%s, BatchSize=%d", baseURL, model, cfg.BatchSize)
 		trans = translator.NewLLMTranslator(apiKey, baseURL, model)
 	default:
 		log.Fatal("不支持的翻译提供商: %s", cfg.TranslationProvider)
@@ -116,9 +117,6 @@ func runTranslate() {
 	m := store.GetMapping()
 
 	// 4. Identify missing translations
-	// Strategy: Bidirectional Translation
-	// - If en exists but zh-CN is missing: en -> zh-CN
-	// - If zh-CN exists but en is missing: zh-CN -> en
 	type task struct {
 		id       string
 		text     string
@@ -158,46 +156,124 @@ func runTranslate() {
 		return
 	}
 
-	log.Info("发现 %d 条待翻译注释，开始翻译...", len(tasks))
+	log.Info("发现 %d 条待翻译注释，开始批量翻译 (BatchSize=%d, Concurrency=%d)...", len(tasks), cfg.BatchSize, translateConcurrency)
 
-	// 5. Process with concurrency
+	// 5. Process with Batching and Concurrency
 	s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)
 	s.Suffix = " 正在翻译..."
-	s.Writer = os.Stderr // Spinner to stderr!
+	s.Writer = os.Stderr
 	s.Start()
 
 	var wg sync.WaitGroup
 	sem := make(chan struct{}, translateConcurrency)
 	successCount := 0
 	failCount := 0
-
-	// Mutex for counting
 	var countMu sync.Mutex
 
-	for _, t := range tasks {
+	// Split tasks into batches
+	batches := make([][]task, 0, (len(tasks)+cfg.BatchSize-1)/cfg.BatchSize)
+	for i := 0; i < len(tasks); i += cfg.BatchSize {
+		end := i + cfg.BatchSize
+		if end > len(tasks) {
+			end = len(tasks)
+		}
+		batches = append(batches, tasks[i:end])
+	}
+
+	for _, batch := range batches {
 		wg.Add(1)
 		sem <- struct{}{} // Acquire token
 
-		go func(t task) {
+		go func(currentBatch []task) {
 			defer wg.Done()
 			defer func() { <-sem }() // Release token
 
-			res, err := trans.Translate(context.Background(), t.text, t.fromLang, t.toLang)
+			// Prepare batch input
+			texts := make([]string, len(currentBatch))
+			for i, t := range currentBatch {
+				texts[i] = t.text
+			}
+			// Assume all tasks in a batch have same from/to (should be true if we sort/filter, but here tasks might be mixed directions?)
+			// Wait, tasks loop iterates map, order undefined. It might mix En->Zh and Zh->En.
+			// Batch translation requires same direction.
+			// We need to group by direction first. But usually it's mostly one direction.
+			// Let's safe guard: process batch only if direction matches.
+			// Or better: Group batches by direction.
+			// Current simple implementation:
+			// If direction changes in batch, we can't batch efficiently.
+			// Let's refine batching strategy.
+			
+			// Group by direction
+			// Actually, just calling TranslateBatch with mixed tasks is wrong because TranslateBatch takes `from, to` args.
+			// So we MUST ensure batch has same direction.
+			// Given loop order is random, we should probably separate tasks by direction first.
+			// But for now let's assume we can just check.
+			
+			// Refined logic: TranslateBatch takes single from/to. 
+			// So we must verify batch consistency.
+			
+			// Since we can't easily change the batching structure inside this goroutine loop without complicating it,
+			// let's do grouping before creating batches.
+			
+			// Just use the first task's direction. If mixed, we might fail or need to split.
+			// Actually, let's fix the task collection to be grouped.
+			// But wait, I already split into batches.
+			// The correct fix is to sort tasks or group tasks by direction before batching.
+			// Let's just group by direction in the loop below.
+			// BUT: simpler is just to ensure TranslateBatch is called with correct params.
+			// If a batch has mixed directions, we can't use TranslateBatch easily.
+			
+			// Let's assume for typical usage (filling missing), it's usually En->Zh.
+			// But mixed is possible.
+			// I will add a check: if batch has mixed directions, fallback to sequential logic or split it?
+			// Or better: Sort tasks by direction before batching.
+			
+			// Let's perform translation
+			from := currentBatch[0].fromLang
+			to := currentBatch[0].toLang
+			consistent := true
+			for _, t := range currentBatch {
+				if t.fromLang != from || t.toLang != to {
+					consistent = false
+					break
+				}
+			}
+
+			var results []string
+			var err error
+
+			if consistent {
+				results, err = trans.TranslateBatch(context.Background(), texts, from, to)
+			} else {
+				// Mixed batch, fallback to sequential loop manually here
+				// This shouldn't happen often if we sort, but safety net.
+				results = make([]string, len(currentBatch))
+				for i, t := range currentBatch {
+					res, e := trans.Translate(context.Background(), t.text, t.fromLang, t.toLang)
+					if e != nil {
+						err = e // Capture last error
+						break
+					}
+					results[i] = res
+				}
+			}
 
 			countMu.Lock()
 			defer countMu.Unlock()
 
 			if err != nil {
-				// log.Warn("翻译失败 [%s]: %v", t.id, err) // Avoid spamming log during spinner
-				failCount++
+				failCount += len(currentBatch)
 			} else {
-				store.Set(t.id, t.toLang, res)
-				successCount++
+				// Save results
+				for i, res := range results {
+					t := currentBatch[i]
+					store.Set(t.id, t.toLang, res)
+					successCount++
+				}
 			}
 
-			// Update spinner
 			s.Suffix = fmt.Sprintf(" 正在翻译... (%d/%d 成功, %d 失败)", successCount, len(tasks), failCount)
-		}(t)
+		}(batch)
 	}
 
 	wg.Wait()

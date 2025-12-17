@@ -442,8 +442,11 @@ make help
 # 构建可执行文件
 make build
 
-# 运行所有测试
+# 运行所有测试（跳过集成测试）
 make test
+
+# 运行所有测试（包括集成测试，需要有效的 API key）
+make test-integration
 
 # 生成测试覆盖率报告
 make coverage

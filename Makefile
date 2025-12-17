@@ -66,8 +66,15 @@ install: ## 安装到 $GOPATH/bin
 	@echo "$(COLOR_GREEN)✓ 已安装到 $(GOPATH)/bin/$(BINARY_NAME)$(COLOR_RESET)"
 
 .PHONY: test
-test: ## 运行所有测试
+test: ## 运行所有测试（跳过集成测试）
 	@echo "$(COLOR_BLUE)正在运行测试...$(COLOR_RESET)"
+	$(GO) test -short $(GOFLAGS) ./...
+	@echo "$(COLOR_GREEN)✓ 测试完成$(COLOR_RESET)"
+
+.PHONY: test-integration
+test-integration: ## 运行所有测试（包括集成测试）
+	@echo "$(COLOR_BLUE)正在运行测试（包括集成测试）...$(COLOR_RESET)"
+	@echo "$(COLOR_YELLOW)注意: 需要有效的 OPENAI_API_KEY 和 OPENAI_BASE_URL$(COLOR_RESET)"
 	$(GO) test $(GOFLAGS) ./...
 	@echo "$(COLOR_GREEN)✓ 测试完成$(COLOR_RESET)"
 
@@ -78,9 +85,9 @@ test-verbose: ## 运行测试（详细输出）
 	@echo "$(COLOR_GREEN)✓ 测试完成$(COLOR_RESET)"
 
 .PHONY: coverage
-coverage: ## 生成测试覆盖率报告
+coverage: ## 生成测试覆盖率报告（跳过集成测试）
 	@echo "$(COLOR_BLUE)正在生成覆盖率报告...$(COLOR_RESET)"
-	$(GO) test -coverprofile=$(COVERAGE_FILE) ./...
+	$(GO) test -short -coverprofile=$(COVERAGE_FILE) ./...
 	$(GO) tool cover -func=$(COVERAGE_FILE)
 	@echo ""
 	@echo "$(COLOR_YELLOW)提示: 使用 'make coverage-html' 查看 HTML 格式的覆盖率报告$(COLOR_RESET)"
