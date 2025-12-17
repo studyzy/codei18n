@@ -55,3 +55,14 @@ Thumbs.db
 
 # CodeI18n specific
 .codei18n/
+
+# Rust artifacts (for test data or sub-projects)
+target/
+debug/
+release/
+*.rs.bk
+*.rlib
+
+# C/C++ artifacts (for CGO)
+*.o
+*.a

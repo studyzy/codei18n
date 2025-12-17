@@ -9,7 +9,8 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/studyzy/codei18n/adapters/golang"
+	"github.com/studyzy/codei18n/adapters"
+	"github.com/studyzy/codei18n/core"
 	"github.com/studyzy/codei18n/core/config"
 	"github.com/studyzy/codei18n/core/domain"
 	"github.com/studyzy/codei18n/core/mapping"
@@ -64,7 +65,12 @@ func runConvert() {
 	// Identify files
 	var files []string
 	if convertFile != "" {
-		files = append(files, convertFile)
+		// Verify if file is supported
+		if _, err := adapters.GetAdapter(convertFile); err == nil {
+			files = append(files, convertFile)
+		} else {
+			log.Warn("跳过不支持的文件: %s", convertFile)
+		}
 	} else {
 		err := filepath.Walk(convertDir, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -76,7 +82,8 @@ func runConvert() {
 				}
 				return nil
 			}
-			if strings.HasSuffix(path, ".go") {
+			// Check if file is supported by any adapter
+			if _, err := adapters.GetAdapter(path); err == nil {
 				files = append(files, path)
 			}
 			return nil
@@ -88,9 +95,12 @@ func runConvert() {
 
 	log.Info("准备处理 %d 个文件...", len(files))
 
-	adapter := golang.NewAdapter()
-
 	for _, file := range files {
+		adapter, err := adapters.GetAdapter(file)
+		if err != nil {
+			log.Warn("无法获取适配器 %s: %v", file, err)
+			continue
+		}
 		processFile(file, adapter, store, cfg)
 	}
 
@@ -101,7 +111,7 @@ func runConvert() {
 	}
 }
 
-func processFile(file string, adapter *golang.Adapter, store *mapping.Store, cfg *config.Config) {
+func processFile(file string, adapter core.LanguageAdapter, store *mapping.Store, cfg *config.Config) {
 	// Read file
 	src, err := ioutil.ReadFile(file)
 	if err != nil {
@@ -160,7 +170,7 @@ func processFile(file string, adapter *golang.Adapter, store *mapping.Store, cfg
 			for id, transMap := range store.GetMapping().Comments {
 				zhText, hasZh := transMap[cfg.LocalLanguage]
 				enText, hasEn := transMap[cfg.SourceLanguage]
-				
+
 				if hasZh && hasEn {
 					normalizedZh := utils.NormalizeCommentText(zhText)
 					if normalizedZh == normalizedCurrent {
@@ -170,14 +180,14 @@ func processFile(file string, adapter *golang.Adapter, store *mapping.Store, cfg
 
 						// Key fix: When reverting to English, automatically generate IDs for new English comments and migrate existing translations to them.
 						// This way, subsequent scan/map updates can directly recognize this English comment and will not treat it as an untranslated new comment.
-						
+
 						// 1. Construct the English version of the Comment object (simulating the converted state)
 						tempC := *c
 						tempC.SourceText = enText // Assuming mapping stores plain text or marked text, Normalize will process it
-						
+
 						// 2. Calculate new ID
 						newID := utils.GenerateCommentID(&tempC)
-						
+
 						// 3. If the new ID differs from the old ID (it definitely will, because the text has changed), then migrate the data
 						if newID != id {
 							log.Info("Migrating mapping for restored English comment: %s -> %s", id, newID)
@@ -190,7 +200,7 @@ func processFile(file string, adapter *golang.Adapter, store *mapping.Store, cfg
 					}
 				}
 			}
-			
+
 			if !found {
 				log.Warn("未找到注释的英文翻译: '%s'", normalizedCurrent)
 			}
@@ -225,7 +235,16 @@ func processFile(file string, adapter *golang.Adapter, store *mapping.Store, cfg
 
 				finalText := targetText
 				// If targetText doesn't have markers, add them based on original type
-				if c.Type == domain.CommentTypeLine && !strings.HasPrefix(targetText, "//") {
+				// Note: For Rust, we need to handle /// and //! markers too
+				if c.Type == domain.CommentTypeDoc {
+					// Need heuristic to determine /// or //!
+					// Check original source
+					if strings.HasPrefix(c.SourceText, "///") && !strings.HasPrefix(targetText, "///") {
+						finalText = "/// " + targetText
+					} else if strings.HasPrefix(c.SourceText, "//!") && !strings.HasPrefix(targetText, "//!") {
+						finalText = "//! " + targetText
+					}
+				} else if c.Type == domain.CommentTypeLine && !strings.HasPrefix(targetText, "//") {
 					finalText = "// " + targetText
 				} else if c.Type == domain.CommentTypeBlock && !strings.HasPrefix(targetText, "/*") {
 					finalText = "/* " + targetText + " */"

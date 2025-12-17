@@ -6,10 +6,9 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/studyzy/codei18n/adapters/golang"
+	"github.com/studyzy/codei18n/adapters"
 	"github.com/studyzy/codei18n/core/config"
 	"github.com/studyzy/codei18n/core/domain"
 	"github.com/studyzy/codei18n/core/mapping"
@@ -117,29 +116,25 @@ func scanFromStdin(filename string) ([]*domain.Comment, error) {
 		return nil, fmt.Errorf("读取 stdin 失败: %w", err)
 	}
 
-	// Select adapter (only go for now)
-	if !strings.HasSuffix(filename, ".go") {
-		return nil, fmt.Errorf("目前仅支持 Go 语言: %s", filename)
+	adapter, err := adapters.GetAdapter(filename)
+	if err != nil {
+		return nil, err
 	}
-
-	adapter := golang.NewAdapter()
 	return adapter.Parse(filename, src)
 }
 
 func scanSingleFile(filename string) ([]*domain.Comment, error) {
-	if !strings.HasSuffix(filename, ".go") {
-		return nil, fmt.Errorf("目前仅支持 Go 语言: %s", filename)
+	adapter, err := adapters.GetAdapter(filename)
+	if err != nil {
+		return nil, err
 	}
-	adapter := golang.NewAdapter()
 	// Pass nil src to read from file
 	return adapter.Parse(filename, nil)
 }
 
 func scanDirectory(dir string) ([]*domain.Comment, error) {
 	var comments []*domain.Comment
-
-	// Create adapter once
-	adapter := golang.NewAdapter()
+	var walkErr error
 
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -153,7 +148,10 @@ func scanDirectory(dir string) ([]*domain.Comment, error) {
 			return nil
 		}
 
-		if strings.HasSuffix(path, ".go") {
+		// Try to get adapter for file
+		adapter, err := adapters.GetAdapter(path)
+		if err == nil {
+			// Supported file
 			// Calculate relative path for ID stability
 			relPath, err := filepath.Rel(dir, path)
 			if err != nil {
@@ -177,6 +175,9 @@ func scanDirectory(dir string) ([]*domain.Comment, error) {
 		return nil
 	})
 
+	if walkErr != nil {
+		return nil, walkErr
+	}
 	return comments, err
 }
 
@@ -186,24 +187,6 @@ func outputResults(comments []*domain.Comment) error {
 		File     string            `json:"file,omitempty"` // populated if single file? Or just list?
 		Comments []*domain.Comment `json:"comments"`
 	}
-
-	// If formatting as JSON, the spec says:
-	// { "file": "...", "comments": [...] } for single file context?
-	// But CLI can scan directory.
-	// Let's output a flat list of comments if directory, or grouped by file?
-	// The contracts/cli_commands.md says:
-	/*
-	  {
-	    "file": "path/to/main.go",
-	    "comments": [...]
-	  }
-	*/
-	// This implies file-centric output. But if I scan a dir, I have multiple files.
-	// For IDE integration (scan single file), the structure makes sense.
-	// For CLI bulk scan, maybe an array of that structure?
-	// Let's stick to simple list for now if JSON, unless it's single file mode.
-
-	// Actually for IDE integration, we mostly care about single file scan via Stdin.
 
 	var data interface{}
 	if scanFile != "" || scanStdin {
