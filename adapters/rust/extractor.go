@@ -40,25 +40,94 @@ func (a *RustAdapter) extractComments(root *sitter.Node, src []byte, file string
 			owner := FindOwnerNode(node, src)
 			symbolPath := ResolveSymbolPath(owner, src)
 
+			// Calculate Range (Trimming trailing newline if present for Line/Doc comments)
+			startRow := int(node.StartPoint().Row) + 1
+			startCol := int(node.StartPoint().Column) + 1
+			endRow := int(node.EndPoint().Row) + 1
+			endCol := int(node.EndPoint().Column) + 1
+			
+			// Fix for Tree-sitter including newline in Line/Doc comments
+			// If it's a line/doc comment and includes newline (EndCol == 1 && EndRow > StartRow)
+			// We want to snap it back to the same line.
+			cType := getDomainCommentType(content)
+			if (cType == domain.CommentTypeLine || cType == domain.CommentTypeDoc) && 
+			   strings.HasSuffix(content, "\n") {
+				// Trim the newline from content
+				content = strings.TrimSuffix(content, "\n")
+				// Recalculate EndRow/EndCol based on trimmed content
+				// Since it's a single line comment, EndRow is StartRow
+				endRow = startRow
+				// EndCol is StartCol + length (in bytes)
+				endCol = startCol + len(content)
+			}
+
 			comment := &domain.Comment{
 				SourceText: content,
 				Symbol:     symbolPath,
 				File:       file,
 				Language:   "rust",
 				Range: domain.TextRange{
-					StartLine: int(node.StartPoint().Row) + 1,
-					StartCol:  int(node.StartPoint().Column) + 1,
-					EndLine:   int(node.EndPoint().Row) + 1,
-					EndCol:    int(node.EndPoint().Column) + 1,
+					StartLine: startRow,
+					StartCol:  startCol,
+					EndLine:   endRow,
+					EndCol:    endCol,
 				},
-				Type: getDomainCommentType(content),
+				Type: cType,
 			}
 			comment.ID = utils.GenerateCommentID(comment)
 			comments = append(comments, comment)
 		}
 	}
 
-	return comments, nil
+	return mergeComments(comments), nil
+}
+
+// mergeComments merges consecutive comments of the same type and symbol.
+func mergeComments(comments []*domain.Comment) []*domain.Comment {
+	if len(comments) == 0 {
+		return comments
+	}
+
+	var merged []*domain.Comment
+	for _, current := range comments {
+		if len(merged) == 0 {
+			merged = append(merged, current)
+			continue
+		}
+
+		last := merged[len(merged)-1]
+
+		// Condition to merge:
+		// 1. Same Type (Doc or Line)
+		// 2. Same Symbol
+		// 3. Consecutive lines:
+		//    - Since we fixed range to exclude newline, EndLine of last + 1 == StartLine of current
+		isConsecutive := last.Range.EndLine+1 == current.Range.StartLine
+
+		shouldMerge := (last.Type == domain.CommentTypeDoc || last.Type == domain.CommentTypeLine) &&
+			last.Type == current.Type &&
+			last.Symbol == current.Symbol &&
+			isConsecutive
+
+		if shouldMerge {
+			// Append content
+			// Ensure we have a newline between them if not present in the last one
+			if !strings.HasSuffix(last.SourceText, "\n") {
+				last.SourceText += "\n"
+			}
+			last.SourceText += current.SourceText
+
+			// Update range
+			last.Range.EndLine = current.Range.EndLine
+			last.Range.EndCol = current.Range.EndCol
+
+			// Regenerate ID because content changed
+			last.ID = utils.GenerateCommentID(last)
+		} else {
+			merged = append(merged, current)
+		}
+	}
+	return merged
 }
 
 // getDomainCommentType maps raw comment content to domain.CommentType

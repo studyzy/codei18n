@@ -38,6 +38,15 @@ func TestRustSupport(t *testing.T) {
 
 	assert.True(t, strings.HasSuffix(result.File, "lib.rs"))
 	assert.NotEmpty(t, result.Comments)
+	
+	// Expect 6 comments after merging consecutive lines:
+	// 1. Merged inner doc (lines 1-2)
+	// 2. Inner doc (line 4)
+	// 3. Outer doc (line 6)
+	// 4. Line comment (line 8)
+	// 5. Block comment (lines 9-10)
+	// 6. Merged line comment (lines 11-12)
+	assert.Equal(t, 6, len(result.Comments), "Should have exactly 6 comments after merging")
 
 	// Verify Language and Types
 	foundInnerDoc := false
@@ -71,4 +80,16 @@ func TestRustSupport(t *testing.T) {
 
 	assert.True(t, foundInnerDoc, "Should find inner doc comment //!")
 	assert.True(t, foundOuterDoc, "Should find outer doc comment ///")
+
+	// Verify range logic for merged comments (lines 1-2)
+	// Should be: StartLine 1, EndLine 2 (was 3 before fix)
+	if len(result.Comments) > 0 {
+		firstComment := result.Comments[0]
+		rng := firstComment["range"].(map[string]interface{})
+		startLine := int(rng["startLine"].(float64))
+		endLine := int(rng["endLine"].(float64))
+		
+		assert.Equal(t, 1, startLine, "First comment should start on line 1")
+		assert.Equal(t, 2, endLine, "First comment (lines 1-2 merged) should end on line 2, not 3")
+	}
 }

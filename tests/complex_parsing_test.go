@@ -80,7 +80,7 @@ func TestComplexGoParsing(t *testing.T) {
 	assert.True(t, foundBlock, "Should find Block Comment")
 
 	// 4. Verify commented out code
-	// Usually parsed as a line comment "commented_out_code();"
+	// Should be strictly separated from preceding block comment
 	_, hasCode := found["// commented_out_code();"]
-	assert.True(t, hasCode, "Should parse commented out code as comment")
+	assert.True(t, hasCode, "Should find commented out code as separate comment")
 }
