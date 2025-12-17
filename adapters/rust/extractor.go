@@ -32,6 +32,10 @@ func (a *RustAdapter) extractComments(root *sitter.Node, src []byte, file string
 			node := c.Node
 			content := node.Content(src)
 
+			if isEmptyComment(content) {
+				continue
+			}
+
 			// Find Owner and Symbol Path
 			owner := FindOwnerNode(node, src)
 			symbolPath := ResolveSymbolPath(owner, src)
@@ -66,4 +70,24 @@ func getDomainCommentType(content string) domain.CommentType {
 		return domain.CommentTypeDoc
 	}
 	return domain.CommentTypeLine
+}
+
+func isEmptyComment(content string) bool {
+	trimmed := strings.TrimSpace(content)
+	switch {
+	case strings.HasPrefix(trimmed, "///"):
+		return strings.TrimSpace(strings.TrimPrefix(trimmed, "///")) == ""
+	case strings.HasPrefix(trimmed, "//!"):
+		return strings.TrimSpace(strings.TrimPrefix(trimmed, "//!")) == ""
+	case strings.HasPrefix(trimmed, "//"):
+		return strings.TrimSpace(strings.TrimPrefix(trimmed, "//")) == ""
+	case strings.HasPrefix(trimmed, "/*"):
+		inner := strings.TrimPrefix(trimmed, "/*")
+		if strings.HasSuffix(inner, "*/") {
+			inner = strings.TrimSuffix(inner, "*/")
+		}
+		return strings.TrimSpace(inner) == ""
+	default:
+		return strings.TrimSpace(trimmed) == ""
+	}
 }

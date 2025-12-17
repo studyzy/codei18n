@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/studyzy/codei18n/core/domain"
@@ -99,7 +100,8 @@ func (s *Store) Set(id, lang, text string) {
 	if _, ok := s.mapping.Comments[id]; !ok {
 		s.mapping.Comments[id] = make(map[string]string)
 	}
-	s.mapping.Comments[id][lang] = text
+	cleanText := strings.TrimRight(text, "\r\n")
+	s.mapping.Comments[id][lang] = cleanText
 }
 
 // GetMapping returns the underlying mapping object (read-only copy recommended for complex ops)
