@@ -57,7 +57,7 @@ func runTranslate() {
 		cfg.BatchSize = translateBatchSize
 	}
 
-	// 如果通过命令行指定了模型，则覆盖配置中的 model
+	// If a model is specified via the command line, it overrides the model in the configuration
 	if translateModel != "" {
 		if cfg.TranslationConfig == nil {
 			cfg.TranslationConfig = make(map[string]string)
@@ -65,7 +65,7 @@ func runTranslate() {
 		cfg.TranslationConfig["model"] = translateModel
 	}
 
-	// 2. Init Translator（通过统一工厂创建）
+	// 2. Init Translator (Created via unified factory)
 	trans, err := translator.NewFromConfig(cfg)
 	if err != nil {
 		log.Fatal("初始化翻译引擎失败: %v", err)

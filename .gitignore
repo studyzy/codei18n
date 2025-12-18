@@ -35,7 +35,6 @@ go.work.sum
 bin/
 
 # Build artifacts
-codei18n
 codei18n.exe
 
 # macOS

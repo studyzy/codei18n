@@ -6,7 +6,7 @@ import (
 	"github.com/studyzy/codei18n/core/config"
 )
 
-// 验证历史 provider（google/deepl）会被明确拒绝，并提示迁移路径。
+// Verification history providers (google/deepl) will be explicitly rejected with migration path instructions.
 func TestNewFromConfig_RejectsLegacyProviders(t *testing.T) {
 	cases := []string{"google", "deepl"}
 	for _, provider := range cases {
@@ -21,7 +21,7 @@ func TestNewFromConfig_RejectsLegacyProviders(t *testing.T) {
 	}
 }
 
-// 验证未知 provider 会被拒绝。
+// Verify that unknown providers are rejected.
 func TestNewFromConfig_UnknownProvider(t *testing.T) {
 	cfg := &config.Config{TranslationProvider: "unknown-provider"}
 	tr, err := NewFromConfig(cfg)

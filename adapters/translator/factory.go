@@ -10,21 +10,21 @@ import (
 	"github.com/studyzy/codei18n/internal/log"
 )
 
-// NewFromConfig 根据配置创建合适的翻译引擎实现。
+// NewFromConfig creates an appropriate translation engine implementation based on the configuration.
 //
-// 约定：
-//   - provider 为 "openai" 或 "llm" 时，使用基于 OpenAI 兼容协议的 LLM 翻译
-//   - provider 为 "ollama" 时，使用本地 Ollama 服务
-//   - provider 为 "mock" 时，使用测试用的 MockTranslator
-//   - provider 为 "google" 或 "deepl" 时，视为已废弃并返回错误
-//   - 若 provider 为空，则默认视为 "openai"
+// Conventions:
+//   - When provider is "openai" or "llm", use LLM translation based on OpenAI-compatible protocol
+//   - When provider is "ollama", use the local Ollama service
+//   - When provider is "mock", use the MockTranslator for testing
+//   - When provider is "google" or "deepl", it is considered deprecated and an error is returned
+//   - If provider is empty, it defaults to "openai"
 func NewFromConfig(cfg *config.Config) (core.Translator, error) {
 	provider := strings.ToLower(strings.TrimSpace(cfg.TranslationProvider))
 	if provider == "" {
 		provider = "openai"
 	}
 
-	// 兼容文档中可能出现的 llm-api 命名
+	// Handle compatibility with the llm-api naming that may appear in the documentation
 	if provider == "llm-api" {
 		provider = "openai"
 	}
@@ -42,7 +42,7 @@ func NewFromConfig(cfg *config.Config) (core.Translator, error) {
 
 		baseURL := os.Getenv("OPENAI_BASE_URL")
 		if cfg.TranslationConfig != nil {
-			// 不同大小写和命名的兼容
+			// Compatibility for different cases and naming conventions
 			if val, ok := cfg.TranslationConfig["baseUrl"]; ok && val != "" {
 				baseURL = val
 			} else if val, ok := cfg.TranslationConfig["BaseUrl"]; ok && val != "" {
@@ -63,7 +63,7 @@ func NewFromConfig(cfg *config.Config) (core.Translator, error) {
 			}
 		}
 
-		// DeepSeek 模型的默认 BaseURL 自动检测
+		// DeepSeek model default BaseURL auto-detection
 		if baseURL == "" && (model == "deepseek-chat" || model == "deepseek-coder") {
 			baseURL = "https://api.deepseek.com"
 			log.Info("自动检测到 DeepSeek 模型，设置 BaseURL 为 %s", baseURL)

@@ -104,6 +104,14 @@ func (s *Store) Set(id, lang, text string) {
 	s.mapping.Comments[id][lang] = cleanText
 }
 
+// Delete removes a comment mapping by ID
+func (s *Store) Delete(id string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	delete(s.mapping.Comments, id)
+}
+
 // GetMapping returns the underlying mapping object (read-only copy recommended for complex ops)
 // For now returning pointer for simplicity in MVP
 func (s *Store) GetMapping() *domain.Mapping {

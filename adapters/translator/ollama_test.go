@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// 单元测试：验证 NewOllamaTranslator 默认值行为（不依赖本地服务）。
+// Unit test: Verify the default value behavior of NewOllamaTranslator (without relying on local service).
 func TestNewOllamaTranslator_Defaults(t *testing.T) {
 	tr := NewOllamaTranslator("", "")
 	if tr.endpoint == "" {
@@ -21,16 +21,16 @@ func TestNewOllamaTranslator_Defaults(t *testing.T) {
 	}
 }
 
-// 集成测试（可选）：连接本地 Ollama 服务并尝试真实翻译。
+// Integration test (optional): Connect to local Ollama service and attempt real translation.
 //
-// 启用方式：
+// How to enable:
 //
 //	CODEI18N_OLLAMA_TEST=1 go test ./adapters/translator -run TestOllamaTranslator_Translate_Integration -v
 //
-// 可选环境变量：
+// Optional environment variables:
 //
-//	CODEI18N_OLLAMA_ENDPOINT  默认为 http://localhost:11434
-//	CODEI18N_OLLAMA_MODEL     默认为 qwen3:4b
+//	CODEI18N_OLLAMA_ENDPOINT  Defaults to http://localhost:11434
+//	CODEI18N_OLLAMA_MODEL     Defaults to qwen3:4b
 func TestOllamaTranslator_Translate_Integration(t *testing.T) {
 	if os.Getenv("CODEI18N_OLLAMA_TEST") == "" {
 		t.Skip("跳过 Ollama 集成测试：未设置 CODEI18N_OLLAMA_TEST")

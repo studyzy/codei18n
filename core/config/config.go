@@ -24,7 +24,7 @@ func DefaultConfig() *Config {
 		SourceLanguage:  "en",
 		LocalLanguage:   "zh-CN",
 		ExcludePatterns: []string{".git/**", "vendor/**", ".codei18n/**"},
-		// 默认使用基于 LLM 的远程翻译（OpenAI 兼容协议）
+		// Default to using LLM-based remote translation (OpenAI-compatible protocol)
 		TranslationProvider: "openai",
 		TranslationConfig:   make(map[string]string),
 		BatchSize:           10,

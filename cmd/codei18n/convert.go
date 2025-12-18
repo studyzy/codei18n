@@ -140,6 +140,9 @@ func processFile(file string, adapter core.LanguageAdapter, store *mapping.Store
 		newText     string
 	}
 	var replacements []replacement
+	
+	// Track comments that couldn't find translation
+	missingTranslations := make(map[string]bool)
 
 	lines := strings.Split(string(src), "\n")
 
@@ -214,6 +217,9 @@ func processFile(file string, adapter core.LanguageAdapter, store *mapping.Store
 								// Ensure the new ID has bilingual data
 								store.Set(newID, cfg.SourceLanguage, enText)
 								store.Set(newID, cfg.LocalLanguage, zhText)
+								// Delete the old ID (based on Chinese text) to keep mappings clean
+								store.Delete(id)
+								log.Info("Deleted old mapping ID: %s", id)
 							}
 
 							break
@@ -222,10 +228,11 @@ func processFile(file string, adapter core.LanguageAdapter, store *mapping.Store
 				}
 			}
 
-			if !found {
-				log.Warn("未找到注释的英文翻译: '%s'", normalizedCurrent)
-				// Return early to count this as missing
-			}
+		if !found {
+			log.Warn("未找到注释的英文翻译: '%s'", normalizedCurrent)
+			// Mark this comment as missing translation
+			missingTranslations[c.ID] = true
+		}
 		} else {
 			// Apply Mode (EN -> ZH)
 			// c.SourceText is EN
@@ -303,28 +310,8 @@ func processFile(file string, adapter core.LanguageAdapter, store *mapping.Store
 		return 0
 	}
 
-	// Count missing translations
-	// Only count as missing if:
-	// 1. The comment ID exists in mappings
-	// 2. But the target language translation is missing
-	missingCount := 0
-	for _, c := range comments {
-		if c.ID == "" {
-			c.ID = utils.GenerateCommentID(c)
-		}
-		
-		// Check if this comment ID exists in mappings
-		if transMap, exists := store.GetMapping().Comments[c.ID]; exists {
-			// ID exists, check if target language translation exists
-			if targetVal, hasTarget := transMap[convertTo]; !hasTarget || targetVal == "" {
-				// Target translation is missing
-				missingCount++
-				log.Warn("注释 ID %s 缺少 %s 翻译", c.ID, convertTo)
-			}
-		}
-		// If ID doesn't exist in mappings at all, it's a new comment
-		// We don't count it as "missing translation" because it hasn't been scanned yet
-	}
+	// Count missing translations based on what we tracked during conversion
+	missingCount := len(missingTranslations)
 
 	if err := os.WriteFile(file, []byte(newSrc), 0644); err != nil {
 		log.Error("写入文件 %s 失败: %v", file, err)
