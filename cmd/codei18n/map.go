@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/studyzy/codei18n/core/config"
 	"github.com/studyzy/codei18n/core/mapping"
-	"github.com/studyzy/codei18n/core/utils"
+	"github.com/studyzy/codei18n/core/workflow"
 	"github.com/studyzy/codei18n/internal/log"
 )
 
@@ -64,63 +64,17 @@ func runMapUpdate() {
 		cfg = config.DefaultConfig()
 	}
 
-	// 1. Scan for comments
-	log.Info("正在扫描目录: %s", mapScanDir)
-	comments, err := scanDirectory(mapScanDir)
+	result, err := workflow.MapUpdate(cfg, mapScanDir, mapDryRun)
 	if err != nil {
-		log.Fatal("扫描失败: %v", err)
+		log.Fatal("Map update failed: %v", err)
 	}
 
-	// 2. Generate IDs
-	for _, c := range comments {
-		if c.ID == "" {
-			c.ID = utils.GenerateCommentID(c)
-		}
-	}
-
-	// 3. Load Store
-	storePath := filepath.Join(".codei18n", "mappings.json")
-	store := mapping.NewStore(storePath)
-	if err := store.Load(); err != nil {
-		log.Fatal("加载映射文件失败: %v", err)
-	}
-
-	// 4. Update
-	m := store.GetMapping()
-	m.SourceLanguage = cfg.SourceLanguage
-	m.TargetLanguage = cfg.LocalLanguage
-
-	addedCount := 0
-	for _, c := range comments {
-		// Check if ID exists
-		if _, exists := m.Comments[c.ID]; !exists {
-			// [MOCK zh-CN->en] // Intelligently detect comment language
-			detectedLang := utils.DetectLanguage(c.SourceText)
-
-			if detectedLang == cfg.LocalLanguage {
-				// [MOCK zh-CN->en] // The comment is in the local language (Chinese), stored as LocalLanguage
-				store.Set(c.ID, cfg.LocalLanguage, c.SourceText)
-				log.Info("检测到中文注释: ID=%s, Text=%s", c.ID, c.SourceText)
-			} else {
-				// [MOCK zh-CN->en] // The comment is in the source language (English), stored as SourceLanguage
-				store.Set(c.ID, cfg.SourceLanguage, c.SourceText)
-			}
-			addedCount++
-		}
-	}
-
-	log.Success("发现 %d 条注释，新增 %d 条映射", len(comments), addedCount)
-
+	log.Success("发现 %d 条注释，新增 %d 条映射", result.TotalComments, result.AddedCount)
 	if mapDryRun {
 		log.Info("Dry run 模式，不保存文件")
-		return
+	} else {
+		log.Success("映射文件已更新: %s", result.StorePath)
 	}
-
-	// 5. Save
-	if err := store.Save(); err != nil {
-		log.Fatal("保存映射文件失败: %v", err)
-	}
-	log.Success("映射文件已更新: %s", storePath)
 }
 
 func runMapGet(commentID string) {

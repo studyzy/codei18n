@@ -36,9 +36,16 @@ func init() {
 }
 
 func runHookInstall() {
+	if err := installHook(); err != nil {
+		log.Fatal("安装 hook 失败: %v", err)
+	}
+	log.Success("Hook 安装成功")
+}
+
+func installHook() error {
 	gitDir := ".git"
 	if _, err := os.Stat(gitDir); os.IsNotExist(err) {
-		log.Fatal("当前目录不是 Git 仓库根目录")
+		return os.ErrNotExist
 	}
 
 	hookPath := filepath.Join(gitDir, "hooks", "pre-commit")
@@ -91,10 +98,9 @@ exit 0
 `
 
 	if err := os.WriteFile(hookPath, []byte(hookContent), 0755); err != nil {
-		log.Fatal("安装 hook 失败: %v", err)
+		return err
 	}
-
-	log.Success("Hook 安装成功: %s", hookPath)
+	return nil
 }
 
 func runHookUninstall() {

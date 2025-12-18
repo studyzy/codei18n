@@ -23,18 +23,18 @@ func TestIntegrationFlow(t *testing.T) {
 
 	tempDir := t.TempDir()
 
-	// Copy a sample file
-	sampleContent := LoadFixture(t, "simple.go")
-	sampleFile := filepath.Join(tempDir, "main.go")
-	err := os.WriteFile(sampleFile, []byte(sampleContent), 0644)
-	require.NoError(t, err)
-
 	// 1. Init
 	cmd := exec.Command(bin, "init")
 	cmd.Dir = tempDir
 	out, err := cmd.CombinedOutput()
 	require.NoError(t, err, string(out))
 	require.FileExists(t, filepath.Join(tempDir, ".codei18n", "config.json"))
+
+	// Copy a sample file
+	sampleContent := LoadFixture(t, "simple.go")
+	sampleFile := filepath.Join(tempDir, "main.go")
+	err = os.WriteFile(sampleFile, []byte(sampleContent), 0644)
+	require.NoError(t, err)
 
 	// 2. Scan (Update Map)
 	cmd = exec.Command(bin, "map", "update")
@@ -107,13 +107,13 @@ func TestIncrementalScan(t *testing.T) {
 	bin := GetBinaryPath(t)
 	tempDir := t.TempDir()
 
-	// 1. Create initial file
-	filePath := CreateFile(t, tempDir, "simple.go", LoadFixture(t, "simple.go"))
-
 	// Init project
 	cmdInit := exec.Command(bin, "init")
 	cmdInit.Dir = tempDir
 	require.NoError(t, cmdInit.Run())
+
+	// 1. Create initial file
+	filePath := CreateFile(t, tempDir, "simple.go", LoadFixture(t, "simple.go"))
 
 	// 2. Initial Scan
 	cmd1 := exec.Command(bin, "map", "update")

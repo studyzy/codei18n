@@ -52,6 +52,20 @@ func LoadConfig() (*Config, error) {
 	return &cfg, nil
 }
 
+// Sanitize returns a copy of the config with sensitive information removed
+func (c *Config) Sanitize() *Config {
+	newCfg := *c
+	newCfg.TranslationConfig = make(map[string]string)
+	for k, v := range c.TranslationConfig {
+		// Filter out sensitive keys
+		if k == "api_key" || k == "apiKey" || k == "token" || k == "secret" {
+			continue
+		}
+		newCfg.TranslationConfig[k] = v
+	}
+	return &newCfg
+}
+
 // SaveConfig writes the configuration to the .codei18n/config.json file
 func SaveConfig(cfg *Config) error {
 	// Create .codei18n directory if it doesn't exist

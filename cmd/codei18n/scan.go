@@ -3,15 +3,14 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	"github.com/studyzy/codei18n/adapters"
 	"github.com/studyzy/codei18n/core/config"
 	"github.com/studyzy/codei18n/core/domain"
 	"github.com/studyzy/codei18n/core/mapping"
+	"github.com/studyzy/codei18n/core/scanner"
 	"github.com/studyzy/codei18n/core/utils"
 	"github.com/studyzy/codei18n/internal/log"
 )
@@ -60,11 +59,11 @@ func runScan() {
 
 	// Determine strategy
 	if scanStdin {
-		comments, err = scanFromStdin(scanFile)
+		comments, err = scanner.FromStdin(scanFile)
 	} else if scanFile != "" {
-		comments, err = scanSingleFile(scanFile)
+		comments, err = scanner.SingleFile(scanFile)
 	} else {
-		comments, err = scanDirectory(scanDir)
+		comments, err = scanner.Directory(scanDir)
 	}
 
 	if err != nil {
@@ -112,85 +111,6 @@ func runScan() {
 	if err := outputResults(comments); err != nil {
 		log.Fatal("输出结果失败: %v", err)
 	}
-}
-
-func scanFromStdin(filename string) ([]*domain.Comment, error) {
-	// Read stdin
-	src, err := io.ReadAll(os.Stdin)
-	if err != nil {
-		return nil, fmt.Errorf("读取 stdin 失败: %w", err)
-	}
-
-	adapter, err := adapters.GetAdapter(filename)
-	if err != nil {
-		return nil, err
-	}
-	return adapter.Parse(filename, src)
-}
-
-func scanSingleFile(filename string) ([]*domain.Comment, error) {
-	adapter, err := adapters.GetAdapter(filename)
-	if err != nil {
-		return nil, err
-	}
-
-	// Read file content manually to ensure consistency with directory scan
-	// and to debug potential read issues
-	content, err := os.ReadFile(filename)
-	if err != nil {
-		return nil, fmt.Errorf("read file failed: %w", err)
-	}
-
-	return adapter.Parse(filename, content)
-}
-
-func scanDirectory(dir string) ([]*domain.Comment, error) {
-	var comments []*domain.Comment
-	var walkErr error
-
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if info.IsDir() {
-			// Skip .git, vendor, .codei18n
-			if info.Name() == ".git" || info.Name() == "vendor" || info.Name() == ".codei18n" {
-				return filepath.SkipDir
-			}
-			return nil
-		}
-
-		// Try to get adapter for file
-		adapter, err := adapters.GetAdapter(path)
-		if err == nil {
-			// Supported file
-			// Calculate relative path for ID stability
-			relPath, err := filepath.Rel(dir, path)
-			if err != nil {
-				relPath = path
-			}
-
-			// Read file content manually to ensure we access the correct file
-			content, err := os.ReadFile(path)
-			if err != nil {
-				log.Warn("读取文件 %s 失败: %v", path, err)
-				return nil
-			}
-
-			fileComments, err := adapter.Parse(relPath, content)
-			if err != nil {
-				log.Warn("解析文件 %s 失败: %v", path, err)
-				return nil // Continue scanning other files
-			}
-			comments = append(comments, fileComments...)
-		}
-		return nil
-	})
-
-	if walkErr != nil {
-		return nil, walkErr
-	}
-	return comments, err
 }
 
 func outputResults(comments []*domain.Comment) error {
