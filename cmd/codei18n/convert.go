@@ -140,7 +140,7 @@ func processFile(file string, adapter core.LanguageAdapter, store *mapping.Store
 		newText     string
 	}
 	var replacements []replacement
-	
+
 	// Track comments that couldn't find translation
 	missingTranslations := make(map[string]bool)
 
@@ -228,11 +228,11 @@ func processFile(file string, adapter core.LanguageAdapter, store *mapping.Store
 				}
 			}
 
-		if !found {
-			log.Warn("未找到注释的英文翻译: '%s'", normalizedCurrent)
-			// Mark this comment as missing translation
-			missingTranslations[c.ID] = true
-		}
+			if !found {
+				log.Warn("未找到注释的英文翻译: '%s'", normalizedCurrent)
+				// Mark this comment as missing translation
+				missingTranslations[c.ID] = true
+			}
 		} else {
 			// Apply Mode (EN -> ZH)
 			// c.SourceText is EN

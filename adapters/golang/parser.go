@@ -99,81 +99,23 @@ func (a *Adapter) parseWithScopeTracking(fset *token.FileSet, f *ast.File, fileP
 	return comments, nil
 }
 
-// processCommentGroup handles the logic of merging or splitting comments within a group.
-// It ensures that only consecutive Line comments (//) are merged.
-// Block comments (/* */) are kept separate, even if consecutive or adjacent to line comments.
+// processCommentGroup handles the logic of extracting comments within a group.
+// Each comment (line or block) is treated as a separate comment object.
 func (a *Adapter) processCommentGroup(fset *token.FileSet, cg *ast.CommentGroup, file, symbol string) []*domain.Comment {
 	var results []*domain.Comment
 	if len(cg.List) == 0 {
 		return results
 	}
 
-	// Buffer for consecutive line comments
-	var lineBuffer []*ast.Comment
-
-	flushLineBuffer := func() {
-		if len(lineBuffer) == 0 {
-			return
-		}
-		results = append(results, a.createMergedComment(fset, lineBuffer, file, symbol))
-		lineBuffer = nil // Clear buffer
-	}
-
+	// Each comment in the group becomes a separate comment object
 	for _, c := range cg.List {
-		if strings.HasPrefix(c.Text, "//") {
-			// It's a line comment, add to buffer
-			lineBuffer = append(lineBuffer, c)
-		} else {
-			// It's a block comment (/* ... */)
-			// 1. Flush any existing line comments
-			flushLineBuffer()
-
-			// 2. Add this block comment individually
-			results = append(results, a.createSingleComment(fset, c, file, symbol))
-		}
+		results = append(results, a.createSingleComment(fset, c, file, symbol))
 	}
-	// Flush remaining line comments at the end
-	flushLineBuffer()
 
 	return results
 }
 
-// createMergedComment creates a single comment from a list of Line comments
-func (a *Adapter) createMergedComment(fset *token.FileSet, comments []*ast.Comment, file, symbol string) *domain.Comment {
-	if len(comments) == 0 {
-		return nil
-	}
-
-	first := comments[0]
-	last := comments[len(comments)-1]
-
-	pos := fset.Position(first.Pos())
-	end := fset.Position(last.End())
-
-	var sb strings.Builder
-	for i, c := range comments {
-		if i > 0 {
-			sb.WriteString("\n")
-		}
-		sb.WriteString(c.Text)
-	}
-
-	return &domain.Comment{
-		File:     file,
-		Language: "go",
-		Symbol:   symbol,
-		Range: domain.TextRange{
-			StartLine: pos.Line,
-			StartCol:  pos.Column,
-			EndLine:   end.Line,
-			EndCol:    end.Column,
-		},
-		SourceText: sb.String(),
-		Type:       domain.CommentTypeLine,
-	}
-}
-
-// createSingleComment creates a comment from a single AST comment (usually Block)
+// createSingleComment creates a comment from a single AST comment
 func (a *Adapter) createSingleComment(fset *token.FileSet, c *ast.Comment, file, symbol string) *domain.Comment {
 	pos := fset.Position(c.Pos())
 	end := fset.Position(c.End())
