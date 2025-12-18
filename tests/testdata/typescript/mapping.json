@@ -1,0 +1,16 @@
+{
+  "comments": {
+    "9f3d517c2a7212001e74f45440c942e617d747c3": {
+      "en": "Initial comment",
+      "zh-CN": "初始注释"
+    },
+    "0f89823f972b260907df347432d03cc271542f36": {
+      "en": "A calculator class",
+      "zh-CN": "计算器类"
+    },
+    "f296c0953a991871f30889241b711a140f091c6e": {
+      "en": "Adds two numbers",
+      "zh-CN": "计算两个数"
+    }
+  }
+}

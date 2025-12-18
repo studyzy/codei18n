@@ -7,6 +7,7 @@ import (
 
 	"github.com/studyzy/codei18n/adapters/golang"
 	"github.com/studyzy/codei18n/adapters/rust"
+	"github.com/studyzy/codei18n/adapters/typescript"
 	"github.com/studyzy/codei18n/core"
 )
 
@@ -18,6 +19,8 @@ func GetAdapter(filename string) (core.LanguageAdapter, error) {
 		return golang.NewAdapter(), nil
 	case ".rs":
 		return rust.NewRustAdapter(), nil
+	case ".js", ".jsx", ".ts", ".tsx":
+		return typescript.NewAdapter(), nil
 	default:
 		return nil, fmt.Errorf("unsupported file extension: %s", ext)
 	}

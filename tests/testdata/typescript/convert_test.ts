@@ -1,0 +1,12 @@
+// Initial comment
+const x = 1;
+
+/**
+ * A calculator class
+ */
+class Calculator {
+	// Adds two numbers
+	add(a: number, b: number): number {
+		return a + b;
+	}
+}
