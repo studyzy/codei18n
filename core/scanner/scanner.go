@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/bmatcuk/doublestar/v4"
 	"github.com/studyzy/codei18n/adapters"
 	"github.com/studyzy/codei18n/core/domain"
 	"github.com/studyzy/codei18n/internal/log"
@@ -44,7 +45,7 @@ func SingleFile(filename string) ([]*domain.Comment, error) {
 }
 
 // Directory recursively scans a directory
-func Directory(dir string) ([]*domain.Comment, error) {
+func Directory(dir string, excludePatterns ...string) ([]*domain.Comment, error) {
 	var comments []*domain.Comment
 	var walkErr error
 
@@ -52,6 +53,26 @@ func Directory(dir string) ([]*domain.Comment, error) {
 		if err != nil {
 			return err
 		}
+		
+		// Calculate relative path for matching
+		relPath, err := filepath.Rel(dir, path)
+		if err != nil {
+			relPath = path
+		}
+		// Normalize path separators to / for glob matching
+		relPath = filepath.ToSlash(relPath)
+
+		// Check excludes
+		for _, pattern := range excludePatterns {
+			matched, _ := doublestar.Match(pattern, relPath)
+			if matched {
+				if info.IsDir() {
+					return filepath.SkipDir
+				}
+				return nil
+			}
+		}
+
 		if info.IsDir() {
 			// Skip .git, vendor, .codei18n
 			if info.Name() == ".git" || info.Name() == "vendor" || info.Name() == ".codei18n" {
@@ -64,12 +85,7 @@ func Directory(dir string) ([]*domain.Comment, error) {
 		adapter, err := adapters.GetAdapter(path)
 		if err == nil {
 			// Supported file
-			// Calculate relative path for ID stability
-			relPath, err := filepath.Rel(dir, path)
-			if err != nil {
-				relPath = path
-			}
-
+			
 			// Read file content manually to ensure we access the correct file
 			content, err := os.ReadFile(path)
 			if err != nil {

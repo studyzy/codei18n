@@ -3,6 +3,7 @@ module github.com/studyzy/codei18n
 go 1.25.5
 
 require (
+	github.com/bmatcuk/doublestar/v4 v4.9.1
 	github.com/briandowns/spinner v1.23.2
 	github.com/fatih/color v1.18.0
 	github.com/sashabaranov/go-openai v1.41.2

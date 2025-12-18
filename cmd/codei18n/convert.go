@@ -7,6 +7,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/bmatcuk/doublestar/v4"
 	"github.com/spf13/cobra"
 	"github.com/studyzy/codei18n/adapters"
 	"github.com/studyzy/codei18n/core"
@@ -75,6 +76,26 @@ func runConvert() {
 			if err != nil {
 				return err
 			}
+
+			// Calculate relative path for matching
+			relPath, err := filepath.Rel(convertDir, path)
+			if err != nil {
+				relPath = path
+			}
+			// Normalize path separators to / for glob matching
+			relPath = filepath.ToSlash(relPath)
+
+			// Check excludes
+			for _, pattern := range cfg.ExcludePatterns {
+				matched, _ := doublestar.Match(pattern, relPath)
+				if matched {
+					if info.IsDir() {
+						return filepath.SkipDir
+					}
+					return nil
+				}
+			}
+
 			if info.IsDir() {
 				if info.Name() == ".git" || info.Name() == "vendor" || info.Name() == ".codei18n" {
 					return filepath.SkipDir

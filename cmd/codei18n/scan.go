@@ -63,7 +63,13 @@ func runScan() {
 	} else if scanFile != "" {
 		comments, err = scanner.SingleFile(scanFile)
 	} else {
-		comments, err = scanner.Directory(scanDir)
+		// Try to load config for excludePatterns
+		cfg, _ := config.LoadConfig()
+		var excludes []string
+		if cfg != nil {
+			excludes = cfg.ExcludePatterns
+		}
+		comments, err = scanner.Directory(scanDir, excludes...)
 	}
 
 	if err != nil {

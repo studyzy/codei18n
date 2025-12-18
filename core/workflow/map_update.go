@@ -22,7 +22,7 @@ type MapUpdateResult struct {
 func MapUpdate(cfg *config.Config, scanDir string, dryRun bool) (*MapUpdateResult, error) {
 	// 1. Scan for comments
 	log.Info("正在扫描目录: %s", scanDir)
-	comments, err := scanner.Directory(scanDir)
+	comments, err := scanner.Directory(scanDir, cfg.ExcludePatterns...)
 	if err != nil {
 		return nil, fmt.Errorf("扫描失败: %w", err)
 	}

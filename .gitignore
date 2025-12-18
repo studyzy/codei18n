@@ -67,3 +67,4 @@ release/
 *.a
 coverage-data
 ./codei18n
+/codei18n
