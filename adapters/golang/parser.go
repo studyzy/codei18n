@@ -197,13 +197,3 @@ func (a *Adapter) createSingleComment(fset *token.FileSet, c *ast.Comment, file,
 		Type:       cType,
 	}
 }
-
-// createCommentFromGroup is deprecated
-func (a *Adapter) createCommentFromGroup(fset *token.FileSet, cg *ast.CommentGroup, file, symbol string) *domain.Comment {
-	return nil
-}
-
-// createComment is deprecated
-func (a *Adapter) createComment(fset *token.FileSet, c *ast.Comment, file, symbol string) *domain.Comment {
-	return nil
-}

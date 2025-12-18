@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
@@ -113,7 +112,7 @@ func runConvert() {
 
 func processFile(file string, adapter core.LanguageAdapter, store *mapping.Store, cfg *config.Config) {
 	// Read file
-	src, err := ioutil.ReadFile(file)
+	src, err := os.ReadFile(file)
 	if err != nil {
 		log.Error("读取文件 %s 失败: %v", file, err)
 		return
@@ -281,7 +280,7 @@ func processFile(file string, adapter core.LanguageAdapter, store *mapping.Store
 		return
 	}
 
-	if err := ioutil.WriteFile(file, []byte(newSrc), 0644); err != nil {
+	if err := os.WriteFile(file, []byte(newSrc), 0644); err != nil {
 		log.Error("写入文件 %s 失败: %v", file, err)
 	} else {
 		log.Success("已处理 %s", file)

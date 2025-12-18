@@ -104,9 +104,7 @@ func isEmptyComment(content string) bool {
 		return strings.TrimSpace(strings.TrimPrefix(trimmed, "//")) == ""
 	case strings.HasPrefix(trimmed, "/*"):
 		inner := strings.TrimPrefix(trimmed, "/*")
-		if strings.HasSuffix(inner, "*/") {
-			inner = strings.TrimSuffix(inner, "*/")
-		}
+		inner = strings.TrimSuffix(inner, "*/")
 		return strings.TrimSpace(inner) == ""
 	default:
 		return strings.TrimSpace(trimmed) == ""

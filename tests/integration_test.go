@@ -146,6 +146,7 @@ func TestIncrementalScan(t *testing.T) {
 	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY, 0644)
 	require.NoError(t, err)
 	_, err = f.WriteString("\n// New Comment\n")
+	require.NoError(t, err)
 	f.Close()
 
 	// 5. Scan again

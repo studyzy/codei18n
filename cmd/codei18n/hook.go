@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -91,7 +90,7 @@ echo "CodeI18n: Done."
 exit 0
 `
 
-	if err := ioutil.WriteFile(hookPath, []byte(hookContent), 0755); err != nil {
+	if err := os.WriteFile(hookPath, []byte(hookContent), 0755); err != nil {
 		log.Fatal("安装 hook 失败: %v", err)
 	}
 

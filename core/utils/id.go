@@ -34,15 +34,11 @@ func NormalizeCommentText(text string) string {
 	t := strings.TrimSpace(text)
 
 	// Remove single line markers
-	if strings.HasPrefix(t, "//") {
-		t = strings.TrimPrefix(t, "//")
-	}
+	t = strings.TrimPrefix(t, "//")
 
 	// Remove block markers
-	if strings.HasPrefix(t, "/*") {
-		t = strings.TrimPrefix(t, "/*")
-		t = strings.TrimSuffix(t, "*/")
-	}
+	t = strings.TrimPrefix(t, "/*")
+	t = strings.TrimSuffix(t, "*/")
 
 	// Normalize whitespace: replace sequences of whitespace with single space
 	return strings.Join(strings.Fields(t), " ")

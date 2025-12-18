@@ -7,14 +7,6 @@ import (
 	"github.com/fatih/color"
 )
 
-var (
-	// Standard loggers that write to Stderr
-	infoLogger  = color.New(color.FgCyan).FprintlnFunc()
-	warnLogger  = color.New(color.FgYellow).FprintlnFunc()
-	errorLogger = color.New(color.FgRed).FprintlnFunc()
-	debugLogger = color.New(color.FgMagenta).FprintlnFunc()
-)
-
 // Info prints an informational message to Stderr
 func Info(format string, a ...interface{}) {
 	fmt.Fprintf(os.Stderr, "[INFO] "+format+"\n", a...)
