@@ -10,17 +10,17 @@ import (
 	"time"
 )
 
-// OllamaTranslator 使用本地 Ollama 服务实现翻译。
-// 通过 /api/chat 接口与本地模型交互。
+// OllamaTranslator uses the local Ollama service to perform translation.
+// It interacts with the local model via the /api/chat interface.
 type OllamaTranslator struct {
 	endpoint   string
 	model      string
 	httpClient *http.Client
 }
 
-// NewOllamaTranslator 创建一个新的 OllamaTranslator。
-// endpoint 例如 http://localhost:11434
-// model 例如 "llama3"、"qwen2.5:7b" 等。
+// NewOllamaTranslator creates a new OllamaTranslator.
+// endpoint e.g., http://localhost:11434
+// model e.g., "llama3", "qwen2.5:7b", etc.
 func NewOllamaTranslator(endpoint, model string) *OllamaTranslator {
 	if endpoint == "" {
 		endpoint = "http://localhost:11434"
@@ -38,7 +38,7 @@ func NewOllamaTranslator(endpoint, model string) *OllamaTranslator {
 	}
 }
 
-// Translate 实现单条文本翻译。
+// Translate implements single text translation.
 func (t *OllamaTranslator) Translate(ctx context.Context, text, from, to string) (string, error) {
 	prompt := fmt.Sprintf(
 		"You are a professional code comment translator. Translate the following code comment from %s to %s.\n"+
@@ -56,7 +56,7 @@ func (t *OllamaTranslator) Translate(ctx context.Context, text, from, to string)
 		Model    string          `json:"model"`
 		Messages []ollamaMessage `json:"messages"`
 		Stream   bool            `json:"stream"`
-		// think 控制思维链模式，对于 DeepSeek/Qwen 等思考模型，显式关闭可避免额外消耗
+		// think controls the chain-of-thought mode. For thinking models like DeepSeek/Qwen, explicitly turning it off can avoid additional consumption.
 		Think   bool              `json:"think"`
 		Options map[string]string `json:"options,omitempty"`
 	}{
@@ -106,7 +106,7 @@ func (t *OllamaTranslator) Translate(ctx context.Context, text, from, to string)
 	return strings.TrimSpace(respBody.Message.Content), nil
 }
 
-// TranslateBatch 在 Ollama 下采用顺序调用实现，避免过早引入复杂批量协议。
+// TranslateBatch is implemented with sequential calls under Ollama to avoid prematurely introducing complex batch protocols.
 func (t *OllamaTranslator) TranslateBatch(ctx context.Context, texts []string, from, to string) ([]string, error) {
 	if len(texts) == 0 {
 		return []string{}, nil

@@ -94,13 +94,15 @@ func runConvert() {
 
 	log.Info("准备处理 %d 个文件...", len(files))
 
+	missingCount := 0
 	for _, file := range files {
 		adapter, err := adapters.GetAdapter(file)
 		if err != nil {
 			log.Warn("无法获取适配器 %s: %v", file, err)
 			continue
 		}
-		processFile(file, adapter, store, cfg)
+		missing := processFile(file, adapter, store, cfg)
+		missingCount += missing
 	}
 
 	if err := store.Save(); err != nil {
@@ -108,21 +110,25 @@ func runConvert() {
 	} else {
 		log.Info("Mapping store updated.")
 	}
+
+	if missingCount > 0 {
+		log.Fatal("发现 %d 条缺失翻译，请先运行 'codei18n translate' 完成翻译", missingCount)
+	}
 }
 
-func processFile(file string, adapter core.LanguageAdapter, store *mapping.Store, cfg *config.Config) {
+func processFile(file string, adapter core.LanguageAdapter, store *mapping.Store, cfg *config.Config) int {
 	// Read file
 	src, err := os.ReadFile(file)
 	if err != nil {
 		log.Error("读取文件 %s 失败: %v", file, err)
-		return
+		return 0
 	}
 
 	// Parse to get comments
 	comments, err := adapter.Parse(file, src)
 	if err != nil {
 		log.Error("解析文件 %s 失败: %v", file, err)
-		return
+		return 0
 	}
 
 	log.Info("Convert: To='%s', Source='%s', Local='%s'", convertTo, cfg.SourceLanguage, cfg.LocalLanguage)
@@ -163,45 +169,62 @@ func processFile(file string, adapter core.LanguageAdapter, store *mapping.Store
 
 		// If converting to SourceLanguage (e.g. en), we try to restore original
 		if convertTo == cfg.SourceLanguage {
-			// Restore Mode: ZH -> EN
-			// Current text is likely in LocalLanguage (ZH)
-			// Search in store by comparing normalized values
-			for id, transMap := range store.GetMapping().Comments {
-				zhText, hasZh := transMap[cfg.LocalLanguage]
-				enText, hasEn := transMap[cfg.SourceLanguage]
-
-				if hasZh && hasEn {
-					normalizedZh := utils.NormalizeCommentText(zhText)
-					if normalizedZh == normalizedCurrent {
+			// First, check if current text is already in target language (by ID)
+			if transMap, exists := store.GetMapping().Comments[c.ID]; exists {
+				if enText, hasEn := transMap[cfg.SourceLanguage]; hasEn {
+					normalizedEn := utils.NormalizeCommentText(enText)
+					if normalizedEn == normalizedCurrent {
+						// Already in target language, no conversion needed
 						targetText = enText
 						found = true
-						log.Info("Found by reverse lookup: ID=%s, ZH='%s' -> EN='%s'", id, zhText, enText)
+						log.Info("Comment already in target language (ID=%s)", c.ID)
+					}
+				}
+			}
 
-						// Key fix: When reverting to English, automatically generate IDs for new English comments and migrate existing translations to them.
-						// This way, subsequent scan/map updates can directly recognize this English comment and will not treat it as an untranslated new comment.
+			// If not found by ID, try reverse lookup (ZH -> EN)
+			if !found {
+				// Restore Mode: ZH -> EN
+				// Current text is likely in LocalLanguage (ZH)
+				// Search in store by comparing normalized values
+				for id, transMap := range store.GetMapping().Comments {
+					zhText, hasZh := transMap[cfg.LocalLanguage]
+					enText, hasEn := transMap[cfg.SourceLanguage]
 
-						// 1. Construct the English version of the Comment object (simulating the converted state)
-						tempC := *c
-						tempC.SourceText = enText // Assuming mapping stores plain text or marked text, Normalize will process it
+					if hasZh && hasEn {
+						normalizedZh := utils.NormalizeCommentText(zhText)
+						if normalizedZh == normalizedCurrent {
+							targetText = enText
+							found = true
+							log.Info("Found by reverse lookup: ID=%s, ZH='%s' -> EN='%s'", id, zhText, enText)
 
-						// 2. Calculate new ID
-						newID := utils.GenerateCommentID(&tempC)
+							// Key fix: When reverting to English, automatically generate IDs for new English comments and migrate existing translations to them.
+							// This way, subsequent scan/map updates can directly recognize this English comment and will not treat it as an untranslated new comment.
 
-						// 3. If the new ID differs from the old ID (it definitely will, because the text has changed), then migrate the data
-						if newID != id {
-							log.Info("Migrating mapping for restored English comment: %s -> %s", id, newID)
-							// Ensure the new ID has bilingual data
-							store.Set(newID, cfg.SourceLanguage, enText)
-							store.Set(newID, cfg.LocalLanguage, zhText)
+							// 1. Construct the English version of the Comment object (simulating the converted state)
+							tempC := *c
+							tempC.SourceText = enText // Assuming mapping stores plain text or marked text, Normalize will process it
+
+							// 2. Calculate new ID
+							newID := utils.GenerateCommentID(&tempC)
+
+							// 3. If the new ID differs from the old ID (it definitely will, because the text has changed), then migrate the data
+							if newID != id {
+								log.Info("Migrating mapping for restored English comment: %s -> %s", id, newID)
+								// Ensure the new ID has bilingual data
+								store.Set(newID, cfg.SourceLanguage, enText)
+								store.Set(newID, cfg.LocalLanguage, zhText)
+							}
+
+							break
 						}
-
-						break
 					}
 				}
 			}
 
 			if !found {
 				log.Warn("未找到注释的英文翻译: '%s'", normalizedCurrent)
+				// Return early to count this as missing
 			}
 		} else {
 			// Apply Mode (EN -> ZH)
@@ -277,7 +300,30 @@ func processFile(file string, adapter core.LanguageAdapter, store *mapping.Store
 	if convertDryRun {
 		fmt.Printf("File: %s\n", file)
 		// Diff logic omitted for brevity
-		return
+		return 0
+	}
+
+	// Count missing translations
+	// Only count as missing if:
+	// 1. The comment ID exists in mappings
+	// 2. But the target language translation is missing
+	missingCount := 0
+	for _, c := range comments {
+		if c.ID == "" {
+			c.ID = utils.GenerateCommentID(c)
+		}
+		
+		// Check if this comment ID exists in mappings
+		if transMap, exists := store.GetMapping().Comments[c.ID]; exists {
+			// ID exists, check if target language translation exists
+			if targetVal, hasTarget := transMap[convertTo]; !hasTarget || targetVal == "" {
+				// Target translation is missing
+				missingCount++
+				log.Warn("注释 ID %s 缺少 %s 翻译", c.ID, convertTo)
+			}
+		}
+		// If ID doesn't exist in mappings at all, it's a new comment
+		// We don't count it as "missing translation" because it hasn't been scanned yet
 	}
 
 	if err := os.WriteFile(file, []byte(newSrc), 0644); err != nil {
@@ -285,4 +331,6 @@ func processFile(file string, adapter core.LanguageAdapter, store *mapping.Store
 	} else {
 		log.Success("已处理 %s", file)
 	}
+
+	return missingCount
 }
