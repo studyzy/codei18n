@@ -378,13 +378,111 @@ type Translator interface {
 
 ### 13.2 实现策略
 
-* 本地缓存优先
-* 支持：
+* 本地缓存优先，优先复用已有翻译结果，减少对外部服务的调用频率。
+* 支持的翻译后端（通过 `translationProvider` 选择）：
 
-    * DeepL
-    * OpenAI
-    * 术语表
-* 避免提交时实时调用大模型
+    * `openai` / `llm`：基于 OpenAI 兼容协议的远程 LLM（如官方 OpenAI、DeepSeek 或自建代理），使用 `OPENAI_API_KEY` 和可选 `OPENAI_BASE_URL`。
+    * `ollama`：本地 Ollama 服务，通过 REST API 调用本地模型（如 `llama3`、`qwen3` 等）。
+    * `mock`：仅用于测试和集成测试场景，不用于生产环境。
+* 避免在 Git 提交路径上频繁同步调用大模型，可通过预翻译批量填充映射文件。
+
+### 13.3 翻译服务配置示例
+
+CodeI18n 的翻译服务配置由两部分组成：
+
+1. 顶层字段：`translationProvider`（选择后端）
+2. 细节字段：`translationConfig`（不同后端的参数）
+
+#### 13.3.1 使用 OpenAI / DeepSeek / 兼容 LLM
+
+```json
+{
+  "sourceLanguage": "en",
+  "localLanguage": "zh-CN",
+  "translationProvider": "openai",
+  "translationConfig": {
+    "baseUrl": "https://api.openai.com/v1",
+    "model": "gpt-4.1-mini"
+  },
+  "batchSize": 10
+}
+```
+
+运行前需要配置环境变量：
+
+```bash
+export OPENAI_API_KEY="your-api-key"
+# 可选：自建代理或第三方 OpenAI 兼容服务
+export OPENAI_BASE_URL="https://api.openai.com/v1"
+```
+
+如果 `model` 设置为 `deepseek-chat` 或 `deepseek-coder`，系统会自动将 `baseUrl` 设为 `https://api.deepseek.com`，也可以手动通过 `baseUrl` 显式指定其他兼容服务。
+
+#### 13.3.2 使用本地 Ollama
+
+```json
+{
+  "sourceLanguage": "en",
+  "localLanguage": "zh-CN",
+  "translationProvider": "ollama",
+  "translationConfig": {
+    "endpoint": "http://localhost:11434",
+    "model": "qwen3:4b"
+  },
+  "batchSize": 5
+}
+```
+
+说明：
+
+* `endpoint`：Ollama HTTP 服务地址，默认 `http://localhost:11434`。
+* `model`：本地已拉取的模型名称，例如 `qwen3:4b`、`llama3` 等。
+* CodeI18n 在调用 Ollama 时会显式设置 `"think": false`，关闭思维链模式，避免额外的延迟和算力消耗。
+
+启用本地 Ollama 集成测试示例（非必须）：
+
+```bash
+CODEI18N_OLLAMA_TEST=1 \
+CODEI18N_OLLAMA_MODEL=qwen3:4b \
+go test ./adapters/translator -run TestOllamaTranslator_Translate_Integration -v
+```
+
+#### 13.3.3 通过 CLI 覆盖配置
+
+在 `.codei18n/config.json` 配置好默认翻译服务后，也可以在命令行临时覆盖：
+
+```bash
+# 覆盖 provider 为 openai
+codei18n translate --provider openai
+
+# 覆盖 provider 为本地 ollama
+codei18n translate --provider ollama
+
+# 临时指定模型（会覆盖 translationConfig.model）
+codei18n translate --model gpt-4.1-mini
+```
+
+#### 13.3.4 从 Google / DeepL 迁移
+
+历史版本中可能使用过 `translationProvider: "google"` 或 `"deepl"`。迁移建议：
+
+1. 打开 `.codei18n/config.json`，删除或重命名以下配置：
+   - 将 `"translationProvider": "google"` 或 `"deepl"` 改为 `"openai"` 或 `"ollama"`；
+   - 如有旧的 `google`/`deepl` 相关字段，可以移除，仅保留 `baseUrl`/`model` 等通用字段。
+2. 为 `openai` 模式配置：
+   - 设置 `translationProvider: "openai"`；
+   - 在 `translationConfig` 中指定 `model`，必要时指定 `baseUrl`；
+   - 在环境中配置 `OPENAI_API_KEY`（以及可选的 `OPENAI_BASE_URL`）。
+3. 或者切换到本地 `ollama` 模式：
+   - 设置 `translationProvider: "ollama"`；
+   - 在 `translationConfig` 中设置 `endpoint` 和本地模型名称；
+4. 运行：
+
+```bash
+codei18n translate
+```
+
+   确认命令可以正常执行且不会再出现“翻译提供商 google/deepl 已不再支持”的错误提示。
 
 ---
 

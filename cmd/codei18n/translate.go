@@ -11,7 +11,6 @@ import (
 	"github.com/briandowns/spinner"
 	"github.com/spf13/cobra"
 	"github.com/studyzy/codei18n/adapters/translator"
-	"github.com/studyzy/codei18n/core"
 	"github.com/studyzy/codei18n/core/config"
 	"github.com/studyzy/codei18n/core/mapping"
 	"github.com/studyzy/codei18n/internal/log"
@@ -27,7 +26,7 @@ var (
 var translateCmd = &cobra.Command{
 	Use:   "translate",
 	Short: "自动翻译缺失的注释",
-	Long:  `调用配置的翻译引擎（Google/OpenAI/DeepSeek）自动翻译映射文件中缺失的条目。`,
+	Long:  `调用配置的翻译引擎（LLM(OpenAI/DeepSeek) 或本地 Ollama）自动翻译映射文件中缺失的条目。`,
 	Run: func(cmd *cobra.Command, args []string) {
 		runTranslate()
 	},
@@ -58,53 +57,18 @@ func runTranslate() {
 		cfg.BatchSize = translateBatchSize
 	}
 
-	// 2. Init Translator
-	var trans core.Translator
-
-	switch cfg.TranslationProvider {
-	case "mock":
-		trans = translator.NewMockTranslator()
-	case "openai", "llm": // Support both openai and llm
-		apiKey := os.Getenv("OPENAI_API_KEY")
-		if apiKey == "" {
-			log.Fatal("未设置 OPENAI_API_KEY 环境变量")
+	// 如果通过命令行指定了模型，则覆盖配置中的 model
+	if translateModel != "" {
+		if cfg.TranslationConfig == nil {
+			cfg.TranslationConfig = make(map[string]string)
 		}
+		cfg.TranslationConfig["model"] = translateModel
+	}
 
-		// Debug config loading
-		log.Info("Translation Config Loaded: %v", cfg.TranslationConfig)
-
-		baseURL := os.Getenv("OPENAI_BASE_URL")
-
-		// Case-insensitive check for baseUrl/baseURL/base_url
-		if val, ok := cfg.TranslationConfig["baseUrl"]; ok && val != "" {
-			baseURL = val
-		} else if val, ok := cfg.TranslationConfig["BaseUrl"]; ok && val != "" {
-			baseURL = val
-		} else if val, ok := cfg.TranslationConfig["baseURL"]; ok && val != "" {
-			baseURL = val
-		} else if val, ok := cfg.TranslationConfig["base_url"]; ok && val != "" {
-			baseURL = val
-		} else if val, ok := cfg.TranslationConfig["baseurl"]; ok && val != "" {
-			baseURL = val
-		}
-
-		model := "gpt-3.5-turbo"
-		if translateModel != "" {
-			model = translateModel
-		} else if m, ok := cfg.TranslationConfig["model"]; ok {
-			model = m
-		}
-
-		// Auto-detect DeepSeek URL if not set
-		if baseURL == "" && (model == "deepseek-chat" || model == "deepseek-coder") {
-			baseURL = "https://api.deepseek.com"
-			log.Info("自动检测到 DeepSeek 模型，设置 BaseURL 为 %s", baseURL)
-		}
-
-		log.Info("Using LLM: BaseURL=%s, Model=%s, BatchSize=%d", baseURL, model, cfg.BatchSize)
-		trans = translator.NewLLMTranslator(apiKey, baseURL, model)
-	default:
-		log.Fatal("不支持的翻译提供商: %s", cfg.TranslationProvider)
+	// 2. Init Translator（通过统一工厂创建）
+	trans, err := translator.NewFromConfig(cfg)
+	if err != nil {
+		log.Fatal("初始化翻译引擎失败: %v", err)
 	}
 
 	// 3. Load Mapping

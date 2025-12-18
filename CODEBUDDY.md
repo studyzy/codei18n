@@ -1,3 +1,32 @@
+<!-- OPENSPEC:START -->
+# OpenSpec 使用说明
+
+这些说明适用于在此项目中工作的AI助手。
+
+## 语言偏好设置
+
+**默认使用中文**：除非明确说明使用英文，否则所有输出都应使用中文，包括：
+- 文档内容
+- 代码注释
+- 提交信息
+- 规范说明
+
+## 工作流程
+
+当请求满足以下条件时，始终打开`@/openspec/AGENTS.md`：
+- 提及规划或提案（如提案、规范、变更、计划等词语）
+- 引入新功能、重大变更、架构变更或大型性能/安全工作时
+- 听起来不明确，需要在编码前了解权威规范时
+
+使用`@/openspec/AGENTS.md`了解：
+- 如何创建和应用变更提案
+- 规范格式和约定
+- 项目结构和指南
+
+保持此托管块，以便'openspec-cn update'可以刷新说明。
+
+<!-- OPENSPEC:END -->
+
 # CODEBUDDY.md
 
 本文件为 CodeBuddy Code 在此仓库中工作时提供指导。
@@ -183,12 +212,17 @@ type Translator interface {
 ```
 
 ### 策略
-- **本地缓存优先**（避免提交时实时调用 API）
-- 支持的后端：
-  - DeepL
-  - OpenAI
-  - 自定义术语词典
-- 翻译失败可阻断提交（可配置）
+- **本地缓存优先**：优先复用已有翻译结果，避免在提交路径上频繁调用外部服务。
+- 支持的翻译后端（通过 `translationProvider` 选择）：
+  - 远程 LLM（`openai` / `llm`）：基于 OpenAI 兼容协议的翻译服务（官方 OpenAI、DeepSeek 或自建代理），使用 `OPENAI_API_KEY` 和可选 `OPENAI_BASE_URL`。
+  - 本地 Ollama（`ollama`）：调用本地 Ollama 实例的 REST API，使用本地模型（如 `llama3`、`qwen3` 等）。调用时默认关闭思维链（`think=false`），避免额外延迟。
+  - Mock（`mock`）：仅用于测试和集成测试，不用于生产环境。
+- 翻译失败可阻断提交（可配置），建议在 CI 环节或预翻译阶段完成大部分工作，在 pre-commit 仅做增量检查。
+
+### 配置约定
+
+- 顶层字段：`translationProvider`（`openai`/`llm`/`ollama`）
+- 细节字段：`translationConfig`（如 `baseUrl`、`model`、`endpoint`）
 
 ## 映射文件
 
@@ -256,6 +290,11 @@ codei18n scan --file xxx.go --lang zh-CN --format json
 {
   "sourceLanguage": "en",
   "localLanguage": "zh-CN",
+  "translationProvider": "openai",
+  "translationConfig": {
+    "baseUrl": "https://api.openai.com/v1",
+    "model": "gpt-4.1-mini"
+  },
   "ide": {
     "vscode": {
       "displayMode": "overlay"
@@ -266,6 +305,11 @@ codei18n scan --file xxx.go --lang zh-CN --format json
   }
 }
 ```
+
+说明：
+- `translationProvider`：选择翻译后端，当前推荐 `openai`（也支持别名 `llm`）或本地 `ollama`。
+- `translationConfig`：不同后端的细节配置，如 `baseUrl`、`model`（OpenAI/DeepSeek）或 `endpoint`（Ollama）。
+
 
 ## 开发路线图
 

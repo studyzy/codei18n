@@ -75,7 +75,7 @@ $CODEI18N_CMD map update --scan-dir .
 
 # Step 2: Translate any missing English translations
 echo "CodeI18n: Translating missing entries..."
-$CODEI18N_CMD translate --provider openai 2>/dev/null || echo "CodeI18n: Translation skipped (check API config)"
+$CODEI18N_CMD translate --provider openai 2>/dev/null || echo "CodeI18n: Translation skipped (check API config: provider=openai/llm/ollama)"
 
 # Step 3: Convert staged files to English
 for file in $FILES; do

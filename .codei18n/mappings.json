@@ -176,7 +176,8 @@
       "zh-CN": "// Config 代表项目配置"
     },
     "12643a2e6591197284f266a6b70eb9a428be38d0": {
-      "en": "// Verify the last doc comments (lines 15, 17, 18)\n// We expect them to be separate but have the same symbol"
+      "en": "// Verify the last doc comments (lines 15, 17, 18)\n// We expect them to be separate but have the same symbol",
+      "zh-CN": "// 验证最后的文档注释（第15、17、18行）\n// 我们希望它们是独立的但具有相同的符号"
     },
     "1311d6e062c85e73fb969ffe451e40f1630f6317": {
       "en": "// If I pass server.URL to NewLLMTranslator, the client will append /chat/completions?",
@@ -475,7 +476,8 @@
       "zh-CN": "// 块注释 /* */"
     },
     "2972276bec78563545bf4fe31350177a7bd5e811": {
-      "en": "// Verify range logic for first comment (line 1)"
+      "en": "// Verify range logic for first comment (line 1)",
+      "zh-CN": "// 验证第一条注释（第1行）的范围逻辑"
     },
     "2aa5b10fd959f6d7a34647fca6b0bb705129c105": {
       "en": "// - If zh-CN exists but en is missing: zh-CN -\u003e en",
@@ -566,7 +568,8 @@
       "zh-CN": "// GenerateCommentID 为评论计算一个稳定的ID"
     },
     "32e60c112bd0efa971fb7c9196461e55d8630829": {
-      "en": "/// This is an optimization that allows us to keep using the static precompiles"
+      "en": "/// This is an optimization that allows us to keep using the static precompiles",
+      "zh-CN": "/// 这是一种优化，允许我们继续使用静态预编译合约"
     },
     "338f41c80244b4be6d7a151887fbeeb46cdce772": {
       "en": "// Create the content to hash",
@@ -877,7 +880,8 @@
       "zh-CN": "// LanguageAdapter 定义了语言特定解析器的接口"
     },
     "543f716248798f3acd7c15dee782360393de062c": {
-      "en": "// Line 17"
+      "en": "// Line 17",
+      "zh-CN": "// 第17行"
     },
     "55cf0f288a1869934366533f97c2e4d25d295a2a": {
       "en": "// Append content\n// Ensure we have a newline between them if not present in the last one",
@@ -908,7 +912,8 @@
       "zh-CN": "// 确定策略"
     },
     "58ec13c61728d38e31e55efd6b36342f81dfc3f2": {
-      "en": "//! It happened on Ethereum block 1_920_000"
+      "en": "//! It happened on Ethereum block 1_920_000",
+      "zh-CN": "//! 这发生在以太坊区块 1_920_000"
     },
     "5a7adb029281a1a578262900b2e3858e677bf683": {
       "en": "// Normalize current comment text for comparison",
@@ -947,7 +952,8 @@
       "zh-CN": "// Version 是映射文件格式的版本号（例如：\"1.0\"）"
     },
     "5f25ee88be7bdce1231e3d92513b03fb6204d6f2": {
-      "en": "// good"
+      "en": "// good",
+      "zh-CN": "// 好"
     },
     "5f9a3b66d0c811823df0e16c9bcfe939990b65b3": {
       "en": "// Mixed batch, fallback to sequential loop manually here\n// This shouldn't happen often if we sort, but safety net.",
@@ -1102,7 +1108,8 @@
       "zh-CN": "// - 如果存在英文版本但缺少中文简体版本：英文 -\u003e 中文简体"
     },
     "724a4e4b73aeb0efed82ddce315d7e237ff59f0a": {
-      "en": "// Line 15"
+      "en": "// Line 15",
+      "zh-CN": "// 第15行"
     },
     "725c0ca4655e8edf6ff0d91fc134e2ab89da386f": {
       "en": "// var result map[string]interface{}",
@@ -1361,7 +1368,8 @@
       "zh-CN": "// Mapping 表示映射文件的结构"
     },
     "8e97132c83930a78177bb7133078f0fc7dd3cee0": {
-      "en": "//! DAO Fork related constants from [EIP-779](https://eips.ethereum.org/EIPS/eip-779)."
+      "en": "//! DAO Fork related constants from [EIP-779](https://eips.ethereum.org/EIPS/eip-779).",
+      "zh-CN": "//! 来自[EIP-779](https://eips.ethereum.org/EIPS/eip-779)的DAO分叉相关常量。"
     },
     "8ecb1b5c0b7cab6b8a3ab8cf964ffb26738ee732": {
       "en": "// Check if ID exists",
@@ -1496,7 +1504,8 @@
       "zh-CN": "// RustAdapter 为 Rust 语言实现了 LanguageAdapter 接口。\n// 它使用 Tree-sitter 解析 Rust 源代码，并提取注释及其上下文。"
     },
     "9e0769f27a5a61c5920154b1a31a031fe77f9aea": {
-      "en": "// luck"
+      "en": "// luck",
+      "zh-CN": "// 运气"
     },
     "9e9ff4ff1867057fb3508f8f3a3c7cee3e5c5ddf": {
       "en": "// Comment represents a single comment extracted from AST",
@@ -1543,7 +1552,8 @@
       "zh-CN": "// 它返回一个包含评论文本、位置和上下文符号的 domain.Comment 结构体列表。"
     },
     "a419be8974323121254abe6995f87c098872262d": {
-      "en": "// Expect 11 comments without merging:\n// 1. Inner doc (line 1)\n// 2. Inner doc (line 2)\n// 3. Inner doc (line 4)\n// 4. Outer doc (line 6)\n// 5. Line comment (line 8)\n// 6. Block comment (lines 9-10)\n// 7. Line comment (line 11)\n// 8. Line comment (line 12)\n// 9. Doc comment (line 15)\n// 10. Doc comment (line 17) - line 16 is empty and filtered\n// 11. Doc comment (line 18)"
+      "en": "// Expect 11 comments without merging:\n// 1. Inner doc (line 1)\n// 2. Inner doc (line 2)\n// 3. Inner doc (line 4)\n// 4. Outer doc (line 6)\n// 5. Line comment (line 8)\n// 6. Block comment (lines 9-10)\n// 7. Line comment (line 11)\n// 8. Line comment (line 12)\n// 9. Doc comment (line 15)\n// 10. Doc comment (line 17) - line 16 is empty and filtered\n// 11. Doc comment (line 18)",
+      "zh-CN": "// 预期有11条未合并的注释：\n// 1. 内部文档注释（第1行）\n// 2. 内部文档注释（第2行）\n// 3. 内部文档注释（第4行）\n// 4. 外部文档注释（第6行）\n// 5. 行注释（第8行）\n// 6. 块注释（第9-10行）\n// 7. 行注释（第11行）\n// 8. 行注释（第12行）\n// 9. 文档注释（第15行）\n// 10. 文档注释（第17行）- 第16行为空行已被过滤\n// 11. 文档注释（第18行）"
     },
     "a42bbc48bddf39a3604678b584e5271e273f1dea": {
       "en": "// Test empty array",
@@ -1670,7 +1680,8 @@
       "zh-CN": "// 但命令行界面可以扫描目录。"
     },
     "b0c4b4afb41326693301a70f826bbad28f563336": {
-      "en": "// Line 18"
+      "en": "// Line 18",
+      "zh-CN": "// 第18行"
     },
     "b0e8c7ede9066d54d8d0eac233cf1190b0a6e936": {
       "en": "// [MOCK zh-CN-\u003een] // Remove comment markers",
@@ -2025,7 +2036,8 @@
       "zh-CN": "// Tree-sitter 通常将 macro_rules! 的主体解析为令牌树或特定结构\n// 看看它是否能捕获注释。\n// 更新：这取决于语法中如何定义 'macro_rules'。\n// 如果它能提取出来，很好。如果不能，目前可以接受（根据规范）。"
     },
     "d10588558d7105c5b9504114eab6e27b4b342e3c": {
-      "en": "/// until we need to modify them, at which point we convert to the dynamic representation."
+      "en": "/// until we need to modify them, at which point we convert to the dynamic representation.",
+      "zh-CN": "/// 在需要修改之前，我们保持使用静态表示，需要修改时再转换为动态表示。"
     },
     "d119c66734dec806c571617b36d48bc0a2b31a0e": {
       "en": "// Debug: Print mappings.json",
@@ -2132,7 +2144,8 @@
       "zh-CN": "// 这是一个行注释，添加到缓冲区"
     },
     "d996bb683a5ad1c81f8565f44d68da8f20ca4dca": {
-      "en": "/// A mapping of precompile contracts that can be either static (builtin) or dynamic."
+      "en": "/// A mapping of precompile contracts that can be either static (builtin) or dynamic.",
+      "zh-CN": "/// 预编译合约的映射，可以是静态（内置）或动态的。"
     },
     "da486cda0e857bd7dd13c9ed12ca40a65c20030f": {
       "en": "// c.SourceText is EN",

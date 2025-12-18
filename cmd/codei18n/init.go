@@ -25,7 +25,8 @@ func init() {
 
 	initCmd.Flags().StringVar(&initSourceLang, "source-lang", "en", "源码语言")
 	initCmd.Flags().StringVar(&initTargetLang, "target-lang", "zh-CN", "本地目标语言")
-	initCmd.Flags().StringVar(&initProvider, "provider", "google", "翻译提供商")
+	// 默认使用基于 LLM 的远程翻译（OpenAI 兼容协议）
+	initCmd.Flags().StringVar(&initProvider, "provider", "openai", "翻译提供商 (openai/llm/ollama)")
 }
 
 func runInit() {
