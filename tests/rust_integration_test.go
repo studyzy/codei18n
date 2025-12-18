@@ -39,14 +39,15 @@ func TestRustSupport(t *testing.T) {
 	assert.True(t, strings.HasSuffix(result.File, "lib.rs"))
 	assert.NotEmpty(t, result.Comments)
 	
-	// Expect 6 comments after merging consecutive lines:
+	// Expect 7 comments after merging consecutive lines:
 	// 1. Merged inner doc (lines 1-2)
 	// 2. Inner doc (line 4)
 	// 3. Outer doc (line 6)
 	// 4. Line comment (line 8)
 	// 5. Block comment (lines 9-10)
 	// 6. Merged line comment (lines 11-12)
-	assert.Equal(t, 6, len(result.Comments), "Should have exactly 6 comments after merging")
+	// 7. Merged doc comment (lines 15-18)
+	assert.Equal(t, 7, len(result.Comments), "Should have exactly 7 comments after merging")
 
 	// Verify Language and Types
 	foundInnerDoc := false
@@ -91,5 +92,14 @@ func TestRustSupport(t *testing.T) {
 		
 		assert.Equal(t, 1, startLine, "First comment should start on line 1")
 		assert.Equal(t, 2, endLine, "First comment (lines 1-2 merged) should end on line 2, not 3")
+	}
+
+	// Verify the last merged doc comment (lines 15-18)
+	if len(result.Comments) >= 7 {
+		lastComment := result.Comments[6]
+		assert.Equal(t, "PrecompileContract", lastComment["symbol"])
+		src := lastComment["sourceText"].(string)
+		assert.Contains(t, src, "A mapping of precompile contracts")
+		assert.Contains(t, src, "dynamic representation")
 	}
 }

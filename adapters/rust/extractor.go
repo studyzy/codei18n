@@ -32,10 +32,6 @@ func (a *RustAdapter) extractComments(root *sitter.Node, src []byte, file string
 			node := c.Node
 			content := node.Content(src)
 
-			if isEmptyComment(content) {
-				continue
-			}
-
 			// Find Owner and Symbol Path
 			owner := FindOwnerNode(node, src)
 			symbolPath := ResolveSymbolPath(owner, src)
@@ -79,7 +75,17 @@ func (a *RustAdapter) extractComments(root *sitter.Node, src []byte, file string
 		}
 	}
 
-	return mergeComments(comments), nil
+	merged := mergeComments(comments)
+
+	// Filter empty comments after merge
+	var finalComments []*domain.Comment
+	for _, c := range merged {
+		if !isEmptyComment(c.SourceText) {
+			finalComments = append(finalComments, c)
+		}
+	}
+
+	return finalComments, nil
 }
 
 // mergeComments merges consecutive comments of the same type and symbol.
@@ -143,20 +149,39 @@ func getDomainCommentType(content string) domain.CommentType {
 
 func isEmptyComment(content string) bool {
 	trimmed := strings.TrimSpace(content)
-	switch {
-	case strings.HasPrefix(trimmed, "///"):
-		return strings.TrimSpace(strings.TrimPrefix(trimmed, "///")) == ""
-	case strings.HasPrefix(trimmed, "//!"):
-		return strings.TrimSpace(strings.TrimPrefix(trimmed, "//!")) == ""
-	case strings.HasPrefix(trimmed, "//"):
-		return strings.TrimSpace(strings.TrimPrefix(trimmed, "//")) == ""
-	case strings.HasPrefix(trimmed, "/*"):
+	
+	// Block comments
+	if strings.HasPrefix(trimmed, "/*") {
 		inner := strings.TrimPrefix(trimmed, "/*")
 		if strings.HasSuffix(inner, "*/") {
 			inner = strings.TrimSuffix(inner, "*/")
 		}
 		return strings.TrimSpace(inner) == ""
-	default:
-		return strings.TrimSpace(trimmed) == ""
 	}
+
+	// Line and Doc comments (check each line)
+	lines := strings.Split(content, "\n")
+	for _, line := range lines {
+		t := strings.TrimSpace(line)
+		if t == "" {
+			continue
+		}
+
+		if strings.HasPrefix(t, "///") {
+			t = strings.TrimPrefix(t, "///")
+		} else if strings.HasPrefix(t, "//!") {
+			t = strings.TrimPrefix(t, "//!")
+		} else if strings.HasPrefix(t, "//") {
+			t = strings.TrimPrefix(t, "//")
+		} else {
+			// Not a standard line comment marker, assume content
+			return false
+		}
+
+		if strings.TrimSpace(t) != "" {
+			return false
+		}
+	}
+	
+	return true
 }

@@ -42,7 +42,8 @@ func (t *LLMTranslator) Translate(ctx context.Context, text, from, to string) (s
 			"1. Keep technical terms, variable names, and code snippets unchanged.\n"+
 			"2. Maintain the tone and style of the original comment.\n"+
 			"3. Output ONLY the translated text, no explanations or quotes.\n"+
-			"4. If the text is already in the target language, return it as is.\n\n"+
+			"4. If the text is already in the target language, return it as is.\n"+
+			"5. Preserve all line breaks and formatting.\n\n"+
 			"Original: %s",
 		from, to, text,
 	)
@@ -139,7 +140,8 @@ func (t *LLMTranslator) buildBatchPrompt(texts []string, from, to string) string
 			"2. The output must be a valid JSON string array [\"...\",\"...\"].\n"+
 			"3. The number of elements MUST match the input.\n"+
 			"4. Keep technical terms, variable names, and code snippets unchanged.\n"+
-			"5. If a comment is already in the target language, return it as is.\n\n"+
+			"5. If a comment is already in the target language, return it as is.\n"+
+			"6. Preserve all line breaks and formatting.\n\n"+
 			"Input:\n%s",
 		from, to, string(inputJSON),
 	)

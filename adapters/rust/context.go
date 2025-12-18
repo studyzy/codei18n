@@ -44,6 +44,11 @@ func FindOwnerNode(commentNode *sitter.Node, src []byte) *sitter.Node {
 				curr = curr.NextNamedSibling()
 				continue
 			}
+			// Skip other comments to find the actual item they are documenting
+			if curr.Type() == "line_comment" || curr.Type() == "block_comment" {
+				curr = curr.NextNamedSibling()
+				continue
+			}
 			return curr
 		}
 		// Fallback to parent if no sibling found (orphaned doc comment)
