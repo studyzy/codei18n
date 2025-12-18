@@ -54,7 +54,7 @@ func runInit(cmd *cobra.Command) {
 	// No, cobra flags have default values.
 	// We should only override if user EXPLICITLY provided the flag.
 	// How to check if flag was changed? cmd.Flags().Changed("source-lang")
-	
+
 	if cmd.Flags().Changed("source-lang") {
 		cfg.SourceLanguage = initSourceLang
 	}
@@ -73,7 +73,7 @@ func runInit(cmd *cobra.Command) {
 	if _, err := os.Stat(".codei18n/config.json"); err == nil && !initForce {
 		log.Fatal("配置文件已存在 (使用 --force 覆盖)")
 	}
-	
+
 	if err := config.SaveConfig(projectCfg); err != nil {
 		log.Fatal("保存配置失败: %v", err)
 	}
@@ -106,7 +106,7 @@ func runInit(cmd *cobra.Command) {
 	} else {
 		log.Info("提示: 运行 'codei18n translate' 可生成翻译")
 	}
-	
+
 	log.Success("项目初始化完成！")
 }
 

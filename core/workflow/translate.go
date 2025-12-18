@@ -175,7 +175,6 @@ func Translate(cfg *config.Config, opts TranslateOptions) (*TranslateResult, err
 			}
 
 			countMu.Lock()
-			defer countMu.Unlock()
 
 			if err != nil {
 				failCount += len(currentBatch)
@@ -186,7 +185,13 @@ func Translate(cfg *config.Config, opts TranslateOptions) (*TranslateResult, err
 					store.Set(t.id, t.toLang, res)
 					successCount++
 				}
+				// Save progress immediately
+				if err := store.Save(); err != nil {
+					log.Warn("保存进度失败: %v", err)
+				}
 			}
+
+			countMu.Unlock()
 
 			s.Suffix = fmt.Sprintf(" 正在翻译... (%d/%d 成功, %d 失败)", successCount, len(tasks), failCount)
 		}(batch)

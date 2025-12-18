@@ -21,7 +21,7 @@ func TestInitEnhancedFlow(t *testing.T) {
 
 	// 1. Setup a fake Git repo
 	require.NoError(t, exec.Command("git", "init", tempDir).Run())
-	
+
 	// Create a sample file
 	sampleContent := `package main
 // Test Init
@@ -51,7 +51,7 @@ func main() {}`
 	// JSON marshaling escapes '>', so we unmarshal to verify content properly
 	var mappingData map[string]interface{}
 	require.NoError(t, json.Unmarshal(mappingContent, &mappingData))
-	
+
 	comments := mappingData["comments"].(map[string]interface{})
 	var foundTranslation bool
 	for _, v := range comments {
@@ -91,7 +91,7 @@ func TestInitGlobalConfigInheritance(t *testing.T) {
 	// Create a fake global config in a subfolder
 	fakeHome := filepath.Join(tempDir, "fake_home")
 	os.MkdirAll(filepath.Join(fakeHome, ".codei18n"), 0755)
-	
+
 	globalConfig := `{
 		"sourceLanguage": "fr",
 		"localLanguage": "de",
@@ -103,7 +103,7 @@ func TestInitGlobalConfigInheritance(t *testing.T) {
 	}`
 	os.WriteFile(filepath.Join(fakeHome, ".codei18n", "config.json"), []byte(globalConfig), 0644)
 
-	// Run init in a project dir, pointing to fake config via --config flag? 
+	// Run init in a project dir, pointing to fake config via --config flag?
 	// The init command logic uses config.LoadConfig() which looks at HOME.
 	// We cannot easily mock HOME env var for the subprocess unless we set it.
 	projectDir := filepath.Join(tempDir, "project")
@@ -113,14 +113,14 @@ func TestInitGlobalConfigInheritance(t *testing.T) {
 	cmd.Dir = projectDir
 	// Mock HOME to point to fake_home
 	cmd.Env = append(os.Environ(), "HOME="+fakeHome)
-	
+
 	out, err := cmd.CombinedOutput()
 	require.NoError(t, err, string(out))
 
 	// Verify project config
 	projectConfigPath := filepath.Join(projectDir, ".codei18n", "config.json")
 	require.FileExists(t, projectConfigPath)
-	
+
 	content, _ := os.ReadFile(projectConfigPath)
 	sContent := string(content)
 
