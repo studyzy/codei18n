@@ -24,10 +24,13 @@ func TestNewOllamaTranslator_Defaults(t *testing.T) {
 // 集成测试（可选）：连接本地 Ollama 服务并尝试真实翻译。
 //
 // 启用方式：
-//   CODEI18N_OLLAMA_TEST=1 go test ./adapters/translator -run TestOllamaTranslator_Translate_Integration -v
+//
+//	CODEI18N_OLLAMA_TEST=1 go test ./adapters/translator -run TestOllamaTranslator_Translate_Integration -v
+//
 // 可选环境变量：
-//   CODEI18N_OLLAMA_ENDPOINT  默认为 http://localhost:11434
-//   CODEI18N_OLLAMA_MODEL     默认为 qwen3:4b
+//
+//	CODEI18N_OLLAMA_ENDPOINT  默认为 http://localhost:11434
+//	CODEI18N_OLLAMA_MODEL     默认为 qwen3:4b
 func TestOllamaTranslator_Translate_Integration(t *testing.T) {
 	if os.Getenv("CODEI18N_OLLAMA_TEST") == "" {
 		t.Skip("跳过 Ollama 集成测试：未设置 CODEI18N_OLLAMA_TEST")
