@@ -3,6 +3,10 @@
   "sourceLanguage": "en",
   "targetLanguage": "zh-CN",
   "comments": {
+    "01263bfd0eb1dab90dff7edcfaf3419199d1e124": {
+      "en": "// GenerateCommentID calculates a stable ID for a comment\n// Rule: SHA1(file_path + language + parent_symbol + normalized_text)",
+      "zh-CN": "// GenerateCommentID 为注释计算一个稳定的ID\n// 规则：SHA1(文件路径 + 语言 + 父级符号 + 标准化文本)"
+    },
     "017f346c71d4cf21cfbf021aac967c600fa5dcbb": {
       "en": "// CommentType represents the type of Rust comment.",
       "zh-CN": "// CommentType 表示 Rust 注释的类型。"
@@ -43,6 +47,10 @@
       "en": "// 3. Parse JSON",
       "zh-CN": "// 3. 解析JSON"
     },
+    "057b616af3d39a13da47a3849e07a3cab5631a78": {
+      "en": "// Normalize whitespace for block comments",
+      "zh-CN": "// 为块注释规范化空白字符"
+    },
     "05b4dab385f2dacc732d7a36fc581d309fb64efe": {
       "en": "// NewLLMTranslator creates a new translator.",
       "zh-CN": "// NewLLMTranslator 创建一个新的翻译器。"
@@ -75,6 +83,10 @@
       "en": "// Remove Markdown code block syntax if present",
       "zh-CN": "// 移除Markdown代码块语法（如果存在）"
     },
+    "0a52c6e364494775e245575461cff3cdfe8ef4f3": {
+      "en": "// 4. Incremental Update (Modify file)",
+      "zh-CN": "// 4. 增量更新（修改文件）"
+    },
     "0a99714152c44eae0b4322c3a9af81525f7b7f3d": {
       "en": "// 1. Load Config",
       "zh-CN": "// 1. 加载配置"
@@ -87,9 +99,29 @@
       "en": "// 3. Load Store",
       "zh-CN": "// 3. 加载存储"
     },
+    "0af1f8e6085360ac7037bc41a3a145e3d9433dc7": {
+      "en": "// FindOwnerNode finds the semantic owner node of the comment.\n// For DocComments, it looks for the next semantic sibling (skipping attributes).\n// For ModuleDocComments and NormalComments, it returns the parent node (representing the scope).",
+      "zh-CN": "// FindOwnerNode 查找注释的语义所有者节点。\n// 对于文档注释，它查找下一个语义兄弟节点（跳过属性）。\n// 对于模块文档注释和普通注释，它返回父节点（表示作用域）。"
+    },
+    "0af70390e0fab0e6f4d1ab9a9ef9d536075b31ff": {
+      "en": "// Verify range logic for merged comments (lines 1-2)\n// Should be: StartLine 1, EndLine 2 (was 3 before fix)",
+      "zh-CN": "// 验证合并注释的范围逻辑（第1-2行）\n// 应为：StartLine 1, EndLine 2（修复前为3）"
+    },
+    "0b0525c7e5e030bd3314c3acd84d6c86005bef39": {
+      "en": "// Restore Mode: ZH -\u003e EN\n// Current text is likely in LocalLanguage (ZH)\n// Search in store by comparing normalized values",
+      "zh-CN": "// 恢复模式：中文 -\u003e 英文\n// 当前文本可能为本地语言（中文）\n// 通过比较标准化值在存储中搜索"
+    },
+    "0bef88f180608b62a1ecb3344a6294561fdc9a2d": {
+      "en": "// Debug: Cat the file to verify content on disk",
+      "zh-CN": "// 调试：查看文件内容以验证磁盘上的内容"
+    },
     "0befc1c9e56acb0a52e8d27c3046e2f15ac6c012": {
       "en": "// For CLI bulk scan, maybe an array of that structure?",
       "zh-CN": "// 对于CLI批量扫描，或许使用该结构的数组？"
+    },
+    "0c3403889a0739cd732488f2f9f434a2ca252e9c": {
+      "en": "// parseBatchResponse parses the LLM response which is expected to be a JSON string array.\n// It handles potential Markdown code block wrapping (```json ... ```).",
+      "zh-CN": "// parseBatchResponse 解析预期为 JSON 字符串数组的 LLM 响应。\n// 它处理潜在的 Markdown 代码块包装（```json ... ```）。"
     },
     "0c5b3d60f21d9ca4acd255e55ce5980c2e627ff7": {
       "en": "// 4. Update",
@@ -111,9 +143,29 @@
       "en": "// Test special characters",
       "zh-CN": "// 测试特殊字符"
     },
+    "0f4ea7615ca49bd5a5dd48052037fe65d49e5497": {
+      "en": "// LoadFixture reads a file from testdata directory",
+      "zh-CN": "// LoadFixture 从 testdata 目录读取文件"
+    },
+    "0f72212afaa106e7781681a0f39ea0911ee82cf8": {
+      "en": "// ResolveSymbolPath resolves the semantic symbol path for a given node by traversing up the syntax tree.\n// It constructs a path string like \"mod_name::StructName::method_name\".\n// Supported nodes: function_item, struct_item, enum_item, trait_item, mod_item, impl_item.",
+      "zh-CN": "// ResolveSymbolPath 通过遍历语法树解析给定节点的语义符号路径。\n// 它构建类似 \"mod_name::StructName::method_name\" 的路径字符串。\n// 支持的节点类型：function_item, struct_item, enum_item, trait_item, mod_item, impl_item。"
+    },
     "1100deea685325780dd3995ea189d29d9fa1a810": {
       "en": "// [MOCK zh-CN-\u003een] // The comment is in the local language (Chinese), stored as LocalLanguage",
       "zh-CN": "// [MOCK zh-CN-\u003een] // 注释是本地语言（中文），存储为 LocalLanguage"
+    },
+    "1115301c1f4a4644e3a97c0f7b00ce214bf873d4": {
+      "en": "// Assuming we are in project root/tests, need to go up one level",
+      "zh-CN": "// 假设我们在项目根目录/tests 中，需要向上移动一级"
+    },
+    "11616c3d34c926327bbe254d1895f7e54537385d": {
+      "en": "// Execute Scan",
+      "zh-CN": "// 执行扫描"
+    },
+    "11a49cfde6ba35cca38ff8293265a89b14d89f43": {
+      "en": "// EndCol is StartCol + length (in bytes)",
+      "zh-CN": "// EndCol 等于 StartCol 加长度（以字节为单位）"
     },
     "11f6c0e31490ab947ab09a4e92d2d4e5c60477fb": {
       "en": "// If a batch has mixed directions, we can't use TranslateBatch easily.",
@@ -123,17 +175,52 @@
       "en": "// Config represents the project configuration",
       "zh-CN": "// Config 代表项目配置"
     },
+    "12643a2e6591197284f266a6b70eb9a428be38d0": {
+      "en": "// Verify the last doc comments (lines 15, 17, 18)\n// We expect them to be separate but have the same symbol"
+    },
     "1311d6e062c85e73fb969ffe451e40f1630f6317": {
       "en": "// If I pass server.URL to NewLLMTranslator, the client will append /chat/completions?",
       "zh-CN": "// 如果我将 server.URL 传递给 NewLLMTranslator，客户端会追加 /chat/completions?"
+    },
+    "132ff224287761c3192d9fddaa6618d9c34fa3e3": {
+      "en": "// Expect 7 comments after merging consecutive lines:\n// 1. Merged inner doc (lines 1-2)\n// 2. Inner doc (line 4)\n// 3. Outer doc (line 6)\n// 4. Line comment (line 8)\n// 5. Block comment (lines 9-10)\n// 6. Merged line comment (lines 11-12)\n// 7. Merged doc comment (lines 15-18)",
+      "zh-CN": "// 合并连续行后期望有 7 条注释：\n// 1. 合并的内部文档（第 1-2 行）\n// 2. 内部文档（第 4 行）\n// 3. 外部文档（第 6 行）\n// 4. 行注释（第 8 行）\n// 5. 块注释（第 9-10 行）\n// 6. 合并的行注释（第 11-12 行）\n// 7. 合并的文档注释（第 15-18 行）"
     },
     "13c86c8bbf21f607bdbfbb95270b2122dbe1795c": {
       "en": "// TranslateBatch translates a batch of texts (optional optimization)",
       "zh-CN": "// TranslateBatch 翻译一批文本（可选优化）"
     },
+    "13d4887f1d3342478deb188488d0e100f3c5a542": {
+      "en": "// It's a block comment (/* ... */)\n// 1. Flush any existing line comments",
+      "zh-CN": "// 这是一个块注释（/* ... */）\n// 1. 清空任何现有的行注释"
+    },
     "1443d319ed4491c6fe454eb0b7ca607b3164dfe2": {
       "en": "// Actually, let's fix the task collection to be grouped.",
       "zh-CN": "// 实际上，让我们将任务集合固定为分组形式。"
+    },
+    "149138244a0d63418f4e182d150fad27c4c96c54": {
+      "en": "// 1. Build binary once",
+      "zh-CN": "// 1. 构建二进制文件一次"
+    },
+    "1493cd33374e9810042180b697f6f7d88ea58d55": {
+      "en": "// TestDeepSeekIntegration is a manual test to verify API connectivity.\n// It runs only if OPENAI_API_KEY is set and -short flag is NOT used.\n// Run with: go test -run TestDeepSeekIntegration (without -short)",
+      "zh-CN": "// TestDeepSeekIntegration 是用于验证 API 连通性的手动测试。\n// 仅当 OPENAI_API_KEY 已设置且未使用 -short 标志时运行。\n// 运行方式：go test -run TestDeepSeekIntegration（不带 -short）"
+    },
+    "14a24c6f3fb15df358d134cbc0ffec583853aeca": {
+      "en": "// Check if output is valid JSON\n// And DOES NOT contain \"INFO\" or \"WARN\"",
+      "zh-CN": "// 检查输出是否为有效 JSON\n// 且不包含 \"INFO\" 或 \"WARN\""
+    },
+    "14e4dd13dcff604c73d5a1e3bedba3b2f0160582": {
+      "en": "// Only set if not already set (inner nodes might be more specific)\n// But CommentMap maps to the \"best\" node usually.",
+      "zh-CN": "// 仅当未设置时才设置（内部节点可能更具体）\n// 但 CommentMap 通常映射到“最佳”节点。"
+    },
+    "152770b1c8ccd46bb1abc694c50bbd247ca34bde": {
+      "en": "// We expect roughly the same number of lines",
+      "zh-CN": "// 我们预期大致相同的行数"
+    },
+    "15d4d884adba02ddf0b1935bf3e8add84b0fbd58": {
+      "en": "// 3. Execute CLI: codei18n scan --file simple.go --format json\n// Use absolute path to ensure robustness",
+      "zh-CN": "// 3. 执行 CLI：codei18n scan --file simple.go --format json\n// 使用绝对路径以确保健壮性"
     },
     "15ed60afec1f0dfef6d9ff9803befec646660ac2": {
       "en": "// I will add a check: if batch has mixed directions, fallback to sequential logic or split it?",
@@ -143,6 +230,10 @@
       "en": "// Find source text (from source lang)",
       "zh-CN": "// 查找源文本（从源语言）"
     },
+    "176aaa1a6237f9d33cb26cf66ef2d08b5c21889f": {
+      "en": "// Flush remaining line comments at the end",
+      "zh-CN": "// 最后刷新剩余的行注释"
+    },
     "1793a122609d444ea0287c96f2a50133e0bd838e": {
       "en": "// Override at build time via -ldflags \"-X main.version=\u003cversion\u003e\"",
       "zh-CN": "// 通过 -ldflags \"-X main.version=\u003cversion\u003e\" 在构建时覆盖"
@@ -151,6 +242,10 @@
       "en": "// [MOCK zh-CN-\u003een] // ContainsChinese Checks if the text contains Chinese characters",
       "zh-CN": "// [MOCK zh-CN-\u003een] // ContainsChinese 检查文本是否包含中文字符"
     },
+    "18b57a5098f34a9a37e2d80e87933347f63ef2fa": {
+      "en": "// Group by direction\n// Actually, just calling TranslateBatch with mixed tasks is wrong because TranslateBatch takes `from, to` args.\n// So we MUST ensure batch has same direction.\n// Given loop order is random, we should probably separate tasks by direction first.\n// But for now let's assume we can just check.",
+      "zh-CN": "// 按方向分组\n// 实际上，直接调用 TranslateBatch 处理混合任务是不正确的，因为 TranslateBatch 需要 `from, to` 参数。\n// 因此我们必须确保批次中的任务方向一致。\n// 由于循环顺序是随机的，我们可能需要先按方向分离任务。\n// 但目前我们假设可以通过检查来处理。"
+    },
     "18bc0f35258b2889ac9adbe4465d1e197d6234bf": {
       "en": "// import, const, type, var",
       "zh-CN": "// import, const, type, var"
@@ -158,6 +253,10 @@
     "18c0ef2fee96e72c33e4ca6b1904096423cb5f29": {
       "en": "// These should go to stderr",
       "zh-CN": "// 这些应该输出到 stderr"
+    },
+    "18c78b11333e57a817377090d158fe2364e224b5": {
+      "en": "// mergeComments merges consecutive comments of the same type and symbol.",
+      "zh-CN": "// mergeComments 合并相同类型和符号的连续注释。"
     },
     "1954fba125c46489ae500ace78288a04eef9c998": {
       "en": "// Priority: config file \u003e environment variable",
@@ -171,6 +270,14 @@
       "en": "// 5. Process with Batching and Concurrency",
       "zh-CN": "// 5. 使用批处理和并发进行处理"
     },
+    "1a6c6f6107247427557d0542ab758ed00e582830": {
+      "en": "// Calculate Range (Trimming trailing newline if present for Line/Doc comments)",
+      "zh-CN": "// 计算范围（为行/文档注释去除尾部换行符）"
+    },
+    "1ab92cc8a5c09209fba1bdc3dca4842f7c959d6f": {
+      "en": "// --- Scenario 2: CLI Flag Override ---\n// Run scan with --lang zh-CN. Should override config \"ja\".",
+      "zh-CN": "// --- 场景 2: CLI 标志覆盖 ---\n// 使用 --lang zh-CN 运行扫描。应覆盖配置中的 \"ja\"。"
+    },
     "1ac1ce92f4bbb645be6e189f084ba0b1b62f110c": {
       "en": "// Verify Prompt contains JSON",
       "zh-CN": "// 验证提示包含JSON"
@@ -183,13 +290,29 @@
       "en": "// Write simple text to file",
       "zh-CN": "// 向文件写入简单文本"
     },
+    "1b32636fe6b033d4f73aaf6b461628ab6aa46688": {
+      "en": "// Check Language",
+      "zh-CN": "// 检查语言"
+    },
+    "1b36e8d31da31ddb92905f0052fb94975a9ebdc0": {
+      "en": "// Current implementation expects full body to be JSON or wrapped in Markdown\n// If LLM says \"Here is the JSON: [...]\", it might fail.\n// We can improve this in T006 Edge Cases if needed.",
+      "zh-CN": "// 当前实现期望整个主体是 JSON 或包裹在 Markdown 中\n// 如果 LLM 说“这是 JSON: [...]”，可能会失败。\n// 如果需要，我们可以在 T006 边缘案例中改进这一点。"
+    },
     "1b3980c6b8e28710d6ab392939abe50870993912": {
       "en": "// Translate returns a mock translation",
       "zh-CN": "// Translate 返回一个模拟翻译"
     },
+    "1b43e4cd42650019e0b9d6c50286646d8bcd3340": {
+      "en": "// TestMain handles the setup and teardown for the entire test suite",
+      "zh-CN": "// TestMain 处理整个测试套件的设置和清理工作"
+    },
     "1bb33750f2cf94eb571a9e82e51f4e8763953f1d": {
       "en": "// First Level Key: Comment.ID",
       "zh-CN": "// 第一层级键：Comment.ID"
+    },
+    "1c1ee5805bb17ed3a3192b8e67f8f25cecbfabbd": {
+      "en": "// Symbol is the semantic symbol path (e.g., \"package.main.CalculateBalance\")\n// For comments not bound to specific symbols, use \"file.global\" or similar",
+      "zh-CN": "// Symbol 是语义符号路径（例如 \"package.main.CalculateBalance\"）\n// 对于未绑定到特定符号的注释，使用 \"file.global\" 或类似标识"
     },
     "1c4d74e180554fae5c21ee19a797f2087d0fbe23": {
       "en": "// LanguageAdapter defines the interface for language-specific AST parsers",
@@ -222,6 +345,10 @@
     "1e8485f2a6e90e70954b7271dac8958d2b06a620": {
       "en": "// The correct fix is to sort tasks or group tasks by direction before batching.",
       "zh-CN": "// 正确的修复方法是在批处理前对任务进行排序或按方向分组。"
+    },
+    "1e9c6e7563c8c75314e45d871d7b198b12d48fd1": {
+      "en": "// Parse JSON",
+      "zh-CN": "// 解析 JSON"
     },
     "1ed391848e1f3a2bbb85ced1c728401d5b35133e": {
       "en": "// Save writes the mapping to disk",
@@ -271,6 +398,10 @@
       "en": "// Parse parses the provided Rust source code and extracts comments.",
       "zh-CN": "// Parse 解析提供的 Rust 源代码并提取注释。"
     },
+    "235106bd59eff51e52d6abc94c5a5f9e5143b9d5": {
+      "en": "/* Block Comment */",
+      "zh-CN": "/* 块注释 */"
+    },
     "2433b932aea9958a964dd0ac58b401e648779f5d": {
       "en": "// So we MUST ensure batch has same direction.",
       "zh-CN": "// 因此我们必须确保批次具有相同的方向。"
@@ -278,6 +409,10 @@
     "24e9fa18ae3aac85d046832a052322754fe996cf": {
       "en": "// 3. If the new ID differs from the old ID (it definitely will, because the text has changed), then migrate the data",
       "zh-CN": "// 3. 如果新ID与旧ID不同（由于文本已更改，这种情况必然会发生），则迁移数据"
+    },
+    "251c09f2272a505766cc178d5000970d401a43f9": {
+      "en": "// processCommentGroup handles the logic of merging or splitting comments within a group.\n// It ensures that only consecutive Line comments (//) are merged.\n// Block comments (/* */) are kept separate, even if consecutive or adjacent to line comments.",
+      "zh-CN": "// processCommentGroup 处理组内注释合并或拆分的逻辑。\n// 它确保仅合并连续的行注释（//）。\n// 块注释（/* */）保持独立，即使连续或与行注释相邻。"
     },
     "256f10689dd1551d6708e2e5468a73a636f38dd1": {
       "en": "// Case 2: ZH exists, EN missing -\u003e Translate ZH to EN (reverse translation)",
@@ -287,6 +422,10 @@
       "en": "// It handles potential Markdown code block wrapping (```json ... ```).",
       "zh-CN": "// 处理潜在的 Markdown 代码块包装（```json ... ```）。"
     },
+    "25ab23deb3acbb07aa24a17c7bde3f182a95d85b": {
+      "en": "// ID is the unique identifier calculated based on semantics\n// Rule: SHA1(file_path + language + symbol + normalized_text)",
+      "zh-CN": "// ID 是基于语义计算的唯一标识符\n// 规则：SHA1(文件路径 + 语言 + 符号 + 标准化文本)"
+    },
     "25b1fa5b96bc9e163b48f7ffbb25d24775c7fd39": {
       "en": "// Skipping strict assertion for MVP",
       "zh-CN": "// 为最小可行产品跳过严格断言"
@@ -295,9 +434,17 @@
       "en": "// Apply replacements in reverse order",
       "zh-CN": "// 按相反顺序应用替换"
     },
+    "2656994b856a20eb5bc48302495530e89d604b7e": {
+      "en": "// GetMapping returns the underlying mapping object (read-only copy recommended for complex ops)\n// For now returning pointer for simplicity in MVP",
+      "zh-CN": "// GetMapping 返回底层映射对象（复杂操作建议使用只读副本）\n// 目前为简化 MVP 实现，返回指针"
+    },
     "269c2d7efdaab3cff9240bb6b79ceaac70d918f6": {
       "en": "// [MOCK zh-CN-\u003een] // IsEnglish determines if the text is primarily in English",
       "zh-CN": "// [MOCK zh-CN-\u003een] // IsEnglish 判断文本是否主要是英文"
+    },
+    "26a064d186a80f7f31d99d65fc3a31a6434bcf39": {
+      "en": "// Line comment",
+      "zh-CN": "// 行注释"
     },
     "26b78823baa37787dff89b487c53252e2234fd95": {
       "en": "// Supports fully lowercase baseurl",
@@ -319,9 +466,16 @@
       "en": "// parseBatchResponse parses the LLM response which is expected to be a JSON string array.",
       "zh-CN": "// parseBatchResponse 解析LLM响应，预期为JSON字符串数组。"
     },
+    "2755e7af362b51e7c066597460323693109a0172": {
+      "en": "// Parse parses the source code and extracts comments\n// file: the file path (used for ID generation context)\n// src: the source code content (if nil, read from file)",
+      "zh-CN": "// Parse 解析源代码并提取注释\n// file: 文件路径（用于 ID 生成上下文）\n// src: 源代码内容（若为 nil，则从文件读取）"
+    },
     "2960274474bad24c03ce367cf0a9dde3b62e677e": {
       "en": "// Block comment /* */",
       "zh-CN": "// 块注释 /* */"
+    },
+    "2972276bec78563545bf4fe31350177a7bd5e811": {
+      "en": "// Verify range logic for first comment (line 1)"
     },
     "2aa5b10fd959f6d7a34647fca6b0bb705129c105": {
       "en": "// - If zh-CN exists but en is missing: zh-CN -\u003e en",
@@ -351,6 +505,10 @@
       "en": "// For now returning pointer for simplicity in MVP",
       "zh-CN": "// 目前为简化MVP实现而返回指针"
     },
+    "2ba15dfda575427c8593a0e62f32e9b80aec7d80": {
+      "en": "// 2. Execute",
+      "zh-CN": "// 2. 执行"
+    },
     "2bbc8bcace973d242842853ee5095c18418a6dab": {
       "en": "// 2. Init Translator",
       "zh-CN": "// 2. 初始化翻译器"
@@ -371,6 +529,10 @@
       "en": "// ModuleDoc and NormalDoc belong to Parent scope",
       "zh-CN": "// ModuleDoc 和 NormalDoc 属于父作用域"
     },
+    "2dd3219354a6f419908e33ef4103ee2785041ee1": {
+      "en": "// 3. Strict Verification\n// We want to ensure NO extra fields or weird formatting like \"[INFO]\"",
+      "zh-CN": "// 3. 严格验证\n// 我们希望确保没有额外的字段或奇怪的格式，如 \"[INFO]\""
+    },
     "2e8fd6aec96b54309e0c8746b92290b5bb75da54": {
       "en": "// We convert to English ('en') for all staged go files",
       "zh-CN": "// 我们将所有暂存的 go 文件转换为英文('en')"
@@ -378,6 +540,10 @@
     "2eb9970a6e610b451582635aa9c07caf00c294ac": {
       "en": "// Output",
       "zh-CN": "// 输出"
+    },
+    "2ed50c5c078748ffecda48fa6b187c450ae85dc4": {
+      "en": "// Not a standard line comment marker, assume content",
+      "zh-CN": "// 非标准行注释标记，按内容处理"
     },
     "2f65415c50f0d63295673678bd089fb0f89d20a0": {
       "en": "// mapCmd represents the map command",
@@ -399,6 +565,9 @@
       "en": "// GenerateCommentID calculates a stable ID for a comment",
       "zh-CN": "// GenerateCommentID 为评论计算一个稳定的ID"
     },
+    "32e60c112bd0efa971fb7c9196461e55d8630829": {
+      "en": "/// This is an optimization that allows us to keep using the static precompiles"
+    },
     "338f41c80244b4be6d7a151887fbeeb46cdce772": {
       "en": "// Create the content to hash",
       "zh-CN": "// 创建要哈希处理的内容"
@@ -406,6 +575,10 @@
     "33d307a5c4bbbf98126879cfaf999c190b964283": {
       "en": "// If sequential fallback (single item)",
       "zh-CN": "// 如果顺序回退（单个项目）"
+    },
+    "343762dc7db290e28a2e6103280b94e02a3f72d7": {
+      "en": "// Hello World",
+      "zh-CN": "// Hello World"
     },
     "344db02bfda50dde78785f011ecb5cbeeda7df95": {
       "en": "// LoadConfig loads the configuration from Viper into the Config struct",
@@ -431,6 +604,14 @@
       "en": "// Let's safe guard: process batch only if direction matches.",
       "zh-CN": "// 让我们添加安全防护：仅当方向匹配时才处理批次。"
     },
+    "364a8d64332407d96b11628c26b833c1a49a7112": {
+      "en": "// 4. Verify required fields on root",
+      "zh-CN": "// 4. 验证根节点上的必填字段"
+    },
+    "36fdce00fbf8857e5262e41699ab3dddc6e00b94": {
+      "en": "// 2. Create config file with targetLanguage = \"ja\" (Japanese)",
+      "zh-CN": "// 2. 创建配置文件，设置 targetLanguage = \"ja\"（日语）"
+    },
     "370e5e153da1a891484febb782551ce712259996": {
       "en": "// Helper map to find comments by content",
       "zh-CN": "// 用于按内容查找评论的辅助映射"
@@ -438,6 +619,14 @@
     "374d313154d1916836ca8871590bce2d8c7644f3": {
       "en": "// [MOCK zh-CN-\u003een] // IsChinese determines if the text is primarily in Chinese",
       "zh-CN": "// [MOCK zh-CN-\u003een] // IsChinese 判断文本是否主要是中文"
+    },
+    "37eff95977b56f1ae4b56f5b47cd3a05aa91968b": {
+      "en": "// 4. Verify Output Structure (Protocol)",
+      "zh-CN": "// 4. 验证输出结构（协议）"
+    },
+    "385571e20b1d14aeb95630ea9b76f7eb8237ea5b": {
+      "en": "// 3. Cleanup",
+      "zh-CN": "// 3. 清理"
     },
     "395803016192d38bc32a244c7b5a92ce70c4f2cc": {
       "en": "// Check if target lang exists and is not empty",
@@ -447,6 +636,10 @@
       "en": "// 4. Identify missing translations",
       "zh-CN": "// 4. 识别缺失的翻译"
     },
+    "397bff20bc5b95f520e01b2139ed7fae174edab5": {
+      "en": "// Expect 1 addition",
+      "zh-CN": "// 预期增加1条"
+    },
     "399e0bbe1e7771664358a124cdc06f694b3e2721": {
       "en": "// LLMTranslator implements Translator using OpenAI compatible API",
       "zh-CN": "// LLMTranslator 通过 OpenAI 兼容 API 实现 Translator 接口"
@@ -454,6 +647,10 @@
     "39a2fcbf5f1b0efa11a9fa79e2489172ac673e47": {
       "en": "// For comments not bound to specific symbols, use \"file.global\" or similar",
       "zh-CN": "// 对于未绑定到特定符号的注释，使用 \"file.global\" 或类似方式"
+    },
+    "3ab228379a38f5d70fc26278cea44a666f515dad": {
+      "en": "// 4. Verify commented out code\n// Should be strictly separated from preceding block comment",
+      "zh-CN": "// 4. 验证被注释掉的代码\n// 应与前面的块注释严格分离"
     },
     "3abbac5ed708f0de793c66c813d2f660311f8b9c": {
       "en": "// 6. Save",
@@ -491,6 +688,10 @@
       "en": "// Since we can't easily change the batching structure inside this goroutine loop without complicating it,",
       "zh-CN": "// 由于我们无法轻易更改此 goroutine 循环内的批处理结构，否则会使其复杂化，"
     },
+    "3cd064a6b95675cbdda9f845e7b6fd56b13b3949": {
+      "en": "// Read file content manually to ensure consistency with directory scan\n// and to debug potential read issues",
+      "zh-CN": "// 手动读取文件内容以确保与目录扫描的一致性\n// 并调试潜在的读取问题"
+    },
     "3d0e8b4fd0d4163fc75b930c7fe42927e39459d5": {
       "en": "// Only set if not already set (inner nodes might be more specific)",
       "zh-CN": "// 仅当未设置时才设置（内部节点可能具有更高的特异性）"
@@ -519,6 +720,10 @@
       "en": "// Let's assume for typical usage (filling missing), it's usually En-\u003eZh.",
       "zh-CN": "// 假设典型用法（填充缺失）通常是英译中。"
     },
+    "404f98a8b4eb7801ab41163974c097ee8e327f1e": {
+      "en": "// 1. Create initial file",
+      "zh-CN": "// 1. 创建初始文件"
+    },
     "414d032a864ca642e0e7d600a12922c34b14198a": {
       "en": "// This test is manual verification mainly, but ensures compilation and basic function availability",
       "zh-CN": "// 本测试主要进行人工验证，但确保编译和基本功能可用性"
@@ -531,9 +736,17 @@
       "en": "// DocComment represents outer documentation comments (/// or /** */).",
       "zh-CN": "// DocComment 表示外部文档注释（/// 或 /** */）。"
     },
+    "42329e2e9f4b69d8230464c2d43f610fbc3d6dbe": {
+      "en": "// Key fix: When reverting to English, automatically generate IDs for new English comments and migrate existing translations to them.\n// This way, subsequent scan/map updates can directly recognize this English comment and will not treat it as an untranslated new comment.",
+      "zh-CN": "// 关键修复：当回退到英文时，自动为新英文注释生成 ID，并将现有翻译迁移到这些新 ID。\n// 这样，后续的扫描/映射更新就能直接识别这个英文注释，而不会将其视为未翻译的新注释。"
+    },
     "426141c4a9b8fe45712e17019e6c684c0ba4a6bc": {
       "en": "// For DocComments, it looks for the next semantic sibling (skipping attributes).",
       "zh-CN": "// 对于文档注释，它会查找下一个语义兄弟节点（跳过属性）。"
+    },
+    "427b578541435795cd2a2c12e7b19aadacf4b47d": {
+      "en": "// Update range",
+      "zh-CN": "// 更新范围"
     },
     "437ef043134b58a2c4f88530bc8a8ff08d2e5d19": {
       "en": "// Basic check to see if it looks like Chinese (or at least changed)",
@@ -547,9 +760,21 @@
       "en": "// Rule: SHA1(file_path + language + symbol + normalized_text)",
       "zh-CN": "// 规则：SHA1(文件路径 + 语言 + 符号 + 规范化文本)"
     },
+    "456f2631f0b67aee662b3ecffcf04b97c0c586d6": {
+      "en": "// Restore Config to JA for Scenario 1",
+      "zh-CN": "// 为场景 1 将配置恢复为 JA"
+    },
+    "45c4704946661437c9459123325c4a8c7a468a60": {
+      "en": "// Translate to ZH-CN (using new config)",
+      "zh-CN": "// 翻译为 ZH-CN（使用新配置）"
+    },
     "465c68fb8c53c64ea85a98ef7aeb0c51dd498abb": {
       "en": "// 3. // Inner logic -\u003e Owner is block -\u003e Parent is fn main -\u003e Path \"main\"",
       "zh-CN": "// 3. // 内部逻辑 -\u003e 所有者是块 -\u003e 父级是 fn main -\u003e 路径 \"main\""
+    },
+    "46ff67c9d22ecfd2afce0db7f4bb44ddf47eea3e": {
+      "en": "/*\n\t   Block\n\t   Comment\n\t*/",
+      "zh-CN": "/*\n\t   块\n\t   注释\n\t*/"
     },
     "473140d476f993fa7a19143904643be2b07cdedd": {
       "en": "// NewLLMTranslator sets BaseURL.",
@@ -559,6 +784,10 @@
       "en": "// Or better: Group batches by direction.",
       "zh-CN": "// 或者更好的做法：按方向对批次进行分组。"
     },
+    "48a755fcde54938f72de389b8160b1b3e9ea270f": {
+      "en": "// Block comments",
+      "zh-CN": "// 块注释"
+    },
     "49399a060308536ab2edb68009e85c7c3037c290": {
       "en": "// Diff logic omitted for brevity",
       "zh-CN": "// 为简洁起见，差异逻辑已省略"
@@ -567,6 +796,10 @@
       "en": "// Calculate IDs for all comments",
       "zh-CN": "// 计算所有评论的ID"
     },
+    "4b7f2e7b36c6290233a0572e4338fe1d872a0c8f": {
+      "en": "// Fix for Tree-sitter including newline in Line/Doc comments\n// If it's a line/doc comment and includes newline (EndCol == 1 \u0026\u0026 EndRow \u003e StartRow)\n// We want to snap it back to the same line.",
+      "zh-CN": "// 修复 Tree-sitter 在行/文档注释中包含换行符的问题\n// 如果是行/文档注释且包含换行符（EndCol == 1 \u0026\u0026 EndRow \u003e StartRow）\n// 我们希望将其调整回同一行。"
+    },
     "4ba420f7fc28832dfba8fc39e47fefd2d50fa17b": {
       "en": "// 1. Send all texts in one prompt (if length permits) or multiple concurrent requests.",
       "zh-CN": "// 1. 如果长度允许，将所有文本一次性发送（通过单个提示），或通过多个并发请求发送。"
@@ -574,6 +807,14 @@
     "4bf6fecbc30e6f75c93e55bf77f015498008c635": {
       "en": "// assert.NotContains(t, string(content), \"Hello says hello\")",
       "zh-CN": "// 断言 content 字符串中不包含 \"Hello says hello\""
+    },
+    "4ca60899a540040945a1fab60ec885c547bf0484": {
+      "en": "// Note: The CLI might say \"Done\" or similar, but shouldn't say \"Added\"\n// Or we can check if file mod time changed if the tool is smart,\n// or just check content size matches (since hashing might not be deterministic if ordering changes)",
+      "zh-CN": "// 注意：CLI 可能会显示“完成”或类似信息，但不应显示“已添加”\n// 或者，如果工具足够智能，我们可以检查文件修改时间是否变化，\n// 或者直接检查内容大小是否匹配（因为如果顺序改变，哈希可能不是确定性的）"
+    },
+    "4d953486bcecc616bdc995fc0e32e18d40669086": {
+      "en": "// If targetText doesn't have markers, add them based on original type\n// Note: For Rust, we need to handle /// and //! markers too",
+      "zh-CN": "// 如果目标文本没有标记，根据原始类型添加标记\n// 注意：对于 Rust，我们还需要处理 /// 和 //! 标记"
     },
     "4de2fb26c2df004cce8fe3fb98ccb4c0fc9a3700": {
       "en": "// Find Owner and Symbol Path",
@@ -595,6 +836,10 @@
       "en": "// This shouldn't happen often if we sort, but safety net.",
       "zh-CN": "// 如果排序了，这种情况不应经常发生，但安全网仍需保留。"
     },
+    "50b143b2882017b65711036f8d822feb9adb5d39": {
+      "en": "// SimpleGoContent is a basic Go file with line and block comments",
+      "zh-CN": "// SimpleGoContent 是一个包含行注释和块注释的基本 Go 文件"
+    },
     "50fbd364435aea6fc501679169c3f3b17798b91f": {
       "en": "// MockLLMHandlerFunc defines the signature for handling mock requests",
       "zh-CN": "// MockLLMHandlerFunc 定义了处理模拟请求的签名"
@@ -603,9 +848,25 @@
       "en": "// We search in store for value == c.SourceText",
       "zh-CN": "// 我们在 store 中搜索 value == c.SourceText 的记录"
     },
+    "522c9f7d2175ea4967fb68cf29be69efcedbb1b6": {
+      "en": "// Expect additions",
+      "zh-CN": "// 预期新增内容"
+    },
+    "5230b5e5395f1a2b874afd62d3dac58cba2312b0": {
+      "en": "// Init project",
+      "zh-CN": "// 初始化项目"
+    },
+    "5240339dcaa93f5194d172cdfc9d048fe2252e4a": {
+      "en": "// commented_out_code();",
+      "zh-CN": "// commented_out_code();"
+    },
     "52ec84913b4977679c71410d0bbf733eb8b81abe": {
       "en": "// 3. Load Mapping",
       "zh-CN": "// 3. 加载映射"
+    },
+    "530f32a2c2806976ed914caa96e8c5cbaefbae6b": {
+      "en": "// Switch config to ZH-CN to populate ZH translations",
+      "zh-CN": "// 将配置切换为ZH-CN以填充中文翻译"
     },
     "539f6bab340e523e54a026271a3202f55f15d5d3": {
       "en": "// mapUpdateCmd represents the map update command",
@@ -614,6 +875,13 @@
     "53bd570660202785100fc7d62039b6aa7f7816ec": {
       "en": "// LanguageAdapter defines the interface for language-specific parsers",
       "zh-CN": "// LanguageAdapter 定义了语言特定解析器的接口"
+    },
+    "543f716248798f3acd7c15dee782360393de062c": {
+      "en": "// Line 17"
+    },
+    "55cf0f288a1869934366533f97c2e4d25d295a2a": {
+      "en": "// Append content\n// Ensure we have a newline between them if not present in the last one",
+      "zh-CN": "// 追加内容\n// 确保在它们之间有换行符（如果最后一个内容没有换行符）"
     },
     "55f07bc022af53e324811ad238a922319853ad3a": {
       "en": "// Let's stick to simple list for now if JSON, unless it's single file mode.",
@@ -639,6 +907,9 @@
       "en": "// Determine strategy",
       "zh-CN": "// 确定策略"
     },
+    "58ec13c61728d38e31e55efd6b36342f81dfc3f2": {
+      "en": "//! It happened on Ethereum block 1_920_000"
+    },
     "5a7adb029281a1a578262900b2e3858e677bf683": {
       "en": "// Normalize current comment text for comparison",
       "zh-CN": "// 标准化当前评论文本以便比较"
@@ -655,17 +926,44 @@
       "en": "// End column number",
       "zh-CN": "// 结束列号"
     },
+    "5bac2a8d46398dc954f24015c5d37ef5623c6119": {
+      "en": "// Need heuristic to determine /// or //!\n// Check original source",
+      "zh-CN": "// 需要启发式方法来确定是 /// 还是 //！\n// 检查原始源代码"
+    },
     "5c962acb065dabca3a5bd636d34f32d305b33ce2": {
       "en": "// apiKey: API Key",
       "zh-CN": "// apiKey: API密钥"
+    },
+    "5dc95d13694545dd4b0b5186e91b438bc89a7884": {
+      "en": "// createMergedComment creates a single comment from a list of Line comments",
+      "zh-CN": "// createMergedComment 从一系列行注释中创建单个注释"
+    },
+    "5e9a5180b0732ca9b15edd6c6b17078529009453": {
+      "en": "// Regenerate ID because content changed",
+      "zh-CN": "// 内容已更改，重新生成 ID"
     },
     "5f1fcf95aa47c2e8490aa57f9311e7be57096d19": {
       "en": "// Version is the version of the mapping file format (e.g., \"1.0\")",
       "zh-CN": "// Version 是映射文件格式的版本号（例如：\"1.0\"）"
     },
+    "5f25ee88be7bdce1231e3d92513b03fb6204d6f2": {
+      "en": "// good"
+    },
+    "5f9a3b66d0c811823df0e16c9bcfe939990b65b3": {
+      "en": "// Mixed batch, fallback to sequential loop manually here\n// This shouldn't happen often if we sort, but safety net.",
+      "zh-CN": "// 混合批次，此处手动回退到顺序循环\n// 如果我们进行排序，这种情况不应经常发生，但这是安全网。"
+    },
+    "5fddd822d40bcaacc8d93c0886778a508fad001f": {
+      "en": "// 2. Test Batch Translate",
+      "zh-CN": "// 2. 测试批量翻译"
+    },
     "6016a590543f89c73e8ef60dfdf2d4fd6112cb29": {
       "en": "// If formatting as JSON, the spec says:",
       "zh-CN": "// 如果格式化为 JSON，规范说明："
+    },
+    "606026c5238638e3530950d95c63e6c92a92a97c": {
+      "en": "// Use the symbol of the first comment in the group",
+      "zh-CN": "// 使用组中第一条注释的符号"
     },
     "60cf82a13dd5902c703a65adc230bf79fa2b2f10": {
       "en": "// We ignore error here, if file doesn't exist, we just don't show translations",
@@ -682,6 +980,10 @@
     "61c91ebabd6370f44743f2e75966a0302a23c7a2": {
       "en": "// Start column number",
       "zh-CN": "// 起始列号"
+    },
+    "623b9248f67c88680605fd11f04ece029c33f3ba": {
+      "en": "// 1. Verify continuous line comments\n// Depending on implementation, these might be merged or separate.\n// Common parser behavior: \"Line 1\" and \"Line 2\" are separate unless doc comment.\n// We'll check for existence of \"Line 1\" and \"Line 2\".",
+      "zh-CN": "// 1. 验证连续的行注释\n// 根据实现方式，这些注释可能会被合并或保持独立。\n// 常见解析器行为：除非是文档注释，否则“第 1 行”和“第 2 行”是独立的。\n// 我们将检查是否存在“第 1 行”和“第 2 行”。"
     },
     "628485d01cfc06ec20c34c1a55a227870c97c4bd": {
       "en": "// Debug prints a debug message to Stderr if verbose mode is enabled (caller needs to check verbose)",
@@ -727,6 +1029,10 @@
       "en": "// Restore is best-effort and relies on exact string match which is hard with Mock wrapping",
       "zh-CN": "// 恢复操作是尽力而为的，依赖于精确的字符串匹配，这在 Mock 包装的情况下很难实现"
     },
+    "685f739a69e163a4ec458ed53eddb46b704cfc37": {
+      "en": "// Create coverage directory",
+      "zh-CN": "// 创建覆盖率目录"
+    },
     "68acbf025a753ff10017c9998ef2be2165a7083d": {
       "en": "// Let's adjust server to handle whatever path the client sends, but usually it is /chat/completions.",
       "zh-CN": "// 我们将调整服务器以处理客户端发送的任何路径，但通常会是 /chat/completions。"
@@ -751,6 +1057,10 @@
       "en": "// Populate LocalizedText",
       "zh-CN": "// 填充 LocalizedText"
     },
+    "6a0f5a9bad1b19bfdc2d6389380ffa8ff6fa767d": {
+      "en": "// Line and Doc comments (check each line)",
+      "zh-CN": "// 行注释和文档注释（逐行检查）"
+    },
     "6acc15c695a9b4ec2d8494759416cceddf667529": {
       "en": "// Original",
       "zh-CN": "// 原始"
@@ -758,6 +1068,10 @@
     "6b13ae05bcbaf5c5d979c607c99957a9112767bc": {
       "en": "// { \"file\": \"...\", \"comments\": [...] } for single file context?",
       "zh-CN": "// { \"file\": \"...\", \"comments\": [...] } 用于单文件上下文？"
+    },
+    "6cdcefac17d17f7e59c8135713f3d9e0a14c1edb": {
+      "en": "// Apply Mode (EN -\u003e ZH)\n// c.SourceText is EN\n// ID generation works.",
+      "zh-CN": "// 应用模式（EN -\u003e ZH）\n// c.SourceText 是英文\n// ID 生成正常。"
     },
     "6db54e36a9250d0a3f48a1767826aa6a2f165318": {
       "en": "// Comments stores the mapping data",
@@ -767,9 +1081,17 @@
       "en": "// If a config file is found, read it in.",
       "zh-CN": "// 如果找到配置文件，则读取其内容。"
     },
+    "6efd01c04e1aad29e766481e395ffbf424967c8b": {
+      "en": "// Condition to merge:\n// 1. Same Type (Doc or Line)\n// 2. Same Symbol\n// 3. Consecutive lines:\n//    - Since we fixed range to exclude newline, EndLine of last + 1 == StartLine of current",
+      "zh-CN": "// 合并条件：\n// 1. 相同类型（文档注释或行注释）\n// 2. 相同符号\n// 3. 连续行：\n//    - 由于我们已固定范围以排除换行符，上一行的EndLine + 1 == 当前行的StartLine"
+    },
     "6f19b2e48419278fbda8146046fea9f4d7b10926": {
       "en": "// Language returns the language identifier (e.g., \"go\")",
       "zh-CN": "// Language 返回语言标识符（例如：\"go\"）"
+    },
+    "6f74c73c4276df25b7c75f04bd6cad898e5e8693": {
+      "en": "// NewRustAdapter creates a new instance of RustAdapter.\n// It initializes the Tree-sitter parser with the Rust grammar.",
+      "zh-CN": "// NewRustAdapter 创建 RustAdapter 的新实例。\n// 它使用 Rust 语法初始化 Tree-sitter 解析器。"
     },
     "7028ca12920198b9c4b22c452d6fce51e4e1b776": {
       "en": "// Print to stdout",
@@ -779,9 +1101,16 @@
       "en": "// - If en exists but zh-CN is missing: en -\u003e zh-CN",
       "zh-CN": "// - 如果存在英文版本但缺少中文简体版本：英文 -\u003e 中文简体"
     },
+    "724a4e4b73aeb0efed82ddce315d7e237ff59f0a": {
+      "en": "// Line 15"
+    },
     "725c0ca4655e8edf6ff0d91fc134e2ab89da386f": {
       "en": "// var result map[string]interface{}",
       "zh-CN": "// var result map[string]interface{}"
+    },
+    "72866930944758501f9bcef0c0d3857db6c09898": {
+      "en": "// Comments stores the mapping data\n// First Level Key: Comment.ID\n// Second Level Key: Language Code (e.g., \"zh-CN\")\n// Value: Translated Text",
+      "zh-CN": "// Comments 存储映射数据\n// 第一级键：Comment.ID\n// 第二级键：语言代码（例如 \"zh-CN\"）\n// 值：翻译文本"
     },
     "728d11fd08a68685114b2e8c7f62126a5284f8f1": {
       "en": "// Identify files",
@@ -790,6 +1119,10 @@
     "72ca4155527565b2dcd7af67187652db95377eb0": {
       "en": "// log.Warn(\"翻译失败 [%s]: %v\", t.id, err) // Avoid spamming log during spinner",
       "zh-CN": "// log.Warn(\"翻译失败 [%s]: %v\", t.id, err) // 避免在 spinner 期间频繁输出日志"
+    },
+    "72f7fc24495fa19bc1f4c7d9d0f8558aa5690087": {
+      "en": "// Overwrite config.json",
+      "zh-CN": "// 覆盖 config.json"
     },
     "732a8a4db92b0d50f0d38fcda89671ca532aeeb4": {
       "en": "// Mixed batch, fallback to sequential loop manually here",
@@ -802,6 +1135,14 @@
     "739439f4197c629801774ff59e30bc5538e6305b": {
       "en": "// mapGetCmd represents the map get command",
       "zh-CN": "// mapGetCmd 表示 map get 命令"
+    },
+    "73b52e75fcafdbfeff26c2802dd31f42be1cdb76": {
+      "en": "// CreateFile creates a file with content in the specified directory",
+      "zh-CN": "// CreateFile 在指定目录中创建包含内容的文件"
+    },
+    "73c154a8a9c69bd00f801b2c1775e9c87be2024f": {
+      "en": "// defer os.Remove(bin) // Managed by TestMain",
+      "zh-CN": "// defer os.Remove(bin) // 由 TestMain 管理"
     },
     "742dd45695ae92b5205853f6ef6be65063c7ecfb": {
       "en": "// Calculate line offsets map to translate Line:Col to ByteOffset",
@@ -867,9 +1208,29 @@
       "en": "// Read file content manually to ensure we access the correct file",
       "zh-CN": "// 手动读取文件内容以确保访问正确的文件"
     },
+    "7d8727c9acea25cad78dd2a6d97667f1b606f61f": {
+      "en": "// 2. Add this block comment individually",
+      "zh-CN": "// 2. 单独添加此块注释"
+    },
+    "7dbcb5bca4ea0ae7abb9d7752bee257ab3ad0e70": {
+      "en": "// Clear buffer",
+      "zh-CN": "// 清空缓冲区"
+    },
+    "7e1e2ac082bf6d2032aed805f1adc547f3c9ae41": {
+      "en": "// createSingleComment creates a comment from a single AST comment (usually Block)",
+      "zh-CN": "// createSingleComment 从单个 AST 注释（通常是块注释）创建注释"
+    },
+    "7e9327f0404c00c7bbcc7e901e44607dbdc02eef": {
+      "en": "// createCommentFromGroup is deprecated",
+      "zh-CN": "// createCommentFromGroup 已弃用"
+    },
     "7f1e1b9d5ed512682f11c25afa23874a466e9851": {
       "en": "// Check if output is valid JSON",
       "zh-CN": "// 检查输出是否为有效的JSON"
+    },
+    "7f34b35859f2678931c19de249880418bcd00960": {
+      "en": "// Just use the first task's direction. If mixed, we might fail or need to split.\n// Actually, let's fix the task collection to be grouped.\n// But wait, I already split into batches.\n// The correct fix is to sort tasks or group tasks by direction before batching.\n// Let's just group by direction in the loop below.\n// BUT: simpler is just to ensure TranslateBatch is called with correct params.\n// If a batch has mixed directions, we can't use TranslateBatch easily.",
+      "zh-CN": "// 仅使用第一个任务的方向。如果混合，我们可能会失败或需要拆分。\n// 实际上，让我们修复任务收集以进行分组。\n// 但等等，我已经拆分成批次了。\n// 正确的修复是在批处理前按方向对任务进行排序或分组。\n// 我们只需在下面的循环中按方向分组。\n// 但是：更简单的方法是确保使用正确的参数调用 TranslateBatch。\n// 如果一个批次包含混合方向，我们就不能轻易使用 TranslateBatch。"
     },
     "7f74710852f789fdecc00b75428672af6c548b6e": {
       "en": "// Default DeepSeek base",
@@ -878,6 +1239,10 @@
     "7fc770a4a8ed6e368d57446f31bca505a2942c99": {
       "en": "// Use scope tracking to find comment symbols",
       "zh-CN": "// 使用作用域追踪来查找注释符号"
+    },
+    "8119ab9ff5840474371b4611090602444f73fddd": {
+      "en": "// Refined logic: TranslateBatch takes single from/to.\n// So we must verify batch consistency.",
+      "zh-CN": "// 优化后的逻辑：TranslateBatch 接受单一的 from/to 参数。\n// 因此我们必须验证批处理的一致性。"
     },
     "81400e673eca70fe74d5af7769f0536b206e846e": {
       "en": "// [MOCK zh-CN-\u003een] // Intelligently detect comment language",
@@ -902,6 +1267,10 @@
     "837f3a6627645f6326e2ebe9e0d25f193e67f97b": {
       "en": "// Let's refine batching strategy.",
       "zh-CN": "// 优化批处理策略。"
+    },
+    "83d5ee12cfda623731ef6a1d92807e7cd53cd41c": {
+      "en": "// Or however the adapter names it",
+      "zh-CN": "// 或者适配器如何命名它"
     },
     "83d7251424739fac63f573e85fffe6a989228fb8": {
       "en": "// [MOCK zh-CN-\u003een] // ContainsChinese Checks if the text contains Chinese characters",
@@ -943,6 +1312,18 @@
       "en": "// ID is the unique identifier calculated based on semantics",
       "zh-CN": "// ID 是基于语义计算得出的唯一标识符"
     },
+    "889c65389034f815d517a74489c6e4ee52379539": {
+      "en": "// Recalculate EndRow/EndCol based on trimmed content\n// Since it's a single line comment, EndRow is StartRow",
+      "zh-CN": "// 根据修剪后的内容重新计算 EndRow/EndCol\n// 由于是单行注释，EndRow 等于 StartRow"
+    },
+    "88ae7035ed3a59b21079cc3a054788a9332e7fda": {
+      "en": "// Parse the file\n// ParseComments is required to get comments in the AST",
+      "zh-CN": "// 解析文件\n// 需要 ParseComments 以获取 AST 中的注释"
+    },
+    "88d17bebae49a68ddc5f828027a07b101885ad12": {
+      "en": "// good\n// luck",
+      "zh-CN": "// 祝你好运"
+    },
     "89b6facd3904c1535fb3bd2bcbbfc4b07c18922e": {
       "en": "// Actually go-openai ClientConfig.BaseURL should be the root, e.g. \"http://localhost:1234/v1\"",
       "zh-CN": "// 实际上 go-openai ClientConfig.BaseURL 应该是根路径，例如 \"http://localhost:1234/v1\""
@@ -954,6 +1335,14 @@
     "8c6f63fee7839d50c629c62d7787a29a03e18884": {
       "en": "// ID -\u003e Lang -\u003e Text",
       "zh-CN": "// ID -\u003e 语言 -\u003e 文本"
+    },
+    "8ca9f5a4004765c271bc39c3ba6e25deb949fe7f": {
+      "en": "// NOTE: buildBinary is removed and replaced by TestMain in test_helpers.go",
+      "zh-CN": "// 注意：buildBinary 已移除，由 test_helpers.go 中的 TestMain 替代"
+    },
+    "8d2f5ec69ebef3b76696f6c5464a0986cb518525": {
+      "en": "//! Inner doc comment for module",
+      "zh-CN": "//! 模块的内部文档注释"
     },
     "8d60402d8957a0d8949ece14de01a77ab9302e7f": {
       "en": "// We can improve this in T006 Edge Cases if needed.",
@@ -971,13 +1360,28 @@
       "en": "// Mapping represents the structure of the mapping file",
       "zh-CN": "// Mapping 表示映射文件的结构"
     },
+    "8e97132c83930a78177bb7133078f0fc7dd3cee0": {
+      "en": "//! DAO Fork related constants from [EIP-779](https://eips.ethereum.org/EIPS/eip-779)."
+    },
     "8ecb1b5c0b7cab6b8a3ab8cf964ffb26738ee732": {
       "en": "// Check if ID exists",
       "zh-CN": "// 检查ID是否存在"
     },
+    "901ec9b011168b9a476b40ff12dd08d406d7c9a3": {
+      "en": "// Create hook content\n// Pre-commit workflow:\n// 1. Update mappings for staged files (adds new Chinese comments)\n// 2. Translate missing English translations\n// 3. Convert comments to English\n// 4. Re-stage modified files",
+      "zh-CN": "// 创建钩子内容\n// 预提交工作流：\n// 1. 为暂存文件更新映射（添加新的中文注释）\n// 2. 翻译缺失的英文翻译\n// 3. 将注释转换为英文\n// 4. 重新暂存修改的文件"
+    },
     "90b958bab3a1bc8fe304770bc23122e326ae3f5d": {
       "en": "// Info prints an informational message to Stderr",
       "zh-CN": "// 向 Stderr 输出一条信息性消息"
+    },
+    "910100c87df20127f0985bf3c1877d924876166e": {
+      "en": "// 5. Verify Logic",
+      "zh-CN": "// 5. 验证逻辑"
+    },
+    "913a2bfcc903949e42fc26d4c5267b768d098723": {
+      "en": "// Execute Scan",
+      "zh-CN": "// 执行扫描"
     },
     "9213a6fdbd6367944d37cd749fb02a74867f7f38": {
       "en": "// Since the Interface allows it, the caller can implement concurrency.",
@@ -995,6 +1399,10 @@
       "en": "// But wait, I already split into batches.",
       "zh-CN": "// 但等等，我已经拆分成多个批次了"
     },
+    "92a5279fcf45a5263c9e9dbcce515b1c95993372": {
+      "en": "// Verify Language and Types",
+      "zh-CN": "// 验证语言和类型"
+    },
     "93591c01d4c32221448827253686961899f8c2e2": {
       "en": "// Success prints a success message to Stderr",
       "zh-CN": "// 成功时向标准错误输出打印一条成功消息"
@@ -1010,6 +1418,10 @@
     "94778b4cac5fdc172ae8576a11fe923ec860ffa6": {
       "en": "// Verify if file is supported",
       "zh-CN": "// 验证文件是否受支持"
+    },
+    "955b1f2952d2aa3ef9dbf82e2c4449f20a73aa05": {
+      "en": "// 2. Verify Inline comment",
+      "zh-CN": "// 2. 验证行内注释"
     },
     "963a617cb6d5e322e4e50483c98aacedfc19c786": {
       "en": "// Normalize whitespace: replace sequences of whitespace with single space",
@@ -1043,6 +1455,10 @@
       "en": "// Second Level Key: Language Code (e.g., \"zh-CN\")",
       "zh-CN": "// 第二级键：语言代码（例如：\"zh-CN\"）"
     },
+    "98bfd8b3c88e9b9d8a53df0e2c6df2114e1cca27": {
+      "en": "// ConfigContent is a basic configuration JSON",
+      "zh-CN": "// ConfigContent 是基本的配置 JSON"
+    },
     "98cfcc99e776a35d152acfe2bb3de333b6678144": {
       "en": "// 1. Update mappings for staged files (adds new Chinese comments)",
       "zh-CN": "// 1. 更新暂存文件的映射（添加新的中文注释）"
@@ -1050,6 +1466,10 @@
     "99ce360910caeb717c18acee5976098cdb1d09dc": {
       "en": "// Default to package level",
       "zh-CN": "// 默认使用包级别"
+    },
+    "9a6308462e10a5f6564a2f60653fe62955bca64d": {
+      "en": "// 2. Prepare Data",
+      "zh-CN": "// 2. 准备数据"
     },
     "9aa9824db0edcd4cfe81df49a8624d88d1ecc0b7": {
       "en": "// End line number",
@@ -1059,9 +1479,24 @@
       "en": "// ParseComments is required to get comments in the AST",
       "zh-CN": "// ParseComments 是获取 AST 中注释所必需的"
     },
+    "9af7255461c575c2e37528e240fdffd906ef6a79": {
+      "en": "// Let's assume for typical usage (filling missing), it's usually En-\u003eZh.\n// But mixed is possible.\n// I will add a check: if batch has mixed directions, fallback to sequential logic or split it?\n// Or better: Sort tasks by direction before batching.",
+      "zh-CN": "// 假设典型用法（填充缺失）通常是英文-\u003e中文。\n// 但混合方向是可能的。\n// 我将添加检查：如果批次中存在混合方向，则回退到顺序逻辑或拆分它？\n// 或者更好的做法：在批处理前按方向对任务进行排序。"
+    },
     "9b7cfa149530c55907f30e65d497b574649c4795": {
       "en": "// [MOCK zh-CN-\u003een] // Remove comment markers",
       "zh-CN": "// [MOCK zh-CN-\u003een] // 移除注释标记"
+    },
+    "9bcb1e5f98bc94cb6fc03d82bc1aae0b981deabd": {
+      "en": "// Skip other comments to find the actual item they are documenting",
+      "zh-CN": "// 跳过其他注释以找到它们实际记录的项"
+    },
+    "9d9a7121f7407df94ab925899aafda7d9a7a98b2": {
+      "en": "// RustAdapter implements the LanguageAdapter interface for Rust language.\n// It uses Tree-sitter to parse Rust source code and extract comments with their context.",
+      "zh-CN": "// RustAdapter 为 Rust 语言实现了 LanguageAdapter 接口。\n// 它使用 Tree-sitter 解析 Rust 源代码，并提取注释及其上下文。"
+    },
+    "9e0769f27a5a61c5920154b1a31a031fe77f9aea": {
+      "en": "// luck"
     },
     "9e9ff4ff1867057fb3508f8f3a3c7cee3e5c5ddf": {
       "en": "// Comment represents a single comment extracted from AST",
@@ -1078,6 +1513,10 @@
     "9f7a888691f182297897452a20dfaeb8cce3da18": {
       "en": "// unless we implement a robust JSON array parser for the response.",
       "zh-CN": "// 除非我们为响应实现一个健壮的JSON数组解析器。"
+    },
+    "a1247333f457dab0cb678afca81215c5d9410b5f": {
+      "en": "/* Block\n    comment */",
+      "zh-CN": "/* 块\n    注释 */"
     },
     "a12c945da4e405707c5a7ad059d0f613755df7f0": {
       "en": "// Warn prints a warning log",
@@ -1103,6 +1542,9 @@
       "en": "// It returns a list of domain.Comment structs containing comment text, position, and context symbol.",
       "zh-CN": "// 它返回一个包含评论文本、位置和上下文符号的 domain.Comment 结构体列表。"
     },
+    "a419be8974323121254abe6995f87c098872262d": {
+      "en": "// Expect 11 comments without merging:\n// 1. Inner doc (line 1)\n// 2. Inner doc (line 2)\n// 3. Inner doc (line 4)\n// 4. Outer doc (line 6)\n// 5. Line comment (line 8)\n// 6. Block comment (lines 9-10)\n// 7. Line comment (line 11)\n// 8. Line comment (line 12)\n// 9. Doc comment (line 15)\n// 10. Doc comment (line 17) - line 16 is empty and filtered\n// 11. Doc comment (line 18)"
+    },
     "a42bbc48bddf39a3604678b584e5271e273f1dea": {
       "en": "// Test empty array",
       "zh-CN": "// 测试空数组"
@@ -1127,6 +1569,10 @@
       "en": "// and it appends \"/chat/completions\"",
       "zh-CN": "// 并且它会附加 \"/chat/completions\""
     },
+    "a542ea5aa304f0863cc19edad3e92210a674a53a": {
+      "en": "// 2. Run tests",
+      "zh-CN": "// 2. 运行测试"
+    },
     "a59b196601d76c702962a523b610f1618371973f": {
       "en": "// Calculate offsets",
       "zh-CN": "// 计算偏移量"
@@ -1143,6 +1589,10 @@
       "en": "// Copy a sample file",
       "zh-CN": "// 复制一个示例文件"
     },
+    "a6e1d948079db8d8505ab67a758cd2e705534ae2": {
+      "en": "// Note: If Rust support is not compiled in or fails, this might error.\n// But based on analysis, adapters/rust exists.",
+      "zh-CN": "// 注意：如果 Rust 支持未编译或失败，可能会报错。\n// 但根据分析，adapters/rust 存在。"
+    },
     "a723c7c90e79c853c4f1eb92868666637847a176": {
       "en": "// Return valid JSON array",
       "zh-CN": "// 返回有效的JSON数组"
@@ -1151,6 +1601,14 @@
       "en": "// Helper to determine symbol name from a node",
       "zh-CN": "// 用于从节点确定符号名称的辅助函数"
     },
+    "a808f49145006c445ba55f3367ad15b4c4c4c41a": {
+      "en": "// Coverage data is kept in 'coverage-data' directory",
+      "zh-CN": "// 覆盖率数据保存在 'coverage-data' 目录中"
+    },
+    "a8187f4cd26eb9cf049e3582a5f656dec5ad93ae": {
+      "en": "// createComment is deprecated",
+      "zh-CN": "// createComment 已弃用"
+    },
     "a845a377c8105ece549134da8a4a46043cd53e44": {
       "en": "// Let's just group by direction in the loop below.",
       "zh-CN": "// 直接在下方循环中按方向分组即可"
@@ -1158,6 +1616,14 @@
     "aa7494f61427f83844d2d7fd005a62d4316dd72c": {
       "en": "// file: the file path (used for ID generation context)",
       "zh-CN": "// file: 文件路径（用于ID生成上下文）"
+    },
+    "aaff492815ee7d7d83fd9cc3b9cd22be3bd186e2": {
+      "en": "// [MOCK zh-CN-\u003een] // DetectLanguage detects the language of the text\n// [MOCK zh-CN-\u003een] // Returns \"zh-CN\" if the string contains Chinese characters, otherwise returns \"en\"",
+      "zh-CN": "// [MOCK zh-CN-\u003een] // DetectLanguage 检测文本的语言\n// [MOCK zh-CN-\u003een] // 如果字符串包含中文字符则返回“zh-CN”，否则返回“en”"
+    },
+    "ab8aac0aca9c4992aa50a3efa68ecc3a372f6c7c": {
+      "en": "// Assume all tasks in a batch have same from/to (should be true if we sort/filter, but here tasks might be mixed directions?)\n// Wait, tasks loop iterates map, order undefined. It might mix En-\u003eZh and Zh-\u003eEn.\n// Batch translation requires same direction.\n// We need to group by direction first. But usually it's mostly one direction.\n// Let's safe guard: process batch only if direction matches.\n// Or better: Group batches by direction.\n// Current simple implementation:\n// If direction changes in batch, we can't batch efficiently.\n// Let's refine batching strategy.",
+      "zh-CN": "// 假设批次中的所有任务具有相同的源/目标语言（如果我们排序/过滤，这应该成立，但这里的任务可能混合方向？）\n// 注意，任务循环遍历映射，顺序未定义。它可能混合 En-\u003eZh 和 Zh-\u003eEn。\n// 批量翻译要求方向相同。\n// 我们需要先按方向分组。但通常主要是一个方向。\n// 让我们添加安全防护：仅当方向匹配时才处理批次。\n// 或者更好：按方向对批次进行分组。\n// 当前简单实现：\n// 如果批次中方向发生变化，我们无法高效批量处理。\n// 让我们优化批处理策略。"
     },
     "ace3ec8ecdbdd89783589241071e5b98632cdcd5": {
       "en": "// Select adapter (only go for now)",
@@ -1187,6 +1653,10 @@
       "en": "// This implies file-centric output. But if I scan a dir, I have multiple files.",
       "zh-CN": "// 这意味着输出是以文件为中心的。但如果我扫描一个目录，就会涉及多个文件。"
     },
+    "af566df6206fae5b4df42a7fdb686b233d1f6384": {
+      "en": "// ComplexGoContent includes documentation, inline, and multi-line comments",
+      "zh-CN": "// ComplexGoContent 包含文档、内联和多行注释"
+    },
     "af76bf98e5626ffa26f979b58c9fce72f48d8e70": {
       "en": "// Filter comments that need update",
       "zh-CN": "// 筛选需要更新的评论"
@@ -1198,6 +1668,9 @@
     "affe7c0ef9e92effa2ca2d0df208b13e7f15df3b": {
       "en": "// But CLI can scan directory.",
       "zh-CN": "// 但命令行界面可以扫描目录。"
+    },
+    "b0c4b4afb41326693301a70f826bbad28f563336": {
+      "en": "// Line 18"
     },
     "b0e8c7ede9066d54d8d0eac233cf1190b0a6e936": {
       "en": "// [MOCK zh-CN-\u003een] // Remove comment markers",
@@ -1223,6 +1696,14 @@
       "en": "// Determine type",
       "zh-CN": "// 确定类型"
     },
+    "b3c4d0ce7c00742be58b88d9d4ad289e3507c825": {
+      "en": "// Map contents for easy lookup",
+      "zh-CN": "// 为方便查找而映射内容"
+    },
+    "b41db1f511a6fe374db74e0ed94ec52a22ff20a7": {
+      "en": "// Verify we found comments",
+      "zh-CN": "// 验证我们找到了注释"
+    },
     "b48b8cecaa141a2ac2510b67e54f4681bcd62473": {
       "en": "// Update spinner",
       "zh-CN": "// 更新加载指示器"
@@ -1235,6 +1716,10 @@
       "en": "// If targetText doesn't have markers, add them based on original type",
       "zh-CN": "// 如果 targetText 没有标记，则根据原始类型添加标记"
     },
+    "b50e10e5c2b6afb30682e946d1bc14dc2f092b06": {
+      "en": "// 1. Setup",
+      "zh-CN": "// 1. 设置"
+    },
     "b6855c879aed4dec5e638a39d861e7504cc209b0": {
       "en": "// IdentifyCommentType determines the type of comment based on its content prefix.",
       "zh-CN": "// IdentifyCommentType 根据评论内容的前缀确定评论类型。"
@@ -1242,6 +1727,10 @@
     "b6dfb1ce1a4ee3f1a4d8cc27f02ab52f59eb6217": {
       "en": "// Or use flag if we supported it in translate command... Yes we did --provider",
       "zh-CN": "// 或者使用标志位，如果我们在 translate 命令中支持它的话... 是的，我们确实支持了 --provider"
+    },
+    "b7a5ad79ea0b1c9da3d9da8fc88e00f4914548cd": {
+      "en": "//! DAO Fork related constants from [EIP-779](https://eips.ethereum.org/EIPS/eip-779).\n//! It happened on Ethereum block 1_920_000",
+      "zh-CN": "//! DAO 分叉相关常量，来自 [EIP-779](https://eips.ethereum.org/EIPS/eip-779)。\n//! 发生于以太坊区块 1_920_000"
     },
     "b7fedf8b6a8ec23519adc453c90c5a75f95e2755": {
       "en": "// 1. Scan for comments",
@@ -1254,6 +1743,14 @@
     "b8f874fe57cf9e189a000a0d741d907a6682b33e": {
       "en": "// Parse parses the Go source code and extracts comments",
       "zh-CN": "// Parse 解析 Go 源代码并提取注释"
+    },
+    "b8f91945f620f783e7440cade6278fb466552f9b": {
+      "en": "// Translate translates a list of texts from source language to target language\n// Returns a map of original text to translated text",
+      "zh-CN": "// Translate 将文本列表从源语言翻译为目标语言\n// 返回原始文本到翻译文本的映射"
+    },
+    "b95952b40b24cd242e3820916f8ba21cf4350b26": {
+      "en": "// Parse JSON",
+      "zh-CN": "// 解析 JSON"
     },
     "b9abce440a92cd2243f279d7957372323dd43f14": {
       "en": "// Strategy: Bidirectional Translation",
@@ -1299,6 +1796,14 @@
       "en": "// Default, should be updated from config",
       "zh-CN": "// 默认值，应从配置中更新"
     },
+    "be727b7c0f10111c3b8c775b45e9e16f49540af8": {
+      "en": "// Filter empty comments after merge",
+      "zh-CN": "// 合并后过滤空注释"
+    },
+    "be7ce8531a0cfbea27abca409f1892e76c5b329a": {
+      "en": "// Since we can't easily change the batching structure inside this goroutine loop without complicating it,\n// let's do grouping before creating batches.",
+      "zh-CN": "// 由于在此 goroutine 循环内不增加复杂度的情况下难以更改批处理结构，\n// 我们将在创建批次前进行分组。"
+    },
     "bf8111b4e64ed571f0a78c5b6bfe88891cc02ad7": {
       "en": "// TestDeepSeekIntegration is a manual test to verify API connectivity.",
       "zh-CN": "// TestDeepSeekIntegration 是一个用于验证 API 连通性的手动测试。"
@@ -1306,6 +1811,10 @@
     "c01ff44543bba070b9eb83bfc4a4aa2f2c8e083f": {
       "en": "// Load reads the mapping file from disk",
       "zh-CN": "// 从磁盘读取映射文件"
+    },
+    "c027f0a84ed4f6e38b156c5b47a9e9a0944bd6d0": {
+      "en": "// 2. Initial Scan",
+      "zh-CN": "// 2. 初始扫描"
     },
     "c03b379214555379b1c4426502ea9f72c4fe0bf9": {
       "en": "// DefaultConfig returns the default configuration",
@@ -1322,6 +1831,10 @@
     "c15477d1cacfd7b7e91231f9468bd572cd60c8c3": {
       "en": "// Language returns the language identifier (e.g., \"go\")",
       "zh-CN": "// Language 返回语言标识符（例如：\"go\"）"
+    },
+    "c1b4047ef0891b7010a5dd4504c5f782e89e8dbd": {
+      "en": "// Check for expected comments",
+      "zh-CN": "// 检查预期注释"
     },
     "c1f2e0c02fcf5680248adb6fd1ba4586bbfc6dd7": {
       "en": "// Current implementation expects full body to be JSON or wrapped in Markdown",
@@ -1347,13 +1860,29 @@
       "en": "// NewMockLLMServer creates a test server that mimics OpenAI API",
       "zh-CN": "// NewMockLLMServer 创建一个模拟 OpenAI API 的测试服务器"
     },
+    "c3b9a4a48eff882b3a65c4d4b44fdd7402c48e7c": {
+      "en": "// Supported file\n// Calculate relative path for ID stability",
+      "zh-CN": "// 支持的文件\n// 计算相对路径以确保 ID 稳定性"
+    },
     "c4b4ec9bb282fdc5ac94c0fd7e59855e9efd0e65": {
       "en": "// Ideally we just set the source.",
       "zh-CN": "// 理想情况下，我们只需设置源。"
     },
+    "c4bfcdbfb956b2f87734d98b7c6b30ca974b7739": {
+      "en": "// Verify mapping has increased",
+      "zh-CN": "// 验证映射已增加"
+    },
+    "c54731ddaab3d2f87c5a324eb49e85ca32658626": {
+      "en": "// Parse parses the provided Rust source code and extracts comments.\n// It returns a list of domain.Comment structs containing comment text, position, and context symbol.\n// If src is nil, it currently expects the caller to handle file reading (TODO: implement file reading).",
+      "zh-CN": "// Parse 解析提供的 Rust 源代码并提取注释。\n// 返回包含注释文本、位置和上下文符号的 domain.Comment 结构体列表。\n// 若 src 为 nil，当前期望调用方处理文件读取（待办：实现文件读取功能）。"
+    },
     "c5896d7d75efe0c48150f68608c018d51f097175": {
       "en": "// Ensure cursor is closed",
       "zh-CN": "// 确保游标被关闭"
+    },
+    "c5cf1e142e441e4ad9c888b52e62494975154a12": {
+      "en": "// Check if newlines are preserved",
+      "zh-CN": "// 检查换行符是否被保留"
     },
     "c60a445a17aa43ea925e4ce6a4801211eba76b3d": {
       "en": "// 2. For simplicity and robustness against context limits, we'll use concurrent single requests for now,",
@@ -1366,6 +1895,10 @@
     "c60ebc2ad9a0f896a97569633cca8c467aa9c450": {
       "en": "// 4. Re-stage modified files",
       "zh-CN": "// 4. 重新暂存已修改的文件"
+    },
+    "c641b77f82c55b1927b29b396e1a22798f1bc336": {
+      "en": "// Build the binary",
+      "zh-CN": "// 构建二进制文件"
     },
     "c6d7299f6d7a69130f541c31e164f7ebfe5c14c5": {
       "en": "// (Using a simple map interface for verification)",
@@ -1387,6 +1920,10 @@
       "en": "// TranslateBatch translates a batch of texts using a single LLM request with JSON array format.",
       "zh-CN": "// TranslateBatch通过单个LLM请求以JSON数组格式翻译批量文本"
     },
+    "c7b4e4a4754fd7ed65812a4faed08f1c7189702a": {
+      "en": "// PrintJSON outputs raw JSON to Stdout\n// This is the ONLY function that should write to Stdout when using --format=json",
+      "zh-CN": "// PrintJSON 将原始 JSON 输出到标准输出\n// 这是使用 --format=json 时唯一应写入标准输出的函数"
+    },
     "c7c4f34d1d8ed40b793f3dd24e21b3495d5ac54a": {
       "en": "// json.Unmarshal might fail if there is garbage",
       "zh-CN": "// 如果存在无效数据，json.Unmarshal 可能会失败"
@@ -1395,6 +1932,14 @@
       "en": "// [MOCK zh-CN-\u003een] // DetectLanguage detects the language of the text",
       "zh-CN": "// [MOCK zh-CN-\u003een] // DetectLanguage 检测文本的语言"
     },
+    "c7f79081b5767a446c427651003cd9bd68c458c9": {
+      "en": "// 1. Create source file",
+      "zh-CN": "// 1. 创建源文件"
+    },
+    "c803d98fe59dc7206834ecd7c597992d5de0abdc": {
+      "en": "// 3. Prepare translations (mock)\n// Update map",
+      "zh-CN": "// 3. 准备翻译（模拟）\n// 更新映射"
+    },
     "c805ff581aa890dc2cfa60505182f6931b042046": {
       "en": "// It uses Tree-sitter to parse Rust source code and extract comments with their context.",
       "zh-CN": "// 它使用 Tree-sitter 解析 Rust 源代码，并提取带有上下文的注释。"
@@ -1402,6 +1947,10 @@
     "c815f929aded22b489e2ea823b0a91d1160c83c7": {
       "en": "// Actually, just calling TranslateBatch with mixed tasks is wrong because TranslateBatch takes `from, to` args.",
       "zh-CN": "// 实际上，直接使用混合任务调用 TranslateBatch 是错误的，因为 TranslateBatch 需要 `from, to` 参数。"
+    },
+    "c8d27d7a4f41cf1efee54c13eb4810707cc55389": {
+      "en": "// Translate to JA (default in config)",
+      "zh-CN": "// 翻译为日语（配置中的默认语言）"
     },
     "ca2ec33fa3fb19f1e0c0aa9bdfb6cfbf185e6560": {
       "en": "// We need to group by direction first. But usually it's mostly one direction.",
@@ -1431,9 +1980,17 @@
       "en": "// 2. Calculate new ID",
       "zh-CN": "// 2. 计算新的ID"
     },
+    "cd4719da062016ff8a85969491c202053638a351": {
+      "en": "// Create Rust file",
+      "zh-CN": "// 创建 Rust 文件"
+    },
     "ce1eac4e2ce4747154ed445911623102b8260d44": {
       "en": "// Override at build time via -ldflags \"-X main.version=\u003cversion\u003e\"",
       "zh-CN": "// 通过 -ldflags \"-X main.version=\u003cversion\u003e\" 在构建时覆盖"
+    },
+    "ce3a7ab51edbeb9efb234132bb84d02c78bda39a": {
+      "en": "/// Outer doc comment for function",
+      "zh-CN": "/// 函数的外部文档注释"
     },
     "ce597d8c35129f4a912b8a720d36b5bfd28cdc37": {
       "en": "// Using the actual LLMTranslator to test the connection",
@@ -1447,6 +2004,10 @@
       "en": "// JSON escapes \u003e as \\u003e",
       "zh-CN": "// JSON 转义 \u003e 为 \\u003e"
     },
+    "cf1c878524acffc91ff5eaa3b6518f47a5c183c9": {
+      "en": "// Verify Mock output contains \"en-\u003eja\" or similar",
+      "zh-CN": "// 验证模拟输出是否包含 \"en-\u003eja\" 或类似内容"
+    },
     "cfe08d29a7f89b69f04108adedc99c65d17e7c13": {
       "en": "// RustAdapter implements the LanguageAdapter interface for Rust language.",
       "zh-CN": "// RustAdapter 实现了针对 Rust 语言的 LanguageAdapter 接口。"
@@ -1455,6 +2016,25 @@
       "en": "// 4. Verify Length",
       "zh-CN": "// 4. 验证长度"
     },
+    "d0462f5a88c1bae98eee5cf010e9da01a25d106e": {
+      "en": "// Inline comment",
+      "zh-CN": "// 内联注释"
+    },
+    "d0d74927012e2d910d2460f231a516e103e23587": {
+      "en": "// Tree-sitter usually parses macro_rules! body as token tree or specific structure\n// Let's see if it catches the comment.\n// Update: It depends on how 'macro_rules' is defined in grammar.\n// If it extracts it, great. If not, it's acceptable for now (as per Spec).",
+      "zh-CN": "// Tree-sitter 通常将 macro_rules! 的主体解析为令牌树或特定结构\n// 看看它是否能捕获注释。\n// 更新：这取决于语法中如何定义 'macro_rules'。\n// 如果它能提取出来，很好。如果不能，目前可以接受（根据规范）。"
+    },
+    "d10588558d7105c5b9504114eab6e27b4b342e3c": {
+      "en": "/// until we need to modify them, at which point we convert to the dynamic representation."
+    },
+    "d119c66734dec806c571617b36d48bc0a2b31a0e": {
+      "en": "// Debug: Print mappings.json",
+      "zh-CN": "// 调试：打印 mappings.json"
+    },
+    "d124e3276ff5d9c454e9c5bfc8f9804a267ad304": {
+      "en": "// AssertJSONSchema validates that the JSON bytes match the expected schema\n// Note: This requires a schema loader. For simplicity in this project without external schema files at runtime,\n// we might iterate on this. For now, we'll do struct-based validation or assume simple validation.\n// To fully implement strict schema validation, we would use a library like gojsonschema.\n// If that library is not in go.mod, we should stick to struct unmarshalling validation.\n//\n// Checking go.mod from memory... dependencies were: testify, cobra, viper, openai.\n// `xeipuuv/gojsonschema` is likely NOT in go.mod.\n// I should stick to unmarshalling into map[string]interface{} and checking fields manually or strict struct decoding.",
+      "zh-CN": "// AssertJSONSchema 验证 JSON 字节是否符合预期模式\n// 注意：这需要一个模式加载器。为简化本项目（运行时无外部模式文件），\n// 我们可能会对此进行迭代。目前，我们将采用基于结构体的验证或假设简单验证。\n// 要实现严格的模式验证，应使用 gojsonschema 等库。\n// 如果 go.mod 中未包含该库，则应坚持使用结构体反序列化验证。\n//\n// 根据记忆检查 go.mod... 依赖项包括：testify、cobra、viper、openai。\n// `xeipuuv/gojsonschema` 很可能不在 go.mod 中。\n// 应坚持反序列化到 map[string]interface{} 并手动检查字段，或采用严格的结构体解码。"
+    },
     "d1400b0779a7e8bd59df6b9f58c0da2b1eba8ec9": {
       "en": "// 1. Scan with JSON format",
       "zh-CN": "// 1. 使用 JSON 格式进行扫描"
@@ -1462,6 +2042,10 @@
     "d1abb08a7122b1c60a1bb2d6f8643decebcf5df4": {
       "en": "// LocalizedText is the translated text (Optional, populated during scan --with-translations)",
       "zh-CN": "// LocalizedText 是翻译后的文本（可选，在扫描时使用 --with-translations 参数时填充）"
+    },
+    "d1f8b9bbd4a641279518ee73f4c13eb2c2d445eb": {
+      "en": "// Trim the newline from content",
+      "zh-CN": "// 去除内容末尾的换行符"
     },
     "d2e976a9b3238acffa25548ca26f20a57515d49d": {
       "en": "// Missing closing bracket",
@@ -1483,9 +2067,17 @@
       "en": "// We need to map *ast.Comment -\u003e Symbol",
       "zh-CN": "// 我们需要将 *ast.Comment 映射到 Symbol"
     },
+    "d4ab55d729850ab616e468c5a5a00e3664949b7b": {
+      "en": "// rustCommentQuery is the Tree-sitter query to extract comments.\n// It matches both line comments (//) and block comments (/* */).",
+      "zh-CN": "// rustCommentQuery 是用于提取注释的 Tree-sitter 查询。\n// 它匹配行注释（//）和块注释（/* */）。"
+    },
     "d4d078430bec16784e8597f2430625671e69ce1b": {
       "en": "// If src is nil, it currently expects the caller to handle file reading (TODO: implement file reading).",
       "zh-CN": "// 如果 src 为 nil，当前期望调用方处理文件读取（TODO: 实现文件读取功能）。"
+    },
+    "d4d1c5fb8e7a1e7c47553ea127c40cb373aa7ee0": {
+      "en": "// NewLLMTranslator creates a new translator.\n// apiKey: API Key\n// baseURL: Optional base URL (for DeepSeek/others). If empty, uses OpenAI default.\n// model: Model name (e.g. gpt-3.5-turbo, deepseek-chat)",
+      "zh-CN": "// NewLLMTranslator 创建一个新的翻译器。\n// apiKey: API 密钥\n// baseURL: 可选的基础 URL（用于 DeepSeek/其他服务）。若为空，则使用 OpenAI 默认值。\n// model: 模型名称（例如 gpt-3.5-turbo, deepseek-chat）"
     },
     "d5983b0af272d9abe54d4a78be360bd3e0aabcc2": {
       "en": "// Support both openai and llm",
@@ -1507,6 +2099,10 @@
       "en": "// Pre-commit workflow:",
       "zh-CN": "// 预提交工作流："
     },
+    "d65314db1979bfff1e5ddbc5fb90cefcd7bb453c": {
+      "en": "// Verify the last merged doc comment (lines 15-18)",
+      "zh-CN": "// 验证最后合并的文档注释（第 15-18 行）"
+    },
     "d67d69dedfcab6910f34cd169a55f1e80e620341": {
       "en": "// Strategy: Bidirectional Translation",
       "zh-CN": "// 策略：双向翻译"
@@ -1523,13 +2119,28 @@
       "en": "// Fallback to sequential for now to ensure reliability, ",
       "zh-CN": "// 目前暂时回退到顺序执行以确保可靠性，"
     },
+    "d7e60a963b88cc900846f7fe6cc4c9a4708352f9": {
+      "en": "// Create the content to hash\n// Separator | is used to avoid collisions",
+      "zh-CN": "// 创建用于哈希的内容\n// 使用分隔符 | 避免冲突"
+    },
     "d84d48376b55421a36342cba1041d9112dca6e5b": {
       "en": "// 5. /// Struct Doc -\u003e Owner is struct MyStruct (skip attr) -\u003e Path \"my_mod::MyStruct\"",
       "zh-CN": "// 5. /// 结构体文档 -\u003e 所有者是结构体 MyStruct (跳过属性) -\u003e 路径 \"my_mod::MyStruct\""
     },
+    "d87f31d5a5b9e5ba740c0bf67e17e2e4d4d1d04e": {
+      "en": "// It's a line comment, add to buffer",
+      "zh-CN": "// 这是一个行注释，添加到缓冲区"
+    },
+    "d996bb683a5ad1c81f8565f44d68da8f20ca4dca": {
+      "en": "/// A mapping of precompile contracts that can be either static (builtin) or dynamic."
+    },
     "da486cda0e857bd7dd13c9ed12ca40a65c20030f": {
       "en": "// c.SourceText is EN",
       "zh-CN": "// c.SourceText 是英文"
+    },
+    "da4a71249e57c89937c17ac1c128646025279d57": {
+      "en": "// 3. Verify Block comment\n// Block comments often contain newlines. Our key normalization removed them for lookup.\n// But let's check strict content if possible or just existence.",
+      "zh-CN": "// 3. 验证块注释\n// 块注释通常包含换行符。我们的键规范化过程已移除换行符以进行查找。\n// 但应尽可能检查严格内容或仅验证存在性。"
     },
     "dab7f3f91161efb1c7f3a12df120ad2141cf7759": {
       "en": "// Find first newline to skip \"```json\" or \"```\"",
@@ -1547,6 +2158,14 @@
       "en": "// Create adapter once",
       "zh-CN": "// 创建适配器，仅需一次"
     },
+    "dbf4c7abe8ea9a041f1d7e190807d7e626749a7a": {
+      "en": "// 3. Idempotency Check (Run again with no changes)",
+      "zh-CN": "// 3. 幂等性检查（再次运行，无更改）"
+    },
+    "dc4305afa346e6bcff14b697d48122779337b212": {
+      "en": "// TranslateBatch translates a batch of texts using a single LLM request with JSON array format.\n// It falls back to sequential translation if batch processing fails.",
+      "zh-CN": "// TranslateBatch 使用 JSON 数组格式通过单个 LLM 请求翻译一批文本。\n// 如果批处理失败，则回退到顺序翻译。"
+    },
     "dc9c22a7490f0a4d9e8628cb5d2492391bfc537a": {
       "en": "// Load store",
       "zh-CN": "// 加载存储"
@@ -1559,9 +2178,21 @@
       "en": "// MappingStore defines the interface for managing mapping files",
       "zh-CN": "// MappingStore 定义了用于管理映射文件的接口"
     },
+    "de773819c81abefeee6582c5139dcf65af31d76a": {
+      "en": "// GetBinaryPath returns the path to the pre-built binary",
+      "zh-CN": "// GetBinaryPath 返回预构建二进制文件的路径"
+    },
     "decd2b2264f86edd58b77b20995cb5e40347b5ea": {
       "en": "// Set updates or adds a translation for a specific comment ID and language",
       "zh-CN": "// 为特定的评论ID和语言设置或添加翻译"
+    },
+    "df2dd7ff7540d3c8af7cf13554401565ac530e38": {
+      "en": "// Handle Windows executable extension",
+      "zh-CN": "// 处理 Windows 可执行文件扩展名"
+    },
+    "df6b73bfcf6a7f0304c654d8c9e1f75c5e4df9f7": {
+      "en": "// We ignore error here, if file doesn't exist, we just don't show translations\n// or better: log.Warn",
+      "zh-CN": "// 此处忽略错误，如果文件不存在，我们就不显示翻译内容\n// 或者更好的做法是：log.Warn"
     },
     "dff2358a43ede3a7c3bf6529b524b7719c7f65ce": {
       "en": "// This should go to stdout",
@@ -1574,6 +2205,10 @@
     "e05da11f18c7149bd30debe7ee8c0330504d93cc": {
       "en": "// NewRustAdapter creates a new instance of RustAdapter.",
       "zh-CN": "// NewRustAdapter 创建 RustAdapter 的新实例。"
+    },
+    "e164f3d80351c71e1b31b93b14b1c1d0b3e7db61": {
+      "en": "// RustContent includes Rust-specific doc comments",
+      "zh-CN": "// RustContent 包含 Rust 特定的文档注释"
     },
     "e1815033c91287e462d55640b9c97d19f3a22afb": {
       "en": "// Read file",
@@ -1615,13 +2250,25 @@
       "en": "// keep default or try parent",
       "zh-CN": "// 保持默认或尝试父级"
     },
+    "e3d33a7046f1e3df22a07a9d768974b70f57bd5e": {
+      "en": "// If merged:",
+      "zh-CN": "// 如果已合并："
+    },
     "e42bc1f273ddfd5015ce8225db4c1d0d7245c5c8": {
       "en": "// This is the ONLY function that should write to Stdout when using --format=json",
       "zh-CN": "// 在使用 --format=json 时，这是唯一应写入标准输出的函数"
     },
+    "e45f756175645a8c6ecf43e6438f46c541f1dcb6": {
+      "en": "// Split group into subgroups and create comments",
+      "zh-CN": "// 将组拆分为子组并创建注释"
+    },
     "e487f7759d30cfd238b777f93e9634c8bee74f9d": {
       "en": "// Search in store by comparing normalized values",
       "zh-CN": "// 在存储中通过比较标准化值进行搜索"
+    },
+    "e48f2cbe1617bdffa5e6e9d6a0a9bee8b39a67be": {
+      "en": "// Input with newlines",
+      "zh-CN": "// 包含换行符的输入"
     },
     "e61467433643b0c97500b6106a2c879e9ab14ce0": {
       "en": "// Find target text",
@@ -1638,6 +2285,10 @@
     "e80077b6cc73d5c635cf6805e92f52285e5c255c": {
       "en": "// Adapter implements core.LanguageAdapter for Go",
       "zh-CN": "// Adapter 实现了 Go 语言的核心接口 core.LanguageAdapter"
+    },
+    "e892296677cf7c8545e6f0f5eaacb292e7539817": {
+      "en": "// Helper to validate Comment structure specifically",
+      "zh-CN": "// 专门用于验证 Comment 结构的辅助函数"
     },
     "e8aab0fda50e65d99a4edf85f36175bb24b9e38a": {
       "en": "// Search config in home directory with name \".codei18n\" (without extension).",
@@ -1695,6 +2346,10 @@
       "en": "// CommentType defines the type of comment",
       "zh-CN": "// CommentType 定义了评论的类型"
     },
+    "ecb122af90e5b5646fc3551c3cae1961622e6e01": {
+      "en": "/// A mapping of precompile contracts that can be either static (builtin) or dynamic.\n///\n/// This is an optimization that allows us to keep using the static precompiles\n/// until we need to modify them, at which point we convert to the dynamic representation.",
+      "zh-CN": "/// 预编译合约的映射，可以是静态（内置）或动态的。\n///\n/// 这是一种优化，允许我们继续使用静态预编译合约，\n/// 直到需要修改它们时，再转换为动态表示。"
+    },
     "ed7aeb361d61f9b07726a931cb66b4b9f3909d77": {
       "en": "// Initialize target lang as empty string (or maybe not?)",
       "zh-CN": "// 将目标语言初始化为空字符串（或者可能不初始化？）"
@@ -1706,6 +2361,10 @@
     "edaf915c3db61753775f24945b087a6df96d2444": {
       "en": "// SourceLanguage is the language in source code (usually \"en\")",
       "zh-CN": "// SourceLanguage 是源代码中的语言（通常为 \"en\"）"
+    },
+    "edf0141e3edb29651bcd5b59b22cd6ccbffe447e": {
+      "en": "// --- Scenario 1: Use Config (Default) ---\n// Run scan with --with-translations. Should use \"ja\" from config.\n// Use relative path \"simple.go\"",
+      "zh-CN": "// --- 场景 1：使用配置（默认） ---\n// 使用 --with-translations 运行扫描。应使用配置中的 \"ja\"。\n// 使用相对路径 \"simple.go\""
     },
     "ee77c482e64877165bf8722c8c876eb4b6c4d4ad": {
       "en": "// It matches both line comments (//) and block comments (/* */).",
@@ -1755,6 +2414,14 @@
       "en": "// Remove single line markers",
       "zh-CN": "// 移除单行标记"
     },
+    "f3713a6f0159eadff4ddbb1f798ca689607b8c6a": {
+      "en": "// Validate Protocol (Schema) for each comment",
+      "zh-CN": "// 验证每个注释的协议（模式）"
+    },
+    "f3bf8541cb30d457a1163a1367befc27d9c74bf1": {
+      "en": "// 1. Test Single Translate",
+      "zh-CN": "// 1. 测试单条翻译"
+    },
     "f41844188478152706c593c6b254e930cbe81921": {
       "en": "// Use config file from the flag.",
       "zh-CN": "// 使用命令行标志指定的配置文件。"
@@ -1766,6 +2433,10 @@
     "f471b07b3271c07daff39191ef0aa96dcafa0b63": {
       "en": "// Warn prints a warning message to Stderr",
       "zh-CN": "// 将警告信息打印到标准错误输出 Stderr"
+    },
+    "f4a08fedcbfc35f690056ee0886f803b75b84592": {
+      "en": "// Line 1\n// Line 2",
+      "zh-CN": "// 第 1 行\n// 第 2 行"
     },
     "f4ea07b3e7caa16bd319f8c9ef4bbb49d8fcfd38": {
       "en": "// BUT: simpler is just to ensure TranslateBatch is called with correct params.",
@@ -1799,9 +2470,17 @@
       "en": "// Load mapping if requested",
       "zh-CN": "// 如果请求加载映射"
     },
+    "f97eb3c78065311683d0858f7144f6080516d2ae": {
+      "en": "// Rust doc comments might be classified as \"doc\" or \"line\" depending on implementation\n// Usually \"doc\" if supported",
+      "zh-CN": "// Rust 文档注释可能根据实现被分类为 \"doc\" 或 \"line\"\n// 通常如果支持则归类为 \"doc\""
+    },
     "f9de81cd3141379b1634c983afe2e1771814f00a": {
       "en": "// initConfig reads in config file and ENV variables if set.",
       "zh-CN": "// initConfig 读取配置文件，如果设置了环境变量也会一并读取。"
+    },
+    "fac10de465f1d5ece407e1fcfdf54ab0c707e4c8": {
+      "en": "// Buffer for consecutive line comments",
+      "zh-CN": "// 用于存储连续行注释的缓冲区"
     },
     "fbb7ed2453adab8a5c46f56476966391a4d90156": {
       "en": "// Parse the file",
@@ -1826,6 +2505,10 @@
     "fda401141bb8193ea370802dde888fd9ec41d97b": {
       "en": "// Helper to create a simple text response",
       "zh-CN": "// 用于创建简单文本响应的辅助函数"
+    },
+    "ff4f0245a09274a408ee777f58b438c009b15297": {
+      "en": "// 5. Scan again",
+      "zh-CN": "// 5. 再次扫描"
     },
     "ff4f28e672c28221f2d733821d5b0a30821a1011": {
       "en": "// [MOCK zh-CN-\u003een] // DetectLanguage detects the language of the text",

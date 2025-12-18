@@ -90,7 +90,7 @@ func (a *Adapter) parseWithScopeTracking(fset *token.FileSet, f *ast.File, fileP
 		if symbol == "" {
 			symbol = "package." + f.Name.Name // Default to package level
 		}
-		
+
 		// Split group into subgroups and create comments
 		subComments := a.processCommentGroup(fset, cg, filePath, symbol)
 		comments = append(comments, subComments...)
@@ -127,7 +127,7 @@ func (a *Adapter) processCommentGroup(fset *token.FileSet, cg *ast.CommentGroup,
 			// It's a block comment (/* ... */)
 			// 1. Flush any existing line comments
 			flushLineBuffer()
-			
+
 			// 2. Add this block comment individually
 			results = append(results, a.createSingleComment(fset, c, file, symbol))
 		}
@@ -143,10 +143,10 @@ func (a *Adapter) createMergedComment(fset *token.FileSet, comments []*ast.Comme
 	if len(comments) == 0 {
 		return nil
 	}
-	
+
 	first := comments[0]
 	last := comments[len(comments)-1]
-	
+
 	pos := fset.Position(first.Pos())
 	end := fset.Position(last.End())
 
@@ -205,5 +205,5 @@ func (a *Adapter) createCommentFromGroup(fset *token.FileSet, cg *ast.CommentGro
 
 // createComment is deprecated
 func (a *Adapter) createComment(fset *token.FileSet, c *ast.Comment, file, symbol string) *domain.Comment {
-	return nil 
+	return nil
 }

@@ -32,6 +32,10 @@ func (a *RustAdapter) extractComments(root *sitter.Node, src []byte, file string
 			node := c.Node
 			content := node.Content(src)
 
+			if isEmptyComment(content) {
+				continue
+			}
+
 			// Find Owner and Symbol Path
 			owner := FindOwnerNode(node, src)
 			symbolPath := ResolveSymbolPath(owner, src)
@@ -41,13 +45,13 @@ func (a *RustAdapter) extractComments(root *sitter.Node, src []byte, file string
 			startCol := int(node.StartPoint().Column) + 1
 			endRow := int(node.EndPoint().Row) + 1
 			endCol := int(node.EndPoint().Column) + 1
-			
+
 			// Fix for Tree-sitter including newline in Line/Doc comments
 			// If it's a line/doc comment and includes newline (EndCol == 1 && EndRow > StartRow)
 			// We want to snap it back to the same line.
 			cType := getDomainCommentType(content)
-			if (cType == domain.CommentTypeLine || cType == domain.CommentTypeDoc) && 
-			   strings.HasSuffix(content, "\n") {
+			if (cType == domain.CommentTypeLine || cType == domain.CommentTypeDoc) &&
+				strings.HasSuffix(content, "\n") {
 				// Trim the newline from content
 				content = strings.TrimSuffix(content, "\n")
 				// Recalculate EndRow/EndCol based on trimmed content
@@ -75,65 +79,7 @@ func (a *RustAdapter) extractComments(root *sitter.Node, src []byte, file string
 		}
 	}
 
-	merged := mergeComments(comments)
-
-	// Filter empty comments after merge
-	var finalComments []*domain.Comment
-	for _, c := range merged {
-		if !isEmptyComment(c.SourceText) {
-			finalComments = append(finalComments, c)
-		}
-	}
-
-	return finalComments, nil
-}
-
-// mergeComments merges consecutive comments of the same type and symbol.
-func mergeComments(comments []*domain.Comment) []*domain.Comment {
-	if len(comments) == 0 {
-		return comments
-	}
-
-	var merged []*domain.Comment
-	for _, current := range comments {
-		if len(merged) == 0 {
-			merged = append(merged, current)
-			continue
-		}
-
-		last := merged[len(merged)-1]
-
-		// Condition to merge:
-		// 1. Same Type (Doc or Line)
-		// 2. Same Symbol
-		// 3. Consecutive lines:
-		//    - Since we fixed range to exclude newline, EndLine of last + 1 == StartLine of current
-		isConsecutive := last.Range.EndLine+1 == current.Range.StartLine
-
-		shouldMerge := (last.Type == domain.CommentTypeDoc || last.Type == domain.CommentTypeLine) &&
-			last.Type == current.Type &&
-			last.Symbol == current.Symbol &&
-			isConsecutive
-
-		if shouldMerge {
-			// Append content
-			// Ensure we have a newline between them if not present in the last one
-			if !strings.HasSuffix(last.SourceText, "\n") {
-				last.SourceText += "\n"
-			}
-			last.SourceText += current.SourceText
-
-			// Update range
-			last.Range.EndLine = current.Range.EndLine
-			last.Range.EndCol = current.Range.EndCol
-
-			// Regenerate ID because content changed
-			last.ID = utils.GenerateCommentID(last)
-		} else {
-			merged = append(merged, current)
-		}
-	}
-	return merged
+	return comments, nil
 }
 
 // getDomainCommentType maps raw comment content to domain.CommentType
@@ -149,39 +95,20 @@ func getDomainCommentType(content string) domain.CommentType {
 
 func isEmptyComment(content string) bool {
 	trimmed := strings.TrimSpace(content)
-	
-	// Block comments
-	if strings.HasPrefix(trimmed, "/*") {
+	switch {
+	case strings.HasPrefix(trimmed, "///"):
+		return strings.TrimSpace(strings.TrimPrefix(trimmed, "///")) == ""
+	case strings.HasPrefix(trimmed, "//!"):
+		return strings.TrimSpace(strings.TrimPrefix(trimmed, "//!")) == ""
+	case strings.HasPrefix(trimmed, "//"):
+		return strings.TrimSpace(strings.TrimPrefix(trimmed, "//")) == ""
+	case strings.HasPrefix(trimmed, "/*"):
 		inner := strings.TrimPrefix(trimmed, "/*")
 		if strings.HasSuffix(inner, "*/") {
 			inner = strings.TrimSuffix(inner, "*/")
 		}
 		return strings.TrimSpace(inner) == ""
+	default:
+		return strings.TrimSpace(trimmed) == ""
 	}
-
-	// Line and Doc comments (check each line)
-	lines := strings.Split(content, "\n")
-	for _, line := range lines {
-		t := strings.TrimSpace(line)
-		if t == "" {
-			continue
-		}
-
-		if strings.HasPrefix(t, "///") {
-			t = strings.TrimPrefix(t, "///")
-		} else if strings.HasPrefix(t, "//!") {
-			t = strings.TrimPrefix(t, "//!")
-		} else if strings.HasPrefix(t, "//") {
-			t = strings.TrimPrefix(t, "//")
-		} else {
-			// Not a standard line comment marker, assume content
-			return false
-		}
-
-		if strings.TrimSpace(t) != "" {
-			return false
-		}
-	}
-	
-	return true
 }
