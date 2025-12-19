@@ -10,28 +10,33 @@ import (
 	"github.com/studyzy/codei18n/core/domain"
 )
 
-// Adapter 实现 Java 语言的 LanguageAdapter 接口
-// 使用 Tree-sitter 解析 Java 源代码并提取注释及其上下文
+// Adapter implements the LanguageAdapter interface in Java.
+// Use Tree-sitter to parse Java source code and extract comments and their context
 type Adapter struct {
-	parser *sitter.Parser
+	parser   *sitter.Parser
+	language string
 }
 
-// NewAdapter 创建一个新的 Java 适配器实例
-// 初始化 Tree-sitter 解析器并加载 Java 语法
-func NewAdapter() *Adapter {
+// NewAdapter creates a new Java adapter instance
+// Initialize the Tree-sitter parser and load the Java grammar
+func NewAdapter(lang ...string) *Adapter {
 	p := sitter.NewParser()
 	p.SetLanguage(java.GetLanguage())
-	return &Adapter{parser: p}
+	l := "java"
+	if len(lang) > 0 {
+		l = lang[0]
+	}
+	return &Adapter{parser: p, language: l}
 }
 
-// Language 返回语言标识符 ("java")
+// Language returns the language identifier ("java")
 func (a *Adapter) Language() string {
-	return "java"
+	return a.language
 }
 
-// Parse 解析提供的 Java 源代码并提取注释
-// 返回包含注释文本、位置和上下文符号的 domain.Comment 列表
-// 如果 src 为 nil，则从文件路径读取源代码
+// Parse the provided Java source code and extract comments
+// Returns a list of domain.Comment objects containing the comment text, location, and context symbols.
+// If src is nil, read the source code from the file path.
 func (a *Adapter) Parse(file string, src []byte) ([]*domain.Comment, error) {
 	if src == nil {
 		data, err := os.ReadFile(file)
@@ -51,12 +56,12 @@ func (a *Adapter) Parse(file string, src []byte) ([]*domain.Comment, error) {
 	return a.extractComments(tree.RootNode(), src, file)
 }
 
-// extractComments 从语法树中提取注释
+// extractComments extracts comments from the parse tree
 func (a *Adapter) extractComments(root *sitter.Node, src []byte, file string) ([]*domain.Comment, error) {
-	// 首先提取包名
+	// First, extract the package name
 	packageName := extractPackageName(root, src)
 
-	// 创建查询
+	// Create query
 	q, err := sitter.NewQuery([]byte(javaCommentQuery), java.GetLanguage())
 	if err != nil {
 		return nil, err
@@ -80,7 +85,7 @@ func (a *Adapter) extractComments(root *sitter.Node, src []byte, file string) ([
 			node := c.Node
 			text := node.Content(src)
 
-			// 规范化文本并识别注释类型
+			// Normalize the text and identify comment types
 			cType := domain.CommentTypeLine
 			normalized := text
 
@@ -99,12 +104,12 @@ func (a *Adapter) extractComments(root *sitter.Node, src []byte, file string) ([
 			}
 			normalized = strings.TrimSpace(normalized)
 
-			// 解析符号路径
+			// Parse the symbol path
 			symbol := resolveSymbol(node, src, packageName)
 
 			comment := &domain.Comment{
 				File:     file,
-				Language: "java",
+				Language: a.language,
 				Symbol:   symbol,
 				Range: domain.TextRange{
 					StartLine: int(node.StartPoint().Row) + 1,

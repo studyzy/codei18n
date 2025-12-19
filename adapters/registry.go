@@ -23,7 +23,13 @@ func GetAdapter(filename string) (core.LanguageAdapter, error) {
 	case ".js", ".jsx", ".ts", ".tsx":
 		return typescript.NewAdapter(), nil
 	case ".java":
-		return java.NewAdapter(), nil
+		return java.NewAdapter("java"), nil
+	case ".kt":
+		return java.NewAdapter("kotlin"), nil
+	case ".groovy":
+		return java.NewAdapter("groovy"), nil
+	case ".scala":
+		return java.NewAdapter("scala"), nil
 	default:
 		return nil, fmt.Errorf("unsupported file extension: %s", ext)
 	}
