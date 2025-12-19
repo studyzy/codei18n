@@ -36,13 +36,16 @@ func init() {
 }
 
 func runHookInstall() {
-	if err := installHook(); err != nil {
-		log.Fatal("安装 hook 失败: %v", err)
+	if err := installPreCommitHook(); err != nil {
+		log.Fatal("安装 pre-commit hook 失败: %v", err)
 	}
-	log.Success("Hook 安装成功")
+	if err := installCommitMsgHook(); err != nil {
+		log.Fatal("安装 commit-msg hook 失败: %v", err)
+	}
+	log.Success("Git Hooks 安装成功")
 }
 
-func installHook() error {
+func installPreCommitHook() error {
 	gitDir := ".git"
 	if _, err := os.Stat(gitDir); os.IsNotExist(err) {
 		return os.ErrNotExist
@@ -103,14 +106,66 @@ exit 0
 	return nil
 }
 
-func runHookUninstall() {
-	hookPath := filepath.Join(".git", "hooks", "pre-commit")
-	if err := os.Remove(hookPath); err != nil {
-		if os.IsNotExist(err) {
-			log.Warn("Hook 不存在")
-			return
-		}
-		log.Fatal("卸载 hook 失败: %v", err)
+func installCommitMsgHook() error {
+	gitDir := ".git"
+	if _, err := os.Stat(gitDir); os.IsNotExist(err) {
+		return os.ErrNotExist
 	}
-	log.Success("Hook 已卸载")
+
+	hookPath := filepath.Join(gitDir, "hooks", "commit-msg")
+
+	hookContent := `#!/bin/sh
+# CodeI18n Commit-Msg Hook
+# Translates Chinese commit messages to English
+
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Check for Chinese characters using Perl
+if echo "$COMMIT_MSG" | perl -C -ne 'exit 0 if /\p{Han}/; exit 1'; then
+    echo "CodeI18n: Detected Chinese in commit message. Translating..." >&2
+    
+    CODEI18N_CMD="codei18n"
+    # Check if codei18n is in PATH
+    if ! command -v $CODEI18N_CMD >/dev/null 2>&1; then
+        # Fallback to go run if in project root
+        if [ -f "go.mod" ] && [ -d "cmd/codei18n" ]; then
+             CODEI18N_CMD="go run cmd/codei18n/*.go"
+        else
+             echo "CodeI18n: command not found. Skipping translation." >&2
+             exit 0
+        fi
+    fi
+
+    # Translate
+    TRANSLATED=$(echo "$COMMIT_MSG" | $CODEI18N_CMD translate -s zh-CN -t en 2>/dev/null)
+    
+    if [ $? -eq 0 ] && [ -n "$TRANSLATED" ]; then
+        echo "$TRANSLATED" > "$COMMIT_MSG_FILE"
+        echo "CodeI18n: Translated to: $TRANSLATED" >&2
+    else
+        echo "CodeI18n: Translation failed. Keeping original message." >&2
+    fi
+fi
+`
+
+	if err := os.WriteFile(hookPath, []byte(hookContent), 0755); err != nil {
+		return err
+	}
+	return nil
+}
+
+func runHookUninstall() {
+	uninstallHook("pre-commit")
+	uninstallHook("commit-msg")
+	log.Success("Git Hooks 已卸载")
+}
+
+func uninstallHook(name string) {
+	hookPath := filepath.Join(".git", "hooks", name)
+	if err := os.Remove(hookPath); err != nil {
+		if !os.IsNotExist(err) {
+			log.Warn("卸载 %s hook 失败: %v", name, err)
+		}
+	}
 }

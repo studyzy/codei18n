@@ -135,9 +135,14 @@ func setupGitIntegration() {
 
 	// 2. Install hook
 	// Assuming installHook is available in package main (from hook.go)
-	if err := installHook(); err != nil {
-		log.Warn("安装 git hook 失败: %v", err)
+	if err := installPreCommitHook(); err != nil {
+		log.Warn("安装 pre-commit hook 失败: %v", err)
 	} else {
 		log.Success("Git Pre-commit Hook 已自动安装")
+	}
+	if err := installCommitMsgHook(); err != nil {
+		log.Warn("安装 commit-msg hook 失败: %v", err)
+	} else {
+		log.Success("Git Commit-msg Hook 已自动安装")
 	}
 }
