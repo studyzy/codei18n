@@ -7,6 +7,7 @@ import (
 
 	sitter "github.com/smacker/go-tree-sitter"
 	"github.com/smacker/go-tree-sitter/java"
+
 	"github.com/studyzy/codei18n/core/domain"
 )
 
@@ -85,24 +86,16 @@ func (a *Adapter) extractComments(root *sitter.Node, src []byte, file string) ([
 			node := c.Node
 			text := node.Content(src)
 
-			// Normalize the text and identify comment types
+			// Identify comment types
 			cType := domain.CommentTypeLine
-			normalized := text
 
-			if strings.HasPrefix(text, "//") {
-				cType = domain.CommentTypeLine
-				normalized = strings.TrimPrefix(text, "//")
-			} else if strings.HasPrefix(text, "/*") {
+			if strings.HasPrefix(text, "/*") {
 				if strings.HasPrefix(text, "/**") {
 					cType = domain.CommentTypeDoc
-					normalized = strings.TrimPrefix(text, "/**")
 				} else {
 					cType = domain.CommentTypeBlock
-					normalized = strings.TrimPrefix(text, "/*")
 				}
-				normalized = strings.TrimSuffix(normalized, "*/")
 			}
-			normalized = strings.TrimSpace(normalized)
 
 			// Parse the symbol path
 			symbol := resolveSymbol(node, src, packageName)

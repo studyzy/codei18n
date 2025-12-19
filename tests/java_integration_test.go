@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
 	"github.com/studyzy/codei18n/adapters"
 	"github.com/studyzy/codei18n/core/domain"
 )
@@ -14,7 +15,7 @@ func TestJavaAdapter_Integration(t *testing.T) {
 	assert.NotNil(t, adapter)
 	assert.Equal(t, "java", adapter.Language())
 
-	// 读取测试文件
+	// Read the test file
 	src := []byte(`package com.example;
 
 // Calculator class
@@ -30,7 +31,7 @@ public class Calculator {
 	assert.NoError(t, err)
 	assert.Greater(t, len(comments), 0, "应该至少提取到一个注释")
 
-	// 验证注释内容
+	// Validate the comment content
 	var foundClass, foundMethod bool
 	for _, c := range comments {
 		if c.SourceText == "// Calculator class" {
@@ -53,12 +54,12 @@ func TestJavaAdapter_RealFile(t *testing.T) {
 	adapter, err := adapters.GetAdapter("sample.java")
 	assert.NoError(t, err)
 
-	// 解析实际的测试文件
+	// Parse the actual test file
 	comments, err := adapter.Parse("testdata/sample.java", nil)
 	assert.NoError(t, err)
 	assert.Greater(t, len(comments), 0, "应该从实际文件中提取到注释")
 
-	// 验证包名被正确提取
+	// Verify that the package name has been correctly extracted
 	for _, c := range comments {
 		if c.Symbol != "" {
 			assert.Contains(t, c.Symbol, "com.example.demo", "符号路径应该包含包名")

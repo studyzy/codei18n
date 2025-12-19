@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
 	"github.com/studyzy/codei18n/core/domain"
 )
 
@@ -140,12 +141,12 @@ public class Calculator {
 	assert.NoError(t, err)
 	assert.Len(t, comments, 2)
 
-	// 类的 Javadoc
+	// Class Javadoc
 	assert.Contains(t, comments[0].SourceText, "/**")
 	assert.Equal(t, "com.example.Calculator", comments[0].Symbol)
 	assert.Equal(t, domain.CommentTypeDoc, comments[0].Type)
 
-	// 方法的 Javadoc
+	// Method Javadoc
 	assert.Contains(t, comments[1].SourceText, "/**")
 	assert.Equal(t, "com.example.Calculator#add", comments[1].Symbol)
 	assert.Equal(t, domain.CommentTypeDoc, comments[1].Type)
@@ -178,8 +179,8 @@ public class Test {
 	adapter := NewAdapter()
 	comments, err := adapter.Parse("test.java", []byte(src))
 	assert.NoError(t, err)
-	// 文件顶部的注释可能不会附加到 package 声明
-	// 具体行为取决于 Tree-sitter 的解析
+	// Comments at the top of the file may not be attached to the package declaration
+	// The specific behavior depends on the parsing by Tree-sitter.
 	assert.Greater(t, len(comments), 0)
 }
 
@@ -197,7 +198,7 @@ public class Test {
 	assert.NoError(t, err)
 	assert.Len(t, comments, 1)
 
-	// 验证位置信息
+	// Validate location information
 	comment := comments[0]
 	assert.Greater(t, comment.Range.StartLine, 0)
 	assert.Greater(t, comment.Range.StartCol, 0)
@@ -219,11 +220,11 @@ public class Broken {
 `
 	adapter := NewAdapter()
 	comments, err := adapter.Parse("test.java", []byte(src))
-	// Tree-sitter 应该能够容错处理，至少返回注释
+	// Tree-sitter should be able to handle errors, at least returning comments.
 	assert.NoError(t, err)
 	assert.Greater(t, len(comments), 0)
-	
-	// 验证至少能提取到注释
+
+	// Validate that at least one comment can be extracted.
 	found := false
 	for _, c := range comments {
 		if c.SourceText == "// 未完成的方法定义" {

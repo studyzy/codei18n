@@ -118,37 +118,42 @@ coverage-check: coverage ## 检查覆盖率是否达标（总体 ≥60%，核心
 .PHONY: fmt
 fmt: ## 格式化代码
 	@echo "$(COLOR_BLUE)正在格式化代码...$(COLOR_RESET)"
-	gofmt -w .
+	gofmt -s -w .
 	@echo "$(COLOR_GREEN)✓ 代码格式化完成$(COLOR_RESET)"
 
-.PHONY: lint
-lint: ## 运行代码检查（golint 或 staticcheck）
-	@echo "$(COLOR_BLUE)正在运行代码检查...$(COLOR_RESET)"
-	@if command -v staticcheck >/dev/null 2>&1; then \
-		echo "使用 staticcheck 进行检查..."; \
-		staticcheck ./...; \
-	elif command -v golint >/dev/null 2>&1; then \
-		echo "使用 golint 进行检查..."; \
-		golint ./...; \
-	else \
-		echo "$(COLOR_YELLOW)警告: 未找到 staticcheck 或 golint$(COLOR_RESET)"; \
-		echo "$(COLOR_YELLOW)请安装其中之一:$(COLOR_RESET)"; \
-		echo "  go install honnef.co/go/tools/cmd/staticcheck@latest"; \
-		echo "  或"; \
-		echo "  go install golang.org/x/lint/golint@latest"; \
-		exit 1; \
-	fi
-	@echo "$(COLOR_GREEN)✓ 代码检查完成$(COLOR_RESET)"
+.PHONY: verify
+verify: ## 验证依赖完整性
+	@echo "$(COLOR_BLUE)正在验证依赖...$(COLOR_RESET)"
+	$(GO) mod verify
+	@echo "$(COLOR_GREEN)✓ 依赖验证完成$(COLOR_RESET)"
 
-.PHONY: vet
-vet: ## 运行 go vet
-	@echo "$(COLOR_BLUE)正在运行 go vet...$(COLOR_RESET)"
-	$(GO) vet ./...
-	@echo "$(COLOR_GREEN)✓ go vet 检查完成$(COLOR_RESET)"
+.PHONY: golangci-lint
+golangci-lint: ## 运行 golangci-lint
+	@echo "$(COLOR_BLUE)正在运行 golangci-lint...$(COLOR_RESET)"
+	@if ! command -v golangci-lint >/dev/null 2>&1; then \
+		echo "$(COLOR_YELLOW)正在安装 golangci-lint...$(COLOR_RESET)"; \
+		$(GO) install github.com/golangci/golangci-lint/cmd/golangci-lint@latest; \
+	fi
+	golangci-lint run ./...
+	@echo "$(COLOR_GREEN)✓ golangci-lint 完成$(COLOR_RESET)"
+
+.PHONY: lint-fix
+lint-fix: ## 运行 golangci-lint 并自动修复
+	@echo "$(COLOR_BLUE)正在运行 golangci-lint --fix...$(COLOR_RESET)"
+	@if ! command -v golangci-lint >/dev/null 2>&1; then \
+		echo "$(COLOR_YELLOW)正在安装 golangci-lint...$(COLOR_RESET)"; \
+		$(GO) install github.com/golangci/golangci-lint/cmd/golangci-lint@latest; \
+	fi
+	golangci-lint run --fix ./...
+	@echo "$(COLOR_GREEN)✓ golangci-lint 修复完成$(COLOR_RESET)"
+
+.PHONY: lint
+lint: verify golangci-lint ## 运行所有 CI 代码质量检查 (verify + golangci-lint)
+	@echo "$(COLOR_GREEN)✓ 所有代码质量检查完成$(COLOR_RESET)"
 
 .PHONY: check
-check: fmt vet lint ## 运行所有代码质量检查（fmt + vet + lint）
-	@echo "$(COLOR_GREEN)✓ 所有代码质量检查完成$(COLOR_RESET)"
+check: fmt lint ## 运行所有代码质量检查（自动格式化 + lint）
+	@echo "$(COLOR_GREEN)✓ 开发检查完成$(COLOR_RESET)"
 
 .PHONY: clean
 clean: ## 清理构建产物
@@ -173,7 +178,7 @@ run: build ## 构建并运行（显示帮助）
 dev: ## 开发模式：运行测试和代码检查
 	@echo "$(COLOR_BLUE)开发模式检查...$(COLOR_RESET)"
 	@$(MAKE) fmt
-	@$(MAKE) vet
+	@$(MAKE) golangci-lint
 	@$(MAKE) test
 	@echo "$(COLOR_GREEN)✓ 开发模式检查完成$(COLOR_RESET)"
 
@@ -192,7 +197,7 @@ ci: all coverage-check ## CI/CD 模式：运行所有检查并验证覆盖率
 	@echo ""
 
 .PHONY: pre-commit
-pre-commit: fmt vet test ## Pre-commit 检查（格式化 + vet + 测试）
+pre-commit: fmt golangci-lint test ## Pre-commit 检查（格式化 + golangci-lint + 测试）
 	@echo "$(COLOR_GREEN)✓ Pre-commit 检查完成$(COLOR_RESET)"
 
 .PHONY: version

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
 	"github.com/studyzy/codei18n/core/domain"
 )
 
@@ -85,7 +86,7 @@ const MyComp = () => {
 	assert.Equal(t, "MyComp", comments[0].Symbol)
 }
 
-// TestAdapter_Parse_Range 测试注释的位置信息（StartCol 和 EndCol）是否正确设置
+// TestAdapter_Parse_Range: Check if the position information (StartCol and EndCol) is correctly set in the comment location.
 func TestAdapter_Parse_Range(t *testing.T) {
 	src := `export class Decorator {
     // 创建一个装饰类型，将原始注释隐藏并在前面显示翻译
@@ -100,7 +101,7 @@ func TestAdapter_Parse_Range(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Greater(t, len(comments), 0, "应该至少有一个注释")
 
-	// 验证每个注释都有正确的 Range 信息
+	// Validate that each comment has the correct Range information
 	for i, comment := range comments {
 		assert.Greater(t, comment.Range.StartLine, 0, "注释 %d 的 StartLine 应该大于 0", i)
 		assert.Greater(t, comment.Range.StartCol, 0, "注释 %d 的 StartCol 应该大于 0", i)
@@ -112,12 +113,12 @@ func TestAdapter_Parse_Range(t *testing.T) {
 		}
 	}
 
-	// 验证第一个注释的具体位置
-	// "// 创建一个装饰类型，将原始注释隐藏并在前面显示翻译" 应该在第 2 行
+	// Validate the specific position of the first comment
+	// "// Create a decorator type to hide the original comment and display the translation in front of it" should be on the second line
 	firstComment := comments[0]
 	assert.Equal(t, 2, firstComment.Range.StartLine, "第一个注释应该在第 2 行")
 	assert.Equal(t, 2, firstComment.Range.EndLine, "第一个注释应该在第 2 行")
 	assert.Equal(t, 5, firstComment.Range.StartCol, "第一个注释应该从第 5 列开始（4个空格 + 1）")
-	// EndCol 应该是注释结束的位置
+	// EndCol should be the position of the comment's end.
 	assert.Greater(t, firstComment.Range.EndCol, firstComment.Range.StartCol, "EndCol 应该大于 StartCol")
 }

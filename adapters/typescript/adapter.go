@@ -8,8 +8,9 @@ import (
 
 	sitter "github.com/smacker/go-tree-sitter"
 	"github.com/smacker/go-tree-sitter/javascript"
-	"github.com/smacker/go-tree-sitter/typescript/typescript"
 	"github.com/smacker/go-tree-sitter/typescript/tsx"
+	"github.com/smacker/go-tree-sitter/typescript/typescript"
+
 	"github.com/studyzy/codei18n/core/domain"
 )
 
@@ -39,9 +40,6 @@ func (a *Adapter) Parse(file string, src []byte) ([]*domain.Comment, error) {
 	defer tree.Close()
 
 	rootNode := tree.RootNode()
-	if rootNode.HasError() {
-		// Log warning or handle partial parsing, but for now we proceed as tree-sitter is robust
-	}
 
 	return a.extractComments(rootNode, src, file, lang)
 }
@@ -87,32 +85,16 @@ func (a *Adapter) extractComments(root *sitter.Node, src []byte, file string, la
 		for _, c := range m.Captures {
 			node := c.Node
 			text := node.Content(src)
-			
-			// Normalize text: remove //, /*, */, etc.
+
 			// Identify comment type
 			cType := domain.CommentTypeLine
-			normalized := text
-			if strings.HasPrefix(text, "//") {
-				cType = domain.CommentTypeLine
-				normalized = strings.TrimPrefix(text, "//")
-			} else if strings.HasPrefix(text, "/*") {
+			if strings.HasPrefix(text, "/*") {
 				if strings.HasPrefix(text, "/**") {
 					cType = domain.CommentTypeDoc
 				} else {
 					cType = domain.CommentTypeBlock
 				}
-				normalized = strings.TrimPrefix(text, "/*")
-				normalized = strings.TrimSuffix(normalized, "*/")
-				if cType == domain.CommentTypeDoc {
-					// For doc comments, we might want to keep inner * but usually we just want content
-					// Let's keep it simple and just trim outer markers.
-					// Actually, model usually expects raw text or specific format.
-					// Let's stick to simple stripping.
-					normalized = strings.TrimPrefix(text, "/**")
-					normalized = strings.TrimSuffix(normalized, "*/")
-				}
 			}
-			normalized = strings.TrimSpace(normalized)
 
 			// Resolve symbol
 			symbol := resolveSymbol(node, src)
@@ -126,18 +108,18 @@ func (a *Adapter) extractComments(root *sitter.Node, src []byte, file string, la
 			// Wait, core/utils/id.go was mentioned in exploration.
 			// We need to import "github.com/studyzy/codei18n/core/utils" if it's public.
 			// Let's check imports.
-			
+
 			// For now, let's just create the object, ID will be handled by caller or we need to add utils.
 			// CodeI18n core seems to handle ID generation in scanner usually?
 			// Actually, the adapter returns comments, and scanner might enrich them or adapter should set ID.
 			// Checking `adapters/golang/parser.go` would clarify.
-			
+
 			// Let's assume we need to generate ID here.
-			
+
 			comment := &domain.Comment{
-				File:       file,
-				Language:   "typescript", // or javascript, but adapter says typescript
-				Symbol:     symbol,
+				File:     file,
+				Language: "typescript", // or javascript, but adapter says typescript
+				Symbol:   symbol,
 				Range: domain.TextRange{
 					StartLine: int(node.StartPoint().Row) + 1,
 					StartCol:  int(node.StartPoint().Column) + 1,
@@ -147,7 +129,7 @@ func (a *Adapter) extractComments(root *sitter.Node, src []byte, file string, la
 				SourceText: text,
 				Type:       cType,
 			}
-			
+
 			// We won't set ID here if we don't have the util, but we should tries to.
 			// Let's rely on scanner to set ID or add utils import.
 			// In `core/scanner/scanner.go`: "comments, err := adapter.Parse(...) ... for c in comments { c.ID = utils.GenerateID(...) }"

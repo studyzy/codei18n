@@ -63,13 +63,13 @@
       "en": "// Or better: Sort tasks by direction before batching.",
       "zh-CN": "// 或者：在批量之前对任务进行排序。"
     },
-    "0464999d6422e031d4c754e98f0ed0238fa0a36f": {
-      "en": "// Returns a list of domain.Comment objects containing the comment text, location, and context symbols.",
-      "zh-CN": "// 返回包含注释文本、位置和上下文符号的 domain.Comment 列表"
-    },
     "046c00251ed8e0048dfc1298ec79500a6a403deb": {
       "en": "//",
       "zh-CN": "//\n```"
+    },
+    "049f10f32e71ac571ff1ca95afd0da90516b24da": {
+      "en": "// Adapter implements the LanguageAdapter interface in Java.",
+      "zh-CN": "// Adapter 实现 Java 语言的 LanguageAdapter 接口"
     },
     "04ab7b1f75eee005fe16d83c18d2cb94bac80bbc": {
       "en": "// Save progress immediately",
@@ -455,10 +455,6 @@
       "en": "// LanguageAdapter defines the interface for language-specific AST parsers",
       "zh-CN": "// LanguageAdapter 定义了语言特定的 AST 解析器的接口"
     },
-    "1c6c3bd6bed40c55a529e8a5ea20e34223005494": {
-      "en": "// Language returns the language identifier (\"java\")",
-      "zh-CN": "// Language 返回语言标识符 (\"java\")"
-    },
     "1c9e9b6fbcf2a701fff0f9da334131d2937e4550": {
       "en": "// For Java, the symbol path format is: package.ClassName#methodName or package.ClassName#fieldName",
       "zh-CN": "// 对于 Java，符号路径格式为：package.ClassName#methodName 或 package.ClassName#fieldName"
@@ -474,6 +470,10 @@
     "1cd6192e43a066002f78051b9ffa048bcebf1323": {
       "en": "// Parse",
       "zh-CN": "// 解析"
+    },
+    "1d4024454f544bdf6d77ee20e21cde8db7735691": {
+      "en": "// NewAdapter creates a new Java adapter instance",
+      "zh-CN": "// NewAdapter 创建一个新的 Java 适配器实例"
     },
     "1d49c2b4a5ea4f7f1b8f494c4ed02a6892a0354d": {
       "en": "// Skip .git, vendor, .codei18n",
@@ -667,10 +667,6 @@
       "en": "// Search for matching Chinese text in the mapping",
       "zh-CN": "// 在映射中查找匹配的中文文本"
     },
-    "2abebba44e8db929c05d11b8e4f554869b2fc0cb": {
-      "en": "// Adapter implements the LanguageAdapter interface in Java.",
-      "zh-CN": "// Adapter 实现 Java 语言的 LanguageAdapter 接口"
-    },
     "2ac6a603d607e405a251768b5d75c44ad95396f1": {
       "en": "// If direction changes in batch, we can't batch efficiently.",
       "zh-CN": "// 如果批量中方向发生变化，则无法高效地进行批处理。"
@@ -755,6 +751,10 @@
       "en": "// 2. Generate IDs",
       "zh-CN": "// 2. 生成 ID"
     },
+    "301ab8d44d67c6b22ce7e7a244bb7ece47ff9561": {
+      "en": "// Initialize the Tree-sitter parser and load the Java grammar",
+      "zh-CN": "// 初始化 Tree-sitter 解析器并加载 Java 语法"
+    },
     "302a4dc855ac27653854796f073aa82bf20e6c94": {
       "en": "// Case 1: Comments inside string literals should NOT be extracted",
       "zh-CN": "// 案例 1：字符串字面量内部的注释不应被提取"
@@ -782,10 +782,6 @@
     "31bd3e99201eed752b127f07c3595870b2ce8ba2": {
       "en": "// Now you can reverse lookup English text through Chinese text.",
       "zh-CN": "// 现在验证可以通过中文文本反向查找英文"
-    },
-    "31c6351c8c5b360cd63bc1e0e5797b6876051daa": {
-      "en": "// Normalize the text and identify comment types",
-      "zh-CN": "// 规范化文本并识别注释类型"
     },
     "32034fa8ff84af1aacb96c29502abf938ee1ace4": {
       "en": "// If a model is specified via the command line, it overrides the model in the configuration",
@@ -846,6 +842,10 @@
     "355a0feeb0b17dad476a37b9d8c67a9877c53322": {
       "en": "// Rule: SHA1(file_path + language + parent_symbol + normalized_text)",
       "zh-CN": "// 规则：SHA1(file_path + language + parent_symbol + normalized_text)"
+    },
+    "3563208344f880b815fca7d376ee1f23696d2020": {
+      "en": "// Normalize the text and identify comment types",
+      "zh-CN": "// 规范化文本并识别注释类型"
     },
     "356d6dbacbe459a332d51bd7b39a7bc646b74543": {
       "en": "// 4. //! Module Doc -\u003e Owner is mod my_mod -\u003e Path \"my_mod\"",
@@ -942,10 +942,6 @@
     "3aca512a5fd76bbf1e98dd5c844c0c7d8ddeea47": {
       "en": "// Continue scanning other files",
       "zh-CN": "// 继续扫描其他文件"
-    },
-    "3b0922ac632530145f45465570706d3af713bfd2": {
-      "en": "// First, extract the package name",
-      "zh-CN": "// 首先提取包名"
     },
     "3b0cc0654043ee485c8868a2263c7a532e982d30": {
       "en": "// But let's check strict content if possible or just existence.",
@@ -1111,6 +1107,10 @@
       "en": "// Rule: SHA1(file_path + language + symbol + normalized_text)",
       "zh-CN": "// 规则：SHA1(file_path + language + symbol + normalized_text)"
     },
+    "44aa6f484383b4042a04c3f6d1de34e04a6bba5d": {
+      "en": "// Returns a list of domain.Comment objects containing the comment text, location, and context symbols.",
+      "zh-CN": "// 返回包含注释文本、位置和上下文符号的 domain.Comment 列表"
+    },
     "44bd8e1f66387ea67c11f7ff9950f9416504c65e": {
       "en": "// \"// Create a decorator type to hide the original comment and display the translation in front of it\" should be on the second line",
       "zh-CN": "// \"// 创建一个装饰类型，将原始注释隐藏并在前面显示翻译\" 应该在第 2 行"
@@ -1254,10 +1254,6 @@
     "51595c21f86ba9eca3922e3de30fa4baffa689bb": {
       "en": "// Or we can check if file mod time changed if the tool is smart,",
       "zh-CN": "// 或者我们可以检查如果工具足够智能，文件修改时间是否发生了改变。"
-    },
-    "51fc1bff44817793e3b4ae76b54b3e069ecdcfc0": {
-      "en": "// If src is nil, read the source code from the file path.",
-      "zh-CN": "// 如果 src 为 nil，则从文件路径读取源代码"
     },
     "522c9f7d2175ea4967fb68cf29be69efcedbb1b6": {
       "en": "// Expect additions",
@@ -1570,6 +1566,10 @@
     "6d39ec78541904a9aa0414c7361972557aca20a4": {
       "en": "// Note: We want to capture comments. In tree-sitter, comments are often extra nodes ",
       "zh-CN": "// 注意：我们想要捕获注释。在 tree-sitter 中，注释通常是额外的节点"
+    },
+    "6d74752615a35527b4dbf52368e23fb4d08c72e9": {
+      "en": "// Language returns the language identifier (\"java\")",
+      "zh-CN": "// Language 返回语言标识符 (\"java\")"
     },
     "6d88b3ae5272f5cd85e9f11c4ff8af4a758a2d04": {
       "en": "// 2. Apply flags",
@@ -1947,6 +1947,10 @@
       "en": "// Should be strictly separated from preceding block comment",
       "zh-CN": "// 应严格与前置代码块注释分开"
     },
+    "89b0fda5bd6bf5eed7d9c6d586a02276012f91a9": {
+      "en": "// Parse the symbol path",
+      "zh-CN": "// 解析符号路径"
+    },
     "8a8c9068221c799a3fef1291306c666b82b36fe4": {
       "en": "// Already converted to Chinese content",
       "zh-CN": "// 已经转换为中文的内容"
@@ -2127,6 +2131,10 @@
       "en": "//",
       "zh-CN": "//\n```\n//\n```"
     },
+    "9518a289a94d2d7336dee805fe938d97f5a1003f": {
+      "en": "// Create query",
+      "zh-CN": "// 创建查询"
+    },
     "955b1f2952d2aa3ef9dbf82e2c4449f20a73aa05": {
       "en": "// 2. Verify Inline comment",
       "zh-CN": "// 2. 验证内联注释"
@@ -2214,10 +2222,6 @@
     "99ce360910caeb717c18acee5976098cdb1d09dc": {
       "en": "// Default to package level",
       "zh-CN": "// 默认为包级"
-    },
-    "9a1b2a617ee612f8c695c0b55af43a7dd3443667": {
-      "en": "// Initialize the Tree-sitter parser and load the Java grammar",
-      "zh-CN": "// 初始化 Tree-sitter 解析器并加载 Java 语法"
     },
     "9a477664ddd5e6c0764c480fb8a11f42d4e05bdb": {
       "en": "// Validate comment type and tag",
@@ -2363,6 +2367,10 @@
       "en": "// 2. Run tests",
       "zh-CN": "// 2. 运行测试"
     },
+    "a59655c6bff0a6f6329a735ef1d0e7bc07fa8eae": {
+      "en": "// Parse the provided Java source code and extract comments",
+      "zh-CN": "// Parse 解析提供的 Java 源代码并提取注释"
+    },
     "a59b196601d76c702962a523b610f1618371973f": {
       "en": "// Calculate offsets",
       "zh-CN": "// 计算偏移量"
@@ -2470,10 +2478,6 @@
     "b07c3a0d487ceff11838285a867f2a6c2f851468": {
       "en": "// Since verbose is on (flag passed to binary? --verbose is global flag).",
       "zh-CN": "// 由于 verbose 开启 (标志是否通过二进制传递？ --verbose 是全局标志)。"
-    },
-    "b0a58f194c759355eac4ddf8fcdb9c1b05edb90d": {
-      "en": "// Create query",
-      "zh-CN": "// 创建查询"
     },
     "b0b280a5cca8bfb1357e1ba38e80c6872926c538": {
       "en": "/**\n * A calculator class\n */",
@@ -2610,6 +2614,10 @@
     "ba19bfc8fe601aa6d3d96fa87fc4f5d08eeb6141": {
       "en": "// Apply Mode (EN -\u003e ZH)",
       "zh-CN": "// 应用模式 (EN -\u003e ZH)"
+    },
+    "ba454cf85b190b52a07fa730b759907c0db41f98": {
+      "en": "// extractComments extracts comments from the parse tree",
+      "zh-CN": "// extractComments 从语法树中提取注释"
     },
     "baac245448732d3431de11bfcbf5cefeae29cc51": {
       "en": "// OR I update the test to generate IDs and put them in store.",
@@ -2935,10 +2943,6 @@
       "en": "// The smacker/go-tree-sitter javascript grammar usually handles JSX.",
       "zh-CN": "// The smacker/go-tree-sitter javascript grammar usually handles JSX."
     },
-    "cdbceab78c4d9094110be7dd1eb20c5de89dcb39": {
-      "en": "// extractComments extracts comments from the parse tree",
-      "zh-CN": "// extractComments 从语法树中提取注释"
-    },
     "ce1eac4e2ce4747154ed445911623102b8260d44": {
       "en": "// Override at build time via -ldflags \"-X main.version=\u003cversion\u003e\"",
       "zh-CN": "// 通过 -ldflags 参数在构建时覆盖，例如：-X main.version=\u003c版本\u003e"
@@ -3107,10 +3111,6 @@
       "en": "// c.SourceText is EN",
       "zh-CN": "// c.SourceText 是 EN"
     },
-    "da979dcb9aaf1d8c472ba49e26590c901eb5aa3c": {
-      "en": "// Parse the symbol path",
-      "zh-CN": "// 解析符号路径"
-    },
     "daaafcd2f090cf4bf63fbf85cb2f16d690521885": {
       "en": "// 3. Execute CLI: codei18n scan --file simple.go --format json",
       "zh-CN": "// 3. 执行 CLI: codei18n scan --file simple.go --format json"
@@ -3143,10 +3143,6 @@
       "en": "// 2. Install hook",
       "zh-CN": "// 2. 安装钩子"
     },
-    "dd43ecf8cf35aa31bb85b3818d494207c32c3923": {
-      "en": "// Parse the provided Java source code and extract comments",
-      "zh-CN": "// Parse 解析提供的 Java 源代码并提取注释"
-    },
     "dd5e5dec26681ea7a848b8c70bb2f9f9ff63740e": {
       "en": "// MappingStore defines the interface for managing mapping files",
       "zh-CN": "// MappingStore 定义了管理映射文件的接口"
@@ -3158,10 +3154,6 @@
     "de773819c81abefeee6582c5139dcf65af31d76a": {
       "en": "// GetBinaryPath returns the path to the pre-built binary",
       "zh-CN": "// GetBinaryPath 返回预构建二进制文件的路径"
-    },
-    "de82f58f582b27517dd8dce56fc11c5d3a3ff2ac": {
-      "en": "// Use Tree-sitter to parse Java source code and extract comments and their context",
-      "zh-CN": "// 使用 Tree-sitter 解析 Java 源代码并提取注释及其上下文"
     },
     "debbc2c39bb4e12e07cc2f2a1f0e46bc4604cb04": {
       "en": "// Simulate content converted to Chinese.",
@@ -3202,6 +3194,10 @@
     "e0df879c044e456c6d97c6e97f5bdb70d1488ed3": {
       "en": "// 6. Block comment (lines 9-10)",
       "zh-CN": "// 6. 块注释 (第 9-10 行)"
+    },
+    "e0f10e7d998a9fb9b1263ab4e95ae267bc84ee39": {
+      "en": "// If src is nil, read the source code from the file path.",
+      "zh-CN": "// 如果 src 为 nil，则从文件路径读取源代码"
     },
     "e164f3d80351c71e1b31b93b14b1c1d0b3e7db61": {
       "en": "// RustContent includes Rust-specific doc comments",
@@ -3298,6 +3294,10 @@
     "e6941d99ed1d1737a80f04f3b218b00342871fd7": {
       "en": "// We can try to unmarshal it",
       "zh-CN": "// 我们可以尝试去解压它"
+    },
+    "e6a63c8cf78cb605c9562dd172d349f180ab3ddc": {
+      "en": "// First, extract the package name",
+      "zh-CN": "// 首先提取包名"
     },
     "e6c90d3b5fb921d594c253cf957f48bb8f14edbe": {
       "en": "// Find comment, get translation, replace.",
@@ -3483,10 +3483,6 @@
       "en": "// Fallback to parent if no sibling found (orphaned doc comment)",
       "zh-CN": "// 如果未找到兄弟节点，则回退到父节点 (孤立文档注释)"
     },
-    "f30b8a8353464e1f1e44ee40882c2466bb75e350": {
-      "en": "// NewAdapter creates a new Java adapter instance",
-      "zh-CN": "// NewAdapter 创建一个新的 Java 适配器实例"
-    },
     "f33451ac345da8d60c1fcd06bc93aff01b04fdc3": {
       "en": "// +1 for newline",
       "zh-CN": "// +1 for newline"
@@ -3590,6 +3586,10 @@
     "fa451d578598480dc05fbb2a1a22df66f194fc9e": {
       "en": "// Common parser behavior: \"Line 1\" and \"Line 2\" are separate unless doc comment.",
       "zh-CN": "// 常见解析器行为： \"Line 1\" 和 \"Line 2\" 在没有文档注释的情况下才被视为单独的行。"
+    },
+    "fa608a87b5074f1740c59ab495c58a5824c2b474": {
+      "en": "// Use Tree-sitter to parse Java source code and extract comments and their context",
+      "zh-CN": "// 使用 Tree-sitter 解析 Java 源代码并提取注释及其上下文"
     },
     "faff98fb150ad1d7d04ffd884e616aa21500a3b4": {
       "en": "// queryTS is a tree-sitter query to find comments in TypeScript/JavaScript",

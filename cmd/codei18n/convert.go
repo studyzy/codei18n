@@ -9,6 +9,7 @@ import (
 
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/spf13/cobra"
+
 	"github.com/studyzy/codei18n/adapters"
 	"github.com/studyzy/codei18n/core"
 	"github.com/studyzy/codei18n/core/config"

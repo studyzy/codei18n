@@ -14,7 +14,7 @@ func TestTranslateNewlinePreservation(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping integration test in short mode")
 	}
-	
+
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
 		t.Skip("Skipping integration test: OPENAI_API_KEY not set")

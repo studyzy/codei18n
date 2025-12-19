@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
 	"github.com/studyzy/codei18n/adapters"
 	"github.com/studyzy/codei18n/core/domain"
 )
@@ -12,7 +13,7 @@ import (
 func TestJS_TS_Integration(t *testing.T) {
 	// Path to test file
 	testFile := filepath.Join("testdata", "typescript", "sample.ts")
-	
+
 	// Get adapter
 	adapter, err := adapters.GetAdapter(testFile)
 	assert.NoError(t, err)

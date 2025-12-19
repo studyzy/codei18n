@@ -26,22 +26,11 @@ jobs:
           go mod download
           go mod verify
 
-      - name: 运行 gofmt 检查
-        run: |
-          if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then
-            echo "以下文件需要格式化:"
-            gofmt -s -l .
-            exit 1
-          fi
-
-      - name: 运行 go vet
-        run: go vet ./...
-
-      - name: 安装 staticcheck
-        run: go install honnef.co/go/tools/cmd/staticcheck@latest
-
-      - name: 运行 staticcheck
-        run: staticcheck ./...
+      - name: 运行 golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+          args: --timeout=5m
 
   # 构建测试（多平台）
   build:

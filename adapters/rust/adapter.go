@@ -6,6 +6,7 @@ import (
 
 	sitter "github.com/smacker/go-tree-sitter"
 	"github.com/smacker/go-tree-sitter/rust"
+
 	"github.com/studyzy/codei18n/core/domain"
 )
 

@@ -6,18 +6,19 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
 	"github.com/studyzy/codei18n/adapters"
 	"github.com/studyzy/codei18n/core/mapping"
 	"github.com/studyzy/codei18n/core/utils"
 )
 
-// TestJavaE2E_FullConvertWorkflow 测试 Java 文件的完整转换工作流
+// TestJavaE2E_FullConvertWorkflow tests the complete conversion workflow for Java files.
 func TestJavaE2E_FullConvertWorkflow(t *testing.T) {
-	// 创建临时目录
+	// Create a temporary directory
 	tmpDir := t.TempDir()
 	testFile := filepath.Join(tmpDir, "Calculator.java")
 
-	// 步骤 1: 创建原始英文 Java 文件
+	// Step 1: Create the original English Java file
 	originalEnglish := `package com.example;
 
 // Calculator class for basic math operations
@@ -33,7 +34,7 @@ public class Calculator {
 	assert.NoError(t, err)
 	t.Logf("✓ 创建原始英文 Java 文件")
 
-	// 步骤 2: 扫描并提取注释
+	// Step 2: Scan and extract comments
 	adapter, err := adapters.GetAdapter(testFile)
 	assert.NoError(t, err)
 	assert.Equal(t, "java", adapter.Language())
@@ -43,10 +44,10 @@ public class Calculator {
 	assert.Greater(t, len(comments), 0)
 	t.Logf("✓ 成功提取 %d 个注释", len(comments))
 
-	// 步骤 3: 创建映射并添加翻译
+	// Step 3: Create the mapping and add the translations
 	store := mapping.NewStore(filepath.Join(tmpDir, "mappings.json"))
 
-	// 手动添加翻译
+	// Manually add translation
 	translations := map[string]string{
 		"// Calculator class for basic math operations": "基本数学运算的计算器类",
 		"// Add two numbers":                            "计算两个数的和",
@@ -54,22 +55,22 @@ public class Calculator {
 
 	for _, c := range comments {
 		id := utils.GenerateCommentID(c)
-		
-		// 存储英文原文
+
+		// Store the original English text
 		store.Set(id, "en", c.SourceText)
-		
-		// 添加中文翻译
+
+		// Add Chinese translation
 		if trans, ok := translations[c.SourceText]; ok {
 			store.Set(id, "zh-CN", trans)
 			t.Logf("  映射: '%s' -> '%s'", c.SourceText, trans)
 		}
 	}
-	
+
 	err = store.Save()
 	assert.NoError(t, err)
 	t.Logf("✓ 保存翻译映射")
 
-	// 步骤 4: 验证可以查找翻译
+	// Step 4: Verify that translations can be found.
 	for _, c := range comments {
 		id := utils.GenerateCommentID(c)
 		zhText, ok := store.Get(id, "zh-CN")
@@ -78,8 +79,8 @@ public class Calculator {
 		}
 	}
 
-	// 步骤 5: 验证反向查找（中文 -> 英文）
-	// 模拟已转换为中文的内容
+	// Step 5: Validate reverse lookup
+	// Simulate content converted to Chinese.
 	convertedContent := `package com.example;
 
 // 基本数学运算的计算器类
@@ -97,12 +98,12 @@ public class Calculator {
 	foundCount := 0
 	for _, c := range chineseComments {
 		normalizedCurrent := utils.NormalizeCommentText(c.SourceText)
-		
-		// 在映射中查找
+
+		// Search in the mapping
 		for _, transMap := range store.GetMapping().Comments {
 			zhText, hasZh := transMap["zh-CN"]
 			enText, hasEn := transMap["en"]
-			
+
 			if hasZh && hasEn {
 				normalizedZh := utils.NormalizeCommentText(zhText)
 				if normalizedZh == normalizedCurrent {
@@ -113,7 +114,7 @@ public class Calculator {
 			}
 		}
 	}
-	
+
 	assert.Greater(t, foundCount, 0, "应该能通过中文找到对应的英文")
 
 	t.Log("\n=== Java E2E Convert 测试成功完成 ===")
@@ -125,7 +126,7 @@ public class Calculator {
 	t.Log("  5. 验证反向查找（中文 -> 英文）✓")
 }
 
-// TestJavaConvert_CLICompatibility 测试 convert 命令对 Java 文件的兼容性
+// TestJavaConvert_CLICompatibility tests the compatibility of the convert command with Java files.
 func TestJavaConvert_CLICompatibility(t *testing.T) {
 	testCases := []struct {
 		name     string
@@ -168,17 +169,17 @@ public class Outer {
 		t.Run(tc.name, func(t *testing.T) {
 			tmpDir := t.TempDir()
 			testFile := filepath.Join(tmpDir, tc.filename)
-			
+
 			err := os.WriteFile(testFile, []byte(tc.content), 0644)
 			assert.NoError(t, err)
 
-			// 验证 adapters.GetAdapter 能识别
+			// Validate that adapters.GetAdapter can recognize
 			adapter, err := adapters.GetAdapter(testFile)
 			assert.NoError(t, err)
 			assert.NotNil(t, adapter)
 			assert.Equal(t, "java", adapter.Language())
 
-			// 验证能解析
+			// Validate if it can parse
 			comments, err := adapter.Parse(testFile, []byte(tc.content))
 			assert.NoError(t, err)
 			assert.Greater(t, len(comments), 0, "应该至少提取到一个注释")

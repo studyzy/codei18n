@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/bmatcuk/doublestar/v4"
+
 	"github.com/studyzy/codei18n/adapters"
 	"github.com/studyzy/codei18n/core/domain"
 	"github.com/studyzy/codei18n/internal/log"
@@ -53,7 +54,7 @@ func Directory(dir string, excludePatterns ...string) ([]*domain.Comment, error)
 		if err != nil {
 			return err
 		}
-		
+
 		// Calculate relative path for matching
 		relPath, err := filepath.Rel(dir, path)
 		if err != nil {
@@ -85,7 +86,7 @@ func Directory(dir string, excludePatterns ...string) ([]*domain.Comment, error)
 		adapter, err := adapters.GetAdapter(path)
 		if err == nil {
 			// Supported file
-			
+
 			// Read file content manually to ensure we access the correct file
 			content, err := os.ReadFile(path)
 			if err != nil {

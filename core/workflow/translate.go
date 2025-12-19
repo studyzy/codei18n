@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/briandowns/spinner"
+
 	"github.com/studyzy/codei18n/adapters/translator"
 	"github.com/studyzy/codei18n/core/config"
 	"github.com/studyzy/codei18n/core/mapping"

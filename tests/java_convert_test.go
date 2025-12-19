@@ -7,13 +7,14 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
 	"github.com/studyzy/codei18n/adapters"
 	"github.com/studyzy/codei18n/core/mapping"
 	"github.com/studyzy/codei18n/core/utils"
 )
 
 func TestJavaConvert_ApplyMode(t *testing.T) {
-	// 创建临时测试文件
+	// Create a temporary test file
 	tmpDir := t.TempDir()
 	testFile := filepath.Join(tmpDir, "Test.java")
 
@@ -30,25 +31,25 @@ public class Calculator {
 	err := os.WriteFile(testFile, []byte(originalContent), 0644)
 	assert.NoError(t, err)
 
-	// 获取适配器
+	// Get adapter
 	adapter, err := adapters.GetAdapter(testFile)
 	assert.NoError(t, err)
 	assert.Equal(t, "java", adapter.Language())
 
-	// 解析注释
+	// Parse the comment
 	comments, err := adapter.Parse(testFile, []byte(originalContent))
 	assert.NoError(t, err)
 	assert.Greater(t, len(comments), 0)
 
-	// 创建映射存储并添加翻译
+	// Create a mapping storage and add translations
 	store := mapping.NewStore("")
-	
+
 	expectedTranslations := map[string]string{
-		"// Calculate sum":    "计算总和",
-		"// Add two numbers":  "计算两个数的和",
+		"// Calculate sum":   "计算总和",
+		"// Add two numbers": "计算两个数的和",
 	}
 
-	// 为每个注释生成 ID 并添加翻译
+	// Generate ID for each comment and add translation
 	for _, c := range comments {
 		id := utils.GenerateCommentID(c)
 		if trans, ok := expectedTranslations[c.SourceText]; ok {
@@ -58,7 +59,7 @@ public class Calculator {
 		}
 	}
 
-	// 验证可以找到翻译
+	// Validate that a translation can be found
 	foundCount := 0
 	for _, c := range comments {
 		id := utils.GenerateCommentID(c)
@@ -73,11 +74,11 @@ public class Calculator {
 }
 
 func TestJavaConvert_RestoreMode(t *testing.T) {
-	// 创建包含中文注释的 Java 文件
+	// Create a Java file containing Chinese comments.
 	tmpDir := t.TempDir()
 	testFile := filepath.Join(tmpDir, "Test.java")
 
-	// 已经转换为中文的内容
+	// Already converted to Chinese content
 	convertedContent := `package com.example;
 
 // 计算总和
@@ -91,18 +92,18 @@ public class Calculator {
 	err := os.WriteFile(testFile, []byte(convertedContent), 0644)
 	assert.NoError(t, err)
 
-	// 获取适配器
+	// Get the adapter
 	adapter, err := adapters.GetAdapter(testFile)
 	assert.NoError(t, err)
 
-	// 解析注释（当前是中文）
+	// Parse the comment (currently is Chinese)
 	comments, err := adapter.Parse(testFile, []byte(convertedContent))
 	assert.NoError(t, err)
 
-	// 创建映射存储，模拟已有的双语映射
+	// Create a mapping storage to simulate the existing bilingual mapping
 	store := mapping.NewStore("")
-	
-	// 构建原始英文版本的注释来生成正确的 ID
+
+	// Build the original English version of the comment to generate the correct ID
 	originalEnglishContent := `package com.example;
 
 // Calculate sum
@@ -113,8 +114,8 @@ public class Calculator {
     }
 }
 `
-	
-	// 解析英文版本以获取正确的 ID
+
+	// Parse the English version to get the correct ID
 	englishComments, err := adapter.Parse(testFile, []byte(originalEnglishContent))
 	assert.NoError(t, err)
 
@@ -123,7 +124,7 @@ public class Calculator {
 		"// Add two numbers": "计算两个数的和",
 	}
 
-	// 使用英文注释的 ID 存储翻译
+	// Use English comments to store translations for IDs
 	for _, c := range englishComments {
 		id := utils.GenerateCommentID(c)
 		if trans, ok := translations[c.SourceText]; ok {
@@ -132,17 +133,17 @@ public class Calculator {
 		}
 	}
 
-	// 现在验证可以通过中文文本反向查找英文
+	// Now you can reverse lookup English text through Chinese text.
 	for _, c := range comments {
-		// 规范化当前注释文本
+		// Normalize the current comment text
 		normalizedCurrent := utils.NormalizeCommentText(c.SourceText)
-		
-		// 在映射中查找匹配的中文文本
+
+		// Search for matching Chinese text in the mapping
 		found := false
 		for id, transMap := range store.GetMapping().Comments {
 			zhText, hasZh := transMap["zh-CN"]
 			enText, hasEn := transMap["en"]
-			
+
 			if hasZh && hasEn {
 				normalizedZh := utils.NormalizeCommentText(zhText)
 				if normalizedZh == normalizedCurrent {
@@ -152,28 +153,28 @@ public class Calculator {
 				}
 			}
 		}
-		
+
 		assert.True(t, found, "应该能通过中文文本找到对应的英文翻译: %s", c.SourceText)
 	}
 }
 
 func TestJavaConvert_FileSupport(t *testing.T) {
-	// 测试 convert 命令能识别 .java 文件
+	// Test the convert command to recognize .java files
 	tmpDir := t.TempDir()
-	
+
 	testFiles := []string{
 		"Test.java",
 		"Sample.java",
 		"Application.java",
 	}
-	
+
 	for _, filename := range testFiles {
 		path := filepath.Join(tmpDir, filename)
 		content := "package test;\n// Comment\npublic class Test {}"
 		err := os.WriteFile(path, []byte(content), 0644)
 		assert.NoError(t, err)
-		
-		// 验证能获取适配器
+
+		// Validate the adapter can be obtained
 		adapter, err := adapters.GetAdapter(path)
 		assert.NoError(t, err)
 		assert.NotNil(t, adapter)
@@ -182,7 +183,7 @@ func TestJavaConvert_FileSupport(t *testing.T) {
 }
 
 func TestJavaConvert_CommentMarkers(t *testing.T) {
-	// 测试不同类型的注释标记是否正确处理
+	// Test whether different types of comment markers are handled correctly.
 	tmpDir := t.TempDir()
 	testFile := filepath.Join(tmpDir, "Test.java")
 
@@ -208,13 +209,13 @@ public class Test {
 	comments, err := adapter.Parse(testFile, []byte(content))
 	assert.NoError(t, err)
 
-	// 验证注释类型和标记
+	// Validate comment type and tag
 	for _, c := range comments {
 		if c.Type == "line" {
-			assert.True(t, strings.HasPrefix(c.SourceText, "//"), 
+			assert.True(t, strings.HasPrefix(c.SourceText, "//"),
 				"行注释应该以 // 开头: %s", c.SourceText)
 		} else if c.Type == "block" {
-			assert.True(t, strings.HasPrefix(c.SourceText, "/*") && 
+			assert.True(t, strings.HasPrefix(c.SourceText, "/*") &&
 				strings.HasSuffix(c.SourceText, "*/"),
 				"块注释应该以 /* 开头和 */ 结尾: %s", c.SourceText)
 		} else if c.Type == "doc" {

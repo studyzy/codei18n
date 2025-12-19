@@ -9,6 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
 	"github.com/studyzy/codei18n/core/config"
 	"github.com/studyzy/codei18n/core/workflow"
 )
@@ -48,14 +49,14 @@ const x = 1;`), 0644)
 
 	// Run Map Update Workflow
 	// Use MapUpdate function
-	
+
 	// Create .codei18n dir in CURRENT WORKDIR (because MapUpdate uses hardcoded path relative to CWD mostly, or we should change CWD)
 	// MapUpdate uses filepath.Join(".codei18n", "mappings.json") which is relative.
 	// So we need to switch CWD to tempDir for this test to work properly without modifying MapUpdate signature yet.
 	cwd, _ := os.Getwd()
 	defer os.Chdir(cwd)
 	os.Chdir(tempDir)
-	
+
 	storePath := filepath.Join(".codei18n", "mappings.json")
 	os.MkdirAll(filepath.Dir(storePath), 0755)
 
@@ -66,10 +67,10 @@ const x = 1;`), 0644)
 	// Check the store content
 	content, err := os.ReadFile(storePath)
 	assert.NoError(t, err)
-	
+
 	// We expect "Valid comment" to be present
 	assert.Contains(t, string(content), "Valid comment")
-	
+
 	// We expect "Ignored comment" to be ABSENT
 	// If the bug exists, this will likely fail (it will contain "Ignored comment")
 	if assert.NotContains(t, string(content), "Ignored comment", "Should not contain comments from node_modules") {
@@ -112,7 +113,7 @@ const y = 2;`), 0644)
 			"node_modules/**",
 		},
 	}
-	
+
 	// Create .codei18n directory and write config
 	codei18nDir := filepath.Join(tempDir, ".codei18n")
 	os.MkdirAll(codei18nDir, 0755)
@@ -122,41 +123,41 @@ const y = 2;`), 0644)
 	// Run convert --dry-run
 	cmd := exec.Command(bin, "convert", "--to", "zh-CN", "--dry-run", "--dir", ".", "--verbose")
 	cmd.Dir = tempDir
-	
+
 	out, err := cmd.CombinedOutput()
 	require.NoError(t, err, "Convert command failed: %s", string(out))
 	output := string(out)
-	
+
 	// Since we haven't created mappings, convert won't do much, but it scans files.
 	// In verbose mode, or if it errors on finding files, we might see output.
 	// But relying on logs is brittle.
-	
+
 	// Let's create mappings manually so convert has something to do
 	// We need IDs.
 	// Valid comment ID: SHA1(...)
 	// Ignored comment ID: SHA1(...)
-	
+
 	// But easier way: Check if ignored file is even looked at.
 	// The log "Scanning directory failed" would appear if bad.
 	// Or just trust my previous unit test for map update which uses same exclude logic?
 	// MapUpdate uses scanner.Directory. Convert uses manual walk.
 	// So I MUST test Convert logic.
-	
+
 	// If I put "Ignored comment" in mapping, convert should NOT try to replace it if file is excluded.
 	// If file is excluded, it's not in 'files' list. processFile is not called.
 	// So no "Converting..." log.
-	
+
 	// Let's rely on Dry Run output.
-	// If files are processed, log.Info("准备处理 %d 个文件...", len(files)) is printed.
+	// If files are processed, log.Info("preparing to process %d files...") is printed.
 	// Since verbose is on (flag passed to binary? --verbose is global flag).
 	// I passed --verbose.
-	
-	// Check for "准备处理 1 个文件..." (should be 1, not 2).
+
+	// Check for "Preparing to process 1 file..." (should be 1, not 2).
 	if assert.Contains(t, output, "准备处理 1 个文件") {
 		t.Log("Convert correctly identified 1 file")
 	} else {
 		t.Logf("Convert output did not match expectation: %s", output)
 	}
-	
+
 	assert.NotContains(t, output, "ignored.ts")
 }

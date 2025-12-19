@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	openai "github.com/sashabaranov/go-openai"
+
 	"github.com/studyzy/codei18n/internal/log"
 )
 

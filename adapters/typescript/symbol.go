@@ -71,7 +71,7 @@ func getNodeName(node *sitter.Node, src []byte) string {
 	case "interface_declaration":
 		// (interface_declaration name: (type_identifier) @name)
 		return getChildContent(node, "name", src)
-	
+
 	case "type_alias_declaration":
 		// (type_alias_declaration name: (type_identifier) @name)
 		return getChildContent(node, "name", src)
@@ -95,7 +95,7 @@ func getNodeName(node *sitter.Node, src []byte) string {
 				return getNodeName(firstChild, src)
 			}
 		}
-	
+
 	case "export_statement":
 		// export const x = ...; or export function ...
 		// We need to look at the declaration being exported

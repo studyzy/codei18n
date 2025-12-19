@@ -50,7 +50,7 @@ func TestConvertTS(t *testing.T) {
 	// Verify we can find IDs in mapping
 	// We need to calculate IDs exactly as the tool does.
 	for _, c := range comments {
-		// Normalize text first as done in ID generation usually? 
+		// Normalize text first as done in ID generation usually?
 		// Actually utils.GenerateCommentID uses c.SourceText.
 		// But in mapping.json I manually put IDs. Let's see if they match what utils generates.
 		// If not, my test data is wrong.
@@ -58,18 +58,18 @@ func TestConvertTS(t *testing.T) {
 		id := utils.GenerateCommentID(c)
 		t.Logf("Comment '%s' -> ID: %s", c.SourceText, id)
 	}
-	
+
 	// Since I mocked mapping.json with random IDs, I should update them to real IDs for the test to work,
 	// OR I update the test to generate IDs and put them in store.
-	
+
 	// Let's use real IDs.
 	// We will update the store in memory with the calculated IDs for the test.
 	memStore := mapping.NewStore("")
 	// Populate memStore with translations for the calculated IDs
 	expectedTranslations := map[string]string{
-		"// Initial comment": "初始注释",
+		"// Initial comment":              "初始注释",
 		"/**\n * A calculator class\n */": "计算器类",
-		"// Adds two numbers": "计算两个数",
+		"// Adds two numbers":             "计算两个数",
 	}
 
 	for _, c := range comments {
@@ -79,20 +79,20 @@ func TestConvertTS(t *testing.T) {
 			memStore.Set(id, "zh-CN", trans)
 		}
 	}
-	
+
 	// Now simulate "Apply Mode" (EN -> ZH)
 	// We want to replace English comments with Chinese.
 	// Logic from convert.go:
 	// Find comment, get translation, replace.
-	
+
 	// We will just verify that we CAN find the comments and they are valid for replacement.
-	
+
 	// Mock Config
 	// cfg := &config.Config{
 	// 	SourceLanguage: "en",
 	// 	LocalLanguage:  "zh-CN",
 	// }
-	
+
 	// Check if we can find translation
 	for _, c := range comments {
 		id := utils.GenerateCommentID(c)
