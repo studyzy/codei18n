@@ -211,14 +211,15 @@ public class Test {
 
 	// Validate comment type and tag
 	for _, c := range comments {
-		if c.Type == "line" {
+		switch c.Type {
+		case "line":
 			assert.True(t, strings.HasPrefix(c.SourceText, "//"),
 				"行注释应该以 // 开头: %s", c.SourceText)
-		} else if c.Type == "block" {
+		case "block":
 			assert.True(t, strings.HasPrefix(c.SourceText, "/*") &&
 				strings.HasSuffix(c.SourceText, "*/"),
 				"块注释应该以 /* 开头和 */ 结尾: %s", c.SourceText)
-		} else if c.Type == "doc" {
+		case "doc":
 			assert.True(t, strings.HasPrefix(c.SourceText, "/**"),
 				"文档注释应该以 /** 开头: %s", c.SourceText)
 		}

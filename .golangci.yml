@@ -1,26 +1,22 @@
+version: "2"
+
 run:
   timeout: 5m
-  modules-download-mode: readonly
 
 linters:
-  disable-all: true
   enable:
-    - gosimple
     - govet
     - ineffassign
     - staticcheck
-    - typecheck
     - unused
+  disable:
+    - errcheck
+
+formatters:
+  enable:
     - gofmt
     - goimports
 
-linters-settings:
-  gofmt:
-    simplify: true
-  goimports:
-    local-prefixes: github.com/studyzy/codei18n
-
 issues:
-  exclude-use-default: false
   max-issues-per-linter: 0
   max-same-issues: 0
